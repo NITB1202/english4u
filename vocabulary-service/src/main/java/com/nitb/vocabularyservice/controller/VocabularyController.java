@@ -14,7 +14,7 @@ import java.util.List;
 
 @GrpcService
 @RequiredArgsConstructor
-public class VocabularyWordController extends VocabularyServiceGrpc.VocabularyServiceImplBase {
+public class VocabularyController extends VocabularyServiceGrpc.VocabularyServiceImplBase {
     private final VocabularyWordService vocabularyWordService;
 
     @Override
