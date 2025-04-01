@@ -87,6 +87,13 @@
             <version>${grpc.version}</version>
         </dependency>
 
+        <!-- Common Library -->
+        <dependency>
+            <groupId>com.nitb</groupId>
+            <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

@@ -2,7 +2,151 @@ syntax = "proto3";
 
 package vocabulary;
 
+import "common.proto";
+
 option java_multiple_files = true;
 option java_package = "com.nitb.vocabularyservice.grpc";
 option java_outer_classname = "VocabularyProto";
 
+//Sets
+message CreateVocabularySetRequest{
+  string creator_id = 1;
+  string name = 2;
+}
+
+message VocabularySetResponse{
+  string id = 1;
+  string created_by = 2;
+  string create_at  = 3;
+  string name = 4;
+  int32 word_count = 5;
+  string updated_by = 6;
+  string update_at = 7;
+  bool is_deleted = 8;
+}
+
+message GetVocabularySetByIdRequest{
+  string id = 1;
+}
+
+message GetVocabularySetsRequest{
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message VocabularySetsResponse{
+  repeated VocabularySetResponse sets = 1;
+  int64 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message SearchVocabularySetByNameRequest{
+  string keyword = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message UpdateVocabularySetRequest{
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+}
+
+message DeleteVocabularySetRequest{
+  string id = 1;
+  string user_id = 2;
+}
+
+//Words
+message CreateVocabularyWordRequest{
+  string word = 1;
+  string pronun = 2;
+  string ex = 3;
+  string trans = 4;
+}
+
+message VocabularyWordResponse{
+  string id = 1;
+  string set_id = 2;
+  int32 position = 3;
+  string word = 4;
+  string pronun = 5;
+  string ex = 6;
+  string trans = 7;
+  string image_url = 8;
+}
+
+message CreateVocabularyWordsRequest{
+  repeated CreateVocabularyWordRequest words = 1;
+  string user_id = 2;
+  string set_id = 3;
+}
+
+message VocabularyWordsResponse{
+  repeated VocabularyWordResponse words = 1;
+}
+
+message GetVocabularyWordsRequest{
+  string set_id = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message VocabularyWordsPaginationResponse{
+  repeated VocabularyWordResponse words = 1;
+  int64 total_items = 2;
+  int32 total_page = 3;
+}
+
+message SearchVocabularyWordByWordRequest{
+  string set_id = 1;
+  string keyword = 2;
+  int32 page = 3;
+  int32 size = 4;
+}
+
+message UpdateVocabularyWordRequest{
+  string id = 1;
+  string user_id = 2;
+  string word = 3;
+  string pronun = 4;
+  string ex = 5;
+  string trans = 6;
+}
+
+message UploadVocabularyWordImageRequest{
+  string id = 1;
+  string user_id = 2;
+  string image_url = 3;
+}
+
+message SwitchWordPositionRequest{
+  string word1_id = 1;
+  string word2_id = 2;
+  string user_id = 3;
+}
+
+message DeleteVocabularyWordsRequest{
+  repeated string ids = 1;
+  string user_id = 2;
+  string set_id = 3;
+}
+
+service VocabularyService {
+  //Sets
+  rpc CreateVocabularySet(CreateVocabularySetRequest) returns (VocabularySetResponse);
+  rpc GetVocabularySetById(GetVocabularySetByIdRequest) returns (VocabularySetResponse);
+  rpc GetVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
+  rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
+  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (VocabularySetResponse);
+  rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (VocabularySetResponse);
+
+  //Words
+  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);
+  rpc GetVocabularyWords(GetVocabularyWordsRequest) returns (VocabularyWordsPaginationResponse);
+  rpc SearchVocabularyWordByWord(SearchVocabularyWordByWordRequest) returns (VocabularyWordsPaginationResponse);
+  rpc UpdateVocabularyWord(UpdateVocabularyWordRequest) returns (VocabularyWordResponse);
+  rpc SwitchWordPosition(SwitchWordPositionRequest) returns (common.ActionResponse);
+  rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);
+  rpc DeleteVocabularyWords(DeleteVocabularyWordsRequest) returns (common.ActionResponse);
+}
