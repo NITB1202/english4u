@@ -129,6 +129,7 @@ message SwitchWordPositionRequest{
 message DeleteVocabularyWordsRequest{
   repeated string ids = 1;
   string user_id = 2;
+  string set_id = 3;
 }
 
 service VocabularyService {
