@@ -59,11 +59,10 @@ message DeleteVocabularySetRequest{
 
 //Words
 message CreateVocabularyWordRequest{
-  string set_id = 1;
-  string word = 2;
-  string pronun = 3;
-  string ex = 4;
-  string trans = 5;
+  string word = 1;
+  string pronun = 2;
+  string ex = 3;
+  string trans = 4;
 }
 
 message VocabularyWordResponse{
@@ -80,6 +79,7 @@ message VocabularyWordResponse{
 message CreateVocabularyWordsRequest{
   repeated CreateVocabularyWordRequest words = 1;
   string user_id = 2;
+  string set_id = 3;
 }
 
 message VocabularyWordsResponse{
