@@ -16,11 +16,11 @@ message CreateVocabularySetRequest{
 
 message VocabularySetResponse{
   string id = 1;
-  string creator_id = 2;
+  string created_by = 2;
   string create_at  = 3;
   string name = 4;
   int32 word_count = 5;
-  string update_by = 6;
+  string updated_by = 6;
   string update_at = 7;
   bool is_deleted = 8;
 }
