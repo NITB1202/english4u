@@ -3,7 +3,7 @@ package com.nitb.apigateway.grpc;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.mapper.VocabularyMapper;
 import com.nitb.vocabularyservice.grpc.*;
-import net.devh.boot.grpc.server.service.GrpcService;
+import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Service
 public class VocabularyServiceGrpcClient {
-    @GrpcService("vocabulary-service")
+    @GrpcClient("vocabulary-service")
     private VocabularyServiceGrpc.VocabularyServiceBlockingStub blockingStub;
 
     public VocabularySetResponse createVocabularySet(UUID userId, String name) {
