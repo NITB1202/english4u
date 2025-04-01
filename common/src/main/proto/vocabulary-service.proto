@@ -138,7 +138,7 @@ service VocabularyService {
   rpc GetVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
   rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
   rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (VocabularySetResponse);
-  rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (VocabularySetsResponse);
+  rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (VocabularySetResponse);
 
   //Words
   rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);
