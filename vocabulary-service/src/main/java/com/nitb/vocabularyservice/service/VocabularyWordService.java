@@ -39,7 +39,7 @@ public class VocabularyWordService {
 
         //Create words
         for (CreateVocabularyWordRequest wordRequest : wordRequests) {
-            if(vocabularyWordRepository.existByWordAndSetId(wordRequest.getWord(), setId)){
+            if(vocabularyWordRepository.existsByWordAndSetId(wordRequest.getWord(), setId)){
                 throw new BusinessException("The word '" + wordRequest.getWord() +"' already exists in this set.");
             }
 
@@ -99,7 +99,7 @@ public class VocabularyWordService {
         String ex = vocabularyWord.getExample();
 
         if(!word.isBlank()){
-            if(vocabularyWordRepository.existByWordAndSetId(word, vocabularyWord.getSetId()))
+            if(vocabularyWordRepository.existsByWordAndSetId(word, vocabularyWord.getSetId()))
                 throw new BusinessException("The word '" + word +"' already exists in this set.");
             else
                 vocabularyWord.setWord(word);
