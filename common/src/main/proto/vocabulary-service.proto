@@ -144,7 +144,7 @@ service VocabularyService {
   rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);
   rpc GetVocabularyWords(GetVocabularyWordsRequest) returns (VocabularyWordsPaginationResponse);
   rpc SearchVocabularyWordByWord(SearchVocabularyWordByWordRequest) returns (VocabularyWordsPaginationResponse);
-  rpc UpdateVocabularyWord(UpdateVocabularySetRequest) returns (VocabularyWordResponse);
+  rpc UpdateVocabularyWord(UpdateVocabularyWordRequest) returns (VocabularyWordResponse);
   rpc SwitchWordPosition(SwitchWordPositionRequest) returns (common.ActionResponse);
   rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);
   rpc DeleteVocabularyWords(DeleteVocabularyWordsRequest) returns (common.ActionResponse);
