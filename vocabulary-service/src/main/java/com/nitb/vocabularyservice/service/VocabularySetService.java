@@ -24,13 +24,13 @@ public class VocabularySetService {
             throw new BusinessException("This name has been used already.");
         }
 
-        UUID creatorId = UUID.fromString(request.getCreatorId());
+        UUID userId = UUID.fromString(request.getUserId());
 
         VocabularySet vocabularySet = VocabularySet.builder()
                 .name(request.getName())
-                .createdBy(creatorId)
+                .createdBy(userId)
                 .createdAt(LocalDateTime.now())
-                .updatedBy(creatorId)
+                .updatedBy(userId)
                 .updatedAt(LocalDateTime.now())
                 .wordCount(0)
                 .isDeleted(false)
