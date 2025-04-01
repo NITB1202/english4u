@@ -19,5 +19,5 @@ public interface VocabularyWordService {
     Mono<ActionResponseDto> switchWordPosition(UUID userId, UUID word1Id, UUID word2Id);
     Mono<ActionResponseDto> deleteVocabularyWords(UUID setId, UUID userId, List<UUID> ids);
 
-    void uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl);
+    boolean uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl);
 }
