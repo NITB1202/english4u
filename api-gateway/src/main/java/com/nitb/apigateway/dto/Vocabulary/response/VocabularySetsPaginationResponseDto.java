@@ -14,7 +14,7 @@ import java.util.List;
 public class VocabularySetsPaginationResponseDto {
     private List<VocabularySetResponseDto> sets;
 
-    private Integer totalItems;
+    private Long totalItems;
 
     private Integer totalPages;
 
