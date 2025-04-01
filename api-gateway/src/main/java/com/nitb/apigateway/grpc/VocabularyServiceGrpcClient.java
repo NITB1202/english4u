@@ -1,6 +1,7 @@
 package com.nitb.apigateway.grpc;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
+import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.mapper.VocabularyMapper;
 import com.nitb.vocabularyservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -35,5 +36,43 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.createVocabularyWords(request);
+    }
+
+    public VocabularySetsResponse getVocabularySets(int page, int size) {
+        GetVocabularySetsRequest request = GetVocabularySetsRequest.newBuilder()
+                .setPage(page)
+                .setSize(size)
+                .build();
+
+        return blockingStub.getVocabularySets(request);
+    }
+
+    public VocabularySetsResponse searchVocabularySetByName(String keyword, int page, int size) {
+        SearchVocabularySetByNameRequest request = SearchVocabularySetByNameRequest.newBuilder()
+                .setKeyword(keyword)
+                .setPage(page)
+                .setSize(size)
+                .build();
+
+        return blockingStub.searchVocabularySetByName(request);
+    }
+
+    public VocabularySetResponse updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto dto) {
+        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
+                .setId(id.toString())
+                .setUserId(userId.toString())
+                .setName(dto.getName())
+                .build();
+
+        return blockingStub.updateVocabularySet(request);
+    }
+
+    public VocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {
+        DeleteVocabularySetRequest request = DeleteVocabularySetRequest.newBuilder()
+                .setId(id.toString())
+                .setUserId(userId.toString())
+                .build();
+
+        return blockingStub.deleteVocabularySet(request);
     }
 }

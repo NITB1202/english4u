@@ -9,6 +9,7 @@ import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.VocabularyMapper;
 import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetsResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,21 +50,53 @@ public class VocabularySetServiceImpl implements VocabularySetService {
 
     @Override
     public Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size) {
-        return null;
+        return Mono.fromCallable(()->{
+            VocabularySetsResponse sets = grpcClient.getVocabularySets(page, size);
+            List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
+                    .stream()
+                    .map(VocabularyMapper::toVocabularySetResponseDto)
+                    .toList();
+
+            return VocabularySetsPaginationResponseDto.builder()
+                    .sets(setsResponse)
+                    .totalItems(sets.getTotalItems())
+                    .totalPages(sets.getTotalPages())
+                    .build();
+
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
     public Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size) {
-        return null;
+        return Mono.fromCallable(()-> {
+            VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
+            List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
+                    .stream()
+                    .map(VocabularyMapper::toVocabularySetResponseDto)
+                    .toList();
+
+            return VocabularySetsPaginationResponseDto.builder()
+                    .sets(setsResponse)
+                    .totalItems(sets.getTotalItems())
+                    .totalPages(sets.getTotalPages())
+                    .build();
+
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UpdateVocabularySetRequestDto request) {
-        return null;
+    public Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
+        return Mono.fromCallable(()->{
+            VocabularySetResponse set = grpcClient.updateVocabularySet(id, userId, request);
+            return VocabularyMapper.toVocabularySetResponseDto(set);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id) {
-        return null;
+    public Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId) {
+        return Mono.fromCallable(()->{
+            VocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
+            return VocabularyMapper.toVocabularySetResponseDto(set);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 }

@@ -14,6 +14,6 @@ public interface VocabularySetService {
     Mono<VocabularySetDetailResponseDto> getVocabularySetById(UUID id);
     Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size);
     Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size);
-    Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UpdateVocabularySetRequestDto request);
-    Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id);
+    Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request);
+    Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId);
 }
