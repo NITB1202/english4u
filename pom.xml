@@ -12,6 +12,7 @@
         <module>common</module>
         <module>server-registry</module>
         <module>vocabulary-service</module>
+        <module>api-gateway</module>
     </modules>
 
     <properties>
