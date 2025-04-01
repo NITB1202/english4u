@@ -10,6 +10,7 @@
 
     <modules>
         <module>common</module>
+        <module>server-registry</module>
         <module>vocabulary-service</module>
     </modules>
 
