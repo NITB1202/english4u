@@ -93,10 +93,10 @@ public class VocabularyWordService {
         );
 
         //Update word
-        String word = vocabularyWord.getWord();
-        String pronun = vocabularyWord.getPronunciation();
-        String trans = vocabularyWord.getTranslation();
-        String ex = vocabularyWord.getExample();
+        String word = request.getWord();
+        String pronun = request.getPronun();
+        String trans = request.getTrans();
+        String ex = request.getEx();
 
         if(!word.isBlank()){
             if(vocabularyWordRepository.existsByWordAndSetId(word, vocabularyWord.getSetId()))
@@ -176,8 +176,11 @@ public class VocabularyWordService {
         List<UUID> ids = idsString.stream().map(UUID::fromString).toList();
 
         vocabularyWordRepository.deleteAllById(ids);
+
+        //Number remaining words
         List<VocabularyWord> remainingWords = vocabularyWordRepository.findBySetIdOrderByPositionAsc(setId);
         IntStream.range(0, remainingWords.size()).forEach(i -> remainingWords.get(i).setPosition(i + 1));
+        vocabularyWordRepository.saveAll(remainingWords);
 
         //Update set
         VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(

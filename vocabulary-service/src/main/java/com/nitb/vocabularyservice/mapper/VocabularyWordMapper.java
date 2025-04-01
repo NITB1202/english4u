@@ -3,6 +3,8 @@ package com.nitb.vocabularyservice.mapper;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 
+import java.util.Optional;
+
 public class VocabularyWordMapper {
     private VocabularyWordMapper() {}
 
@@ -15,7 +17,7 @@ public class VocabularyWordMapper {
                 .setPronun(word.getPronunciation())
                 .setTrans(word.getTranslation())
                 .setEx(word.getExample())
-                .setImageUrl(word.getImageUrl())
+                .setImageUrl(Optional.ofNullable(word.getImageUrl()).orElse(""))
                 .build();
     }
 }

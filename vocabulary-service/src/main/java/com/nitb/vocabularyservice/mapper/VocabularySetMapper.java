@@ -11,7 +11,7 @@ public class VocabularySetMapper {
                 .setId(vocabularySet.getId().toString())
                 .setName(vocabularySet.getName())
                 .setWordCount(vocabularySet.getWordCount())
-                .setCreateAt(vocabularySet.getCreatedBy().toString())
+                .setCreatedBy(vocabularySet.getCreatedBy().toString())
                 .setCreateAt(vocabularySet.getCreatedAt().toString())
                 .setUpdatedBy(vocabularySet.getUpdatedBy().toString())
                 .setUpdateAt(vocabularySet.getUpdatedAt().toString())
