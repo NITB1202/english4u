@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface VocabularySetService {
     Mono<VocabularySetDetailResponseDto> createVocabularySet(CreateVocabularySetRequestDto request);
-    Mono<VocabularySetDetailResponseDto> getVocabularySetById(UUID id);
+    Mono<VocabularySetResponseDto> getVocabularySetById(UUID id);
     Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size);
     Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size);
     Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request);

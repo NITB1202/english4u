@@ -44,8 +44,11 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetDetailResponseDto> getVocabularySetById(UUID id) {
-        return null;
+    public Mono<VocabularySetResponseDto> getVocabularySetById(UUID id) {
+        return Mono.fromCallable(()->{
+            VocabularySetResponse set = grpcClient.getVocabularySetById(id);
+            return VocabularyMapper.toVocabularySetResponseDto(set);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override

@@ -38,6 +38,14 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.createVocabularyWords(request);
     }
 
+    public VocabularySetResponse getVocabularySetById(UUID id) {
+        GetVocabularySetByIdRequest request = GetVocabularySetByIdRequest.newBuilder()
+                .setId(id.toString())
+                .build();
+
+        return blockingStub.getVocabularySetById(request);
+    }
+
     public VocabularySetsResponse getVocabularySets(int page, int size) {
         GetVocabularySetsRequest request = GetVocabularySetsRequest.newBuilder()
                 .setPage(page)
