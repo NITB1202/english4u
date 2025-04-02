@@ -2,7 +2,7 @@ services:
   eureka-server:
     build:
       context: ./server-registry
-    container_name: server-registry
+    container_name: e4u-server-registry
     ports:
       - "8761:8761"
     networks:
@@ -10,7 +10,7 @@ services:
 
   vocabulary-db:
     image: postgres:15
-    container_name: vocabulary-db
+    container_name: e4u-vocabulary-db
     restart: always
     ports:
       - "5432:5432"
@@ -26,7 +26,7 @@ services:
   vocabulary-service:
     build:
       context: ./vocabulary-service
-    container_name: vocabulary-service
+    container_name: e4u-vocabulary-service
     restart: always
     depends_on:
       - vocabulary-db
@@ -44,7 +44,7 @@ services:
   api-gateway:
     build:
       context: ./api-gateway
-    container_name: api-gateway
+    container_name: e4u-api-gateway
     restart: always
     ports:
       - "8080:8080"
