@@ -1,7 +1,8 @@
 package com.nitb.apigateway.service.Vocabulary;
 
 import com.nitb.apigateway.dto.Action.ActionResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
+import com.nitb.apigateway.dto.Vocabulary.request.AddVocabularyWordsRequestDto;
+import com.nitb.apigateway.dto.Vocabulary.request.DeleteVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
@@ -26,8 +27,8 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     private final VocabularyServiceGrpcClient grpcClient;
 
     @Override
-    public Flux<VocabularyWordResponseDto> addWordsToSet(UUID setId, UUID userId, List<CreateVocabularyWordRequestDto> request) {
-        return Mono.fromCallable(() -> grpcClient.createVocabularyWords(setId, userId, request))
+    public Flux<VocabularyWordResponseDto> addWordsToSet(UUID userId, AddVocabularyWordsRequestDto dto) {
+        return Mono.fromCallable(() -> grpcClient.createVocabularyWords(dto.getSetId(), userId, dto.getWords()))
                 .flatMapMany(response -> Flux.fromIterable(response.getWordsList()))
                 .map(VocabularyMapper::toVocabularyWordResponseDto)
                 .subscribeOn(Schedulers.boundedElastic());
@@ -84,9 +85,9 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     }
 
     @Override
-    public Mono<ActionResponseDto> deleteVocabularyWords(UUID setId, UUID userId, List<UUID> ids) {
+    public Mono<ActionResponseDto> deleteVocabularyWords(UUID userId, DeleteVocabularyWordsRequestDto dto) {
         return Mono.fromCallable(()->{
-            ActionResponse response = grpcClient.deleteVocabularyWords(setId, userId, ids);
+            ActionResponse response = grpcClient.deleteVocabularyWords(dto.getSetId(), userId, dto.getIds());
             return ActionMapper.toResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
