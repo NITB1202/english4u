@@ -7,6 +7,7 @@ import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.service.Vocabulary.VocabularyWordService;
+import com.nitb.apigateway.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +16,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

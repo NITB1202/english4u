@@ -5,6 +5,7 @@ import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetDetailResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetsPaginationResponseDto;
+import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Vocabulary.VocabularySetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,7 +16,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 

@@ -8,12 +8,9 @@ import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class VocabularyMapper {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
     private VocabularyMapper() {}
 
     public static CreateVocabularyWordRequest toCreateVocabularyWordRequest(CreateVocabularyWordRequestDto word) {
@@ -29,11 +26,11 @@ public class VocabularyMapper {
         return VocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .createdBy(UUID.fromString(set.getCreatedBy()))
-                .createAt(LocalDateTime.parse(set.getCreateAt(), formatter))
+                .createAt(LocalDateTime.parse(set.getCreateAt()))
                 .name(set.getName())
                 .wordCount(set.getWordCount())
                 .updatedBy(UUID.fromString(set.getUpdatedBy()))
-                .updatedAt(LocalDateTime.parse(set.getUpdatedBy(), formatter))
+                .updatedAt(LocalDateTime.parse(set.getUpdateAt()))
                 .isDeleted(set.getIsDeleted())
                 .build();
     }
