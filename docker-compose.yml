@@ -1,0 +1,63 @@
+services:
+  eureka-server:
+    build:
+      context: ./server-registry
+    container_name: server-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
+  vocabulary-db:
+    image: postgres:15
+    container_name: vocabulary-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - vocabulary-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  vocabulary-service:
+    build:
+      context: ./vocabulary-service
+    container_name: vocabulary-service
+    restart: always
+    depends_on:
+      - vocabulary-db
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      VOCABULARY_SERVICE_DB_HOST: ${VOCABULARY_SERVICE_DB_HOST}
+      VOCABULARY_SERVICE_DB_PORT: ${VOCABULARY_SERVICE_DB_PORT}
+      VOCABULARY_SERVICE_DB_NAME: ${VOCABULARY_SERVICE_DB_NAME}
+      VOCABULARY_SERVICE_DB_USERNAME: ${VOCABULARY_SERVICE_DB_USERNAME}
+      VOCABULARY_SERVICE_DB_PASSWORD: ${VOCABULARY_SERVICE_DB_PASSWORD}
+    networks:
+      - backend
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - vocabulary-service
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+    networks:
+      - backend
+
+volumes:
+  vocabulary-db-data:
+
+networks:
+  backend:
