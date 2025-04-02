@@ -17,9 +17,9 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,8 +35,8 @@ public class VocabularyWordController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Flux<ResponseEntity<VocabularyWordResponseDto>> addWordsToSet(@RequestParam UUID userId,
-                                                                         @Valid @RequestBody AddVocabularyWordsRequestDto request){
+    public Mono<ResponseEntity<List<VocabularyWordResponseDto>>> addWordsToSet(@RequestParam UUID userId,
+                                                                               @Valid @RequestBody AddVocabularyWordsRequestDto request){
         return vocabularyWordService.addWordsToSet(userId, request).map(ResponseEntity::ok);
     }
 

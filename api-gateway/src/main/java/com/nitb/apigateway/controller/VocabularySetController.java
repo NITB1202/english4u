@@ -10,7 +10,6 @@ import com.nitb.apigateway.service.Vocabulary.VocabularySetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -73,6 +72,7 @@ public class VocabularySetController {
     public Mono<ResponseEntity<VocabularySetResponseDto>> updateVocabularySet(@RequestParam UUID id,
                                                                               @RequestParam UUID userId,
                                                                               @Valid @RequestBody UpdateVocabularySetRequestDto request) {
+        System.out.println(request);
         return vocabularySetService.updateVocabularySet(id, userId, request).map(ResponseEntity::ok);
     }
 

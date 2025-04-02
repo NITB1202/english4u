@@ -12,9 +12,9 @@ import com.nitb.apigateway.mapper.VocabularyMapper;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsPaginationResponse;
+import com.nitb.vocabularyservice.grpc.VocabularyWordsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -27,11 +27,13 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     private final VocabularyServiceGrpcClient grpcClient;
 
     @Override
-    public Flux<VocabularyWordResponseDto> addWordsToSet(UUID userId, AddVocabularyWordsRequestDto dto) {
-        return Mono.fromCallable(() -> grpcClient.createVocabularyWords(dto.getSetId(), userId, dto.getWords()))
-                .flatMapMany(response -> Flux.fromIterable(response.getWordsList()))
-                .map(VocabularyMapper::toVocabularyWordResponseDto)
-                .subscribeOn(Schedulers.boundedElastic());
+    public Mono<List<VocabularyWordResponseDto>> addWordsToSet(UUID userId, AddVocabularyWordsRequestDto dto) {
+        return Mono.fromCallable(() -> {
+            VocabularyWordsResponse response = grpcClient.createVocabularyWords(dto.getSetId(), userId, dto.getWords());
+            return response.getWordsList().stream()
+                    .map(VocabularyMapper::toVocabularyWordResponseDto)
+                    .toList();
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
