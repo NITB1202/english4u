@@ -64,7 +64,7 @@ public class VocabularyWordController {
         return vocabularyWordService.searchVocabularyWordByWord(setId, keyword, page, size).map(ResponseEntity::ok);
     }
 
-    @PutMapping
+    @PatchMapping
     @Operation(summary = "Update a vocabulary word.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
@@ -77,7 +77,7 @@ public class VocabularyWordController {
         return vocabularyWordService.updateVocabularyWord(id, userId, request).map(ResponseEntity::ok);
     }
 
-    @PutMapping("/switch")
+    @PatchMapping("/switch")
     @Operation(summary = "Switch the positions of two words within the same set.")
     @ApiResponse(responseCode = "200", description = "Switch successfully.")
     public Mono<ResponseEntity<ActionResponseDto>> switchWordPosition(@RequestParam UUID userId,

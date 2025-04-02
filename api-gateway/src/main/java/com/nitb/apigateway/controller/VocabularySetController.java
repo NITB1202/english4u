@@ -72,7 +72,6 @@ public class VocabularySetController {
     public Mono<ResponseEntity<VocabularySetResponseDto>> updateVocabularySet(@RequestParam UUID id,
                                                                               @RequestParam UUID userId,
                                                                               @Valid @RequestBody UpdateVocabularySetRequestDto request) {
-        System.out.println(request);
         return vocabularySetService.updateVocabularySet(id, userId, request).map(ResponseEntity::ok);
     }
 
