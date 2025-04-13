@@ -47,7 +47,7 @@ public class VocabularyWordController {
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<VocabularyWordsPaginationResponseDto>> getVocabularyWords(@RequestParam UUID setId,
-                                                                                         @Positive @RequestParam int page,
+                                                                                         @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                          @RequestParam(defaultValue = "10") int size) {
         return vocabularyWordService.getVocabularyWords(setId, page, size).map(ResponseEntity::ok);
     }
@@ -59,7 +59,7 @@ public class VocabularyWordController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<VocabularyWordsPaginationResponseDto>> searchVocabularyWordByWord(@RequestParam UUID setId,
                                                                                                  @RequestParam String keyword,
-                                                                                                 @Positive @RequestParam int page,
+                                                                                                 @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                                  @RequestParam(defaultValue = "10") int size){
         return vocabularyWordService.searchVocabularyWordByWord(setId, keyword, page, size).map(ResponseEntity::ok);
     }

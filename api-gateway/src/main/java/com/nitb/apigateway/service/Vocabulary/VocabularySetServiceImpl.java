@@ -28,12 +28,16 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetDetailResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            VocabularyWordsResponse words = grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
-
             VocabularySetResponseDto setResponse = VocabularyMapper.toVocabularySetResponseDto(set);
-            List<VocabularyWordResponseDto> wordsResponse = words.getWordsList().stream()
-                    .map(VocabularyMapper::toVocabularyWordResponseDto)
-                    .toList();
+
+            List<VocabularyWordResponseDto> wordsResponse = null;
+
+            if(request.getWords() != null) {
+                VocabularyWordsResponse words = grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
+                wordsResponse = words.getWordsList().stream()
+                        .map(VocabularyMapper::toVocabularyWordResponseDto)
+                        .toList();
+            }
 
             return VocabularySetDetailResponseDto.builder()
                     .set(setResponse)

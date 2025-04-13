@@ -1,6 +1,7 @@
 package com.nitb.apigateway.exception;
 
 import io.grpc.StatusRuntimeException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,5 +93,16 @@ public class GlobalExceptionHandler {
         );
 
         return Mono.just(new ResponseEntity<>(response, httpStatus));
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleConstraintViolationException(ConstraintViolationException e) {
+        ErrorResponse response = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation error",
+                e.getMessage()
+        );
+
+        return Mono.just(new ResponseEntity<>(response, HttpStatus.BAD_REQUEST));
     }
 }

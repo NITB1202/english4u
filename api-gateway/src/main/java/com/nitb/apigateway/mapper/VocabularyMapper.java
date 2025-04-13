@@ -38,7 +38,7 @@ public class VocabularyMapper {
     public static VocabularyWordResponseDto toVocabularyWordResponseDto(VocabularyWordResponse word) {
         return VocabularyWordResponseDto.builder()
                 .id(UUID.fromString(word.getId()))
-                .setId(UUID.fromString(word.getId()))
+                .setId(UUID.fromString(word.getSetId()))
                 .position(word.getPosition())
                 .word(word.getWord())
                 .pronunciation(word.getPronun())
