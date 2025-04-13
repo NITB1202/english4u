@@ -15,11 +15,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/sets")
@@ -48,7 +50,7 @@ public class VocabularySetController {
     @GetMapping
     @Operation(summary = "Get paginated vocabulary sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> getVocabularySets(@Positive @RequestParam int page,
+    public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> getVocabularySets(@Positive(message = "Page must be positive") @RequestParam int page,
                                                                                        @RequestParam(defaultValue = "10") int size){
         return vocabularySetService.getVocabularySets(page, size).map(ResponseEntity::ok);
     }
@@ -57,7 +59,7 @@ public class VocabularySetController {
     @Operation(summary = "Search for a vocabulary set by name.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
     public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> searchVocabularySetByName(@RequestParam String keyword,
-                                                                                               @Positive @RequestParam int page,
+                                                                                               @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                                @RequestParam(defaultValue = "10") int size){
         return vocabularySetService.searchVocabularySetByName(keyword, page, size).map(ResponseEntity::ok);
     }
