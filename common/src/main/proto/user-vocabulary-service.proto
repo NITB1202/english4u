@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package user_vocabulary;
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.uservocabularyservice.grpc";
+option java_outer_classname =  "UserVocabularyProto";
+
+message CreateSavedSetRequest {
+  string user_id = 1;
+  string set_id = 2;
+  int32 learned_words = 3;
+}
+
+message SavedSetResponse {
+  string id = 1;
+  string user_id = 2;
+  string set_id = 3;
+  int32 learned_words = 4;
+  string last_access = 5;
+}
+
+message GetSavedSetByIdRequest {
+  string id = 1;
+}
+
+message GetSavedSetsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message SavedSetsResponse {
+  repeated SavedSetResponse sets = 1;
+  int64 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message SearchSavedSetsRequest {
+  string user_id = 1;
+  string keyword = 2;
+  int32 page = 3;
+  int32 size = 4;
+}
+
+message UpdateSavedSetRequest {
+  string id = 1;
+  string learned_words = 2;
+}
+
+message DeleteSavedSetRequest {
+  string id = 1;
+}
+
+message CreateCachedSetRequest {
+  string user_id =  1;
+  string set_id = 2;
+
+}
+
+message CachedSetResponse {
+  string id = 1;
+  string user_id = 2;
+  string set_id = 3;
+  int32 learned_words = 4;
+  string last_access = 5;
+}
+
+message UpdateCachedSetRequest {
+  string id = 1;
+  int32 learned_words = 2;
+}
+
+service UserVocabularyService {
+  //Saved sets
+  rpc CreateSavedSet(CreateSavedSetRequest) returns (SavedSetResponse);
+  rpc GetSavedSetById(GetSavedSetByIdRequest) returns (SavedSetResponse);
+  rpc GetSavedSets(GetSavedSetsRequest) returns (SavedSetsResponse);
+  rpc SearchSavedSets(SearchSavedSetsRequest) returns (SavedSetsResponse);
+  rpc UpdateSavedSet(UpdateSavedSetRequest) returns (SavedSetResponse);
+  rpc DeleteSavedSet(DeleteSavedSetRequest) returns (common.ActionResponse);
+
+  //Cached sets
+  rpc CreateCachedSet(CreateCachedSetRequest) returns (CachedSetResponse);
+  rpc UpdateCachedSet(UpdateCachedSetRequest) returns (CachedSetResponse);
+}
