@@ -8,6 +8,7 @@ option java_multiple_files = true;
 option java_package = "com.nitb.uservocabularyservice.grpc";
 option java_outer_classname =  "UserVocabularyProto";
 
+//Saved sets
 message CreateSavedSetRequest {
   string user_id = 1;
   string set_id = 2;
@@ -32,32 +33,34 @@ message GetSavedSetsRequest {
   int32 size = 3;
 }
 
-message SavedSetsResponse {
+message SavedSetsPaginationResponse {
   repeated SavedSetResponse sets = 1;
   int64 total_items = 2;
   int32 total_pages = 3;
 }
 
-message SearchSavedSetsRequest {
+message GetAllSavedSetsRequest {
   string user_id = 1;
-  string keyword = 2;
-  int32 page = 3;
-  int32 size = 4;
+}
+
+message SavedSetsResponse {
+  repeated SavedSetResponse sets = 1;
 }
 
 message UpdateSavedSetRequest {
   string id = 1;
-  string learned_words = 2;
+  int32 learned_words = 2;
 }
 
 message DeleteSavedSetRequest {
   string id = 1;
 }
 
+//Cached sets
 message CreateCachedSetRequest {
   string user_id =  1;
   string set_id = 2;
-
+  int32 learned_words = 3;
 }
 
 message CachedSetResponse {
@@ -68,21 +71,40 @@ message CachedSetResponse {
   string last_access = 5;
 }
 
+message GetCachedSetByIdRequest {
+  string id = 1;
+}
+
+message GetAllCachedSetRequest {
+  string user_id = 1;
+}
+
+message CachedSetsResponse {
+  repeated CachedSetResponse sets = 1;
+}
+
 message UpdateCachedSetRequest {
   string id = 1;
   int32 learned_words = 2;
+}
+
+message DeleteCachedSetRequest {
+  string id = 1;
 }
 
 service UserVocabularyService {
   //Saved sets
   rpc CreateSavedSet(CreateSavedSetRequest) returns (SavedSetResponse);
   rpc GetSavedSetById(GetSavedSetByIdRequest) returns (SavedSetResponse);
-  rpc GetSavedSets(GetSavedSetsRequest) returns (SavedSetsResponse);
-  rpc SearchSavedSets(SearchSavedSetsRequest) returns (SavedSetsResponse);
+  rpc GetSavedSets(GetSavedSetsRequest) returns (SavedSetsPaginationResponse);
+  rpc GetAllSavedSets(GetAllSavedSetsRequest) returns (SavedSetsResponse);
   rpc UpdateSavedSet(UpdateSavedSetRequest) returns (SavedSetResponse);
   rpc DeleteSavedSet(DeleteSavedSetRequest) returns (common.ActionResponse);
 
   //Cached sets
   rpc CreateCachedSet(CreateCachedSetRequest) returns (CachedSetResponse);
+  rpc GetCachedSetById(GetCachedSetByIdRequest) returns (CachedSetResponse);
+  rpc GetAllCachedSets(GetAllCachedSetRequest) returns (CachedSetsResponse);
   rpc UpdateCachedSet(UpdateCachedSetRequest) returns (CachedSetResponse);
+  rpc DeleteCachedSet(DeleteCachedSetRequest) returns (common.ActionResponse);
 }

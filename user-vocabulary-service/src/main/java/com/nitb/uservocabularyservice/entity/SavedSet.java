@@ -12,6 +12,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "user_saved_sets", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"userId", "setId"})
+})
 public class SavedSet {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
