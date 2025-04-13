@@ -2,9 +2,7 @@ package com.nitb.uservocabularyservice.service;
 
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.entity.CachedSet;
-import com.nitb.uservocabularyservice.grpc.CreateCachedSetRequest;
-import com.nitb.uservocabularyservice.grpc.GetAllCachedSetRequest;
-import com.nitb.uservocabularyservice.grpc.UpdateCachedSetRequest;
+import com.nitb.uservocabularyservice.grpc.*;
 import com.nitb.uservocabularyservice.repository.CachedSetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,11 +49,11 @@ public class CachedSetService {
         return cachedSetRepository.save(set);
     }
 
-    public CachedSet getCachedSetById(UUID id) {
-        return cachedSetRepository.findById(id).orElseThrow(() -> new NotFoundException("Cached set not found."));
+    public CachedSet getCachedSetById(GetCachedSetByIdRequest request) {
+        return cachedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(() -> new NotFoundException("Cached set not found."));
     }
 
-    public List<CachedSet> getAllCachedSets(GetAllCachedSetRequest request) {
+    public List<CachedSet> getAllCachedSets(GetAllCachedSetsRequest request) {
         return cachedSetRepository.findByUserIdOrderByLastAccessDesc(UUID.fromString(request.getUserId()));
     }
 
@@ -70,7 +68,9 @@ public class CachedSetService {
         return cachedSetRepository.save(set);
     }
 
-    public void deleteCachedSet(UUID id) {
+    public void deleteCachedSet(DeleteCachedSetRequest request) {
+        UUID id = UUID.fromString(request.getId());
+
         if(!cachedSetRepository.existsById(id)) {
             throw new NotFoundException("Cached set not found.");
         }

@@ -75,7 +75,7 @@ message GetCachedSetByIdRequest {
   string id = 1;
 }
 
-message GetAllCachedSetRequest {
+message GetAllCachedSetsRequest {
   string user_id = 1;
 }
 
@@ -104,7 +104,7 @@ service UserVocabularyService {
   //Cached sets
   rpc CreateCachedSet(CreateCachedSetRequest) returns (CachedSetResponse);
   rpc GetCachedSetById(GetCachedSetByIdRequest) returns (CachedSetResponse);
-  rpc GetAllCachedSets(GetAllCachedSetRequest) returns (CachedSetsResponse);
+  rpc GetAllCachedSets(GetAllCachedSetsRequest) returns (CachedSetsResponse);
   rpc UpdateCachedSet(UpdateCachedSetRequest) returns (CachedSetResponse);
   rpc DeleteCachedSet(DeleteCachedSetRequest) returns (common.ActionResponse);
 }

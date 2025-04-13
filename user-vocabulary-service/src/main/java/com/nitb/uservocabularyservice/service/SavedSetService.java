@@ -3,10 +3,7 @@ package com.nitb.uservocabularyservice.service;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.entity.SavedSet;
-import com.nitb.uservocabularyservice.grpc.CreateSavedSetRequest;
-import com.nitb.uservocabularyservice.grpc.GetAllSavedSetsRequest;
-import com.nitb.uservocabularyservice.grpc.GetSavedSetsRequest;
-import com.nitb.uservocabularyservice.grpc.UpdateSavedSetRequest;
+import com.nitb.uservocabularyservice.grpc.*;
 import com.nitb.uservocabularyservice.repository.SavedSetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,8 +38,8 @@ public class SavedSetService {
         return savedSetRepository.save(set);
     }
 
-    public SavedSet getSavedSetById(UUID id) {
-        return savedSetRepository.findById(id).orElseThrow(() -> new RuntimeException("Saved set not found."));
+    public SavedSet getSavedSetById(GetSavedSetByIdRequest request) {
+        return savedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(() -> new RuntimeException("Saved set not found."));
     }
 
     public Page<SavedSet> getSavedSets(GetSavedSetsRequest request) {
@@ -67,7 +64,9 @@ public class SavedSetService {
         return savedSetRepository.save(set);
     }
 
-    public void deleteSavedSet(UUID id) {
+    public void deleteSavedSet(DeleteSavedSetRequest request) {
+        UUID id = UUID.fromString(request.getId());
+
         if(!savedSetRepository.existsById(id)) {
             throw new NotFoundException("Saved set not found.");
         }
