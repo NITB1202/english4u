@@ -39,7 +39,7 @@ public class SavedSetService {
     }
 
     public SavedSet getSavedSetById(GetSavedSetByIdRequest request) {
-        return savedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(() -> new RuntimeException("Saved set not found."));
+        return savedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(() -> new NotFoundException("Saved set not found."));
     }
 
     public Page<SavedSet> getSavedSets(GetSavedSetsRequest request) {
