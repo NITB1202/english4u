@@ -2,7 +2,6 @@ package com.nitb.apigateway.grpc;
 
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateSavedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.request.UpdateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.UpdateSavedSetRequestDto;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.uservocabularyservice.grpc.*;
@@ -81,9 +80,9 @@ public class UserVocabularyServiceGrpcClient {
         return blockingStub.createCachedSet(request);
     }
 
-    public CachedSetResponse getCachedSetById(UUID id) {
+    public CachedSetResponse getCachedSetByUserIdAndSetId(UUID userId, UUID setId) {
         GetCachedSetByIdRequest request = GetCachedSetByIdRequest.newBuilder()
-                .setId(id.toString())
+                .setId(userId.toString())
                 .build();
 
         return blockingStub.getCachedSetById(request);
@@ -95,15 +94,6 @@ public class UserVocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.getAllCachedSets(request);
-    }
-
-    public CachedSetResponse updateCachedSet(UUID id, UpdateCachedSetRequestDto dto) {
-        UpdateCachedSetRequest request = UpdateCachedSetRequest.newBuilder()
-                .setId(id.toString())
-                .setLearnedWords(dto.getLearnedWords())
-                .build();
-
-        return blockingStub.updateCachedSet(request);
     }
 
     public ActionResponse deleteCachedSet(UUID id) {

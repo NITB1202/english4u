@@ -1,8 +1,6 @@
 package com.nitb.apigateway.service.UserVocabulary;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.request.UpdateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetResponseDto;
 import com.nitb.apigateway.grpc.UserVocabularyServiceGrpcClient;
@@ -41,6 +39,16 @@ public class CachedSetServiceImpl implements CachedSetService{
                 throw new BusinessException("Learned words exceeds maximum number of words.");
             }
 
+            if(request.getLearnedWords() == set.getWordCount()){
+                CachedSetResponse cachedSet = userVocabularyGrpc.getCachedSetByUserIdAndSetId(userId, request.getSetId());
+
+                if(cachedSet != null) {
+                    userVocabularyGrpc.deleteCachedSet(UUID.fromString(cachedSet.getId()));
+                }
+
+                return null;
+            }
+
             CachedSetResponse response = userVocabularyGrpc.createCachedSet(userId, request);
             return CachedSetMapper.toCachedSetResponseDto(response);
 
@@ -61,40 +69,6 @@ public class CachedSetServiceImpl implements CachedSetService{
             }
 
             return responses;
-
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
-    public Mono<ActionResponseDto> updateCachedSet(UUID id, UpdateCachedSetRequestDto request) {
-        return Mono.fromCallable(()->{
-            CachedSetResponse cachedSet = userVocabularyGrpc.getCachedSetById(id);
-
-            if(cachedSet == null){
-                throw new NotFoundException("Cached set not found.");
-            }
-
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
-
-            if(request.getLearnedWords() > set.getWordCount()){
-                throw new BusinessException("Learned words exceeds maximum number of words.");
-            }
-
-            if(request.getLearnedWords() == set.getWordCount()){
-                userVocabularyGrpc.deleteCachedSet(id);
-
-                return ActionResponseDto.builder()
-                        .success(true)
-                        .message("User completed the set. The set will be removed from the cache.")
-                        .build();
-            }
-
-            userVocabularyGrpc.updateCachedSet(id, request);
-
-            return ActionResponseDto.builder()
-                    .success(true)
-                    .message("Update success.")
-                    .build();
 
         }).subscribeOn(Schedulers.boundedElastic());
     }

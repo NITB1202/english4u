@@ -1,8 +1,6 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.request.UpdateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
@@ -41,17 +39,5 @@ public class CachedSetController {
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<List<CachedSetDetailResponseDto>>> getAllCachedSets(@RequestParam UUID userId) {
         return cachedSetService.getAllCachedSets(userId).map(ResponseEntity::ok);
-    }
-
-    @PatchMapping("/{id}")
-    @Operation(summary = "Update a cached set.")
-    @ApiResponse(responseCode = "200", description = "Update successfully.")
-    @ApiResponse(responseCode = "400", description = "Invalid request body.",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "Not found",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<ActionResponseDto>> updateCachedSet(@PathVariable UUID id,
-                                                                   @Valid @RequestBody UpdateCachedSetRequestDto request) {
-        return cachedSetService.updateCachedSet(id, request).map(ResponseEntity::ok);
     }
 }
