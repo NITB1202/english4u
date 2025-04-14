@@ -28,6 +28,8 @@ services:
       context: ./vocabulary-service
     container_name: e4u-vocabulary-service
     restart: always
+    ports:
+      - "8081:8081"
     depends_on:
       - vocabulary-db
       - eureka-server
@@ -36,8 +38,44 @@ services:
       VOCABULARY_SERVICE_DB_HOST: ${VOCABULARY_SERVICE_DB_HOST}
       VOCABULARY_SERVICE_DB_PORT: ${VOCABULARY_SERVICE_DB_PORT}
       VOCABULARY_SERVICE_DB_NAME: ${VOCABULARY_SERVICE_DB_NAME}
-      VOCABULARY_SERVICE_DB_USERNAME: ${POSTGRES_USER}
-      VOCABULARY_SERVICE_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
+
+  user-vocabulary-db:
+    image: postgres:15
+    container_name: e4u-user-vocabulary-db
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: ${USER_VOCABULARY_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - user-vocabulary-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  user-vocabulary-service:
+    build:
+      context: ./user-vocabulary-service
+    container_name: e4u-user-vocabulary-service
+    restart: always
+    ports:
+      - "8082:8082"
+    depends_on:
+      - user-vocabulary-db
+      - eureka-server
+      - vocabulary-service
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      USER_VOCABULARY_SERVICE_DB_HOST: ${USER_VOCABULARY_SERVICE_DB_HOST}
+      USER_VOCABULARY_SERVICE_DB_PORT: ${USER_VOCABULARY_SERVICE_DB_PORT}
+      USER_VOCABULARY_SERVICE_DB_NAME: ${USER_VOCABULARY_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - backend
 
@@ -58,6 +96,7 @@ services:
 
 volumes:
   vocabulary-db-data:
+  user-vocabulary-db-data:
 
 networks:
   backend:

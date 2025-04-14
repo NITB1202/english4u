@@ -1,6 +1,6 @@
 package com.nitb.apigateway.service.UserVocabulary;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.UpdateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetDetailResponseDto;
@@ -52,15 +52,6 @@ public class SavedSetServiceImpl implements SavedSetService{
     }
 
     @Override
-    public Mono<SavedSetDetailResponseDto> getSavedSetById(UUID id) {
-        return Mono.fromCallable(()->{
-            SavedSetResponse savedSet = userVocabularyGrpc.getSavedSetById(id);
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
-            return SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
     public Mono<SavedSetsPaginationResponseDto> getSavedSets(UUID userId, int page, int size) {
         return Mono.fromCallable(()->{
             SavedSetsPaginationResponse paginationSets = userVocabularyGrpc.getSavedSets(userId, page, size);
@@ -91,7 +82,7 @@ public class SavedSetServiceImpl implements SavedSetService{
 
             for(SavedSetResponse savedSet : allSavedSets.getSetsList()){
                 VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
-                if(set.getName().contains(handledKeyword)) {
+                if(set.getName().toLowerCase().contains(handledKeyword)) {
                     SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
                     acceptedSets.add(detail);
                 }
@@ -99,7 +90,9 @@ public class SavedSetServiceImpl implements SavedSetService{
 
             int totalItems =  acceptedSets.size();
             int totalPages =  (int)Math.ceil((double)totalItems/size);
-            int fromIndex = Math.min(page * size, totalItems);
+
+            int zeroBasedPage = page > 0 ? page - 1 : 0;
+            int fromIndex = Math.min(zeroBasedPage * size, totalItems);
             int toIndex = Math.min(fromIndex + size, totalItems);
 
             List<SavedSetDetailResponseDto> paginated = acceptedSets.subList(fromIndex, toIndex);

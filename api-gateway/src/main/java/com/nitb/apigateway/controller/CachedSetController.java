@@ -1,8 +1,8 @@
 package com.nitb.apigateway.controller;
 
+import com.nitb.apigateway.dto.General.DataWithMessageResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.UserVocabulary.CachedSetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,8 +29,8 @@ public class CachedSetController {
     @ApiResponse(responseCode = "200", description = "Cache successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<CachedSetResponseDto>> cachedSet(@RequestParam UUID userId,
-                                                                @Valid @RequestBody CreateCachedSetRequestDto request) {
+    public Mono<ResponseEntity<DataWithMessageResponseDto>> cachedSet(@RequestParam UUID userId,
+                                                                      @Valid @RequestBody CreateCachedSetRequestDto request) {
         return cachedSetService.cacheSet(userId, request).map(ResponseEntity::ok);
     }
 

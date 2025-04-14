@@ -1,9 +1,8 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.UpdateSavedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetDetailResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetStateStatisticResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetsPaginationResponseDto;
@@ -36,15 +35,6 @@ public class SavedSetController {
     public Mono<ResponseEntity<SavedSetResponseDto>> createSavedSet(@RequestParam UUID userId,
                                                                     @Valid @RequestBody CreateSavedSetRequestDto request) {
         return savedSetService.createSavedSet(userId, request).map(ResponseEntity::ok);
-    }
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a saved set by id.")
-    @ApiResponse(responseCode = "200", description = "Get successfully.")
-    @ApiResponse(responseCode = "404", description = "Not found",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<SavedSetDetailResponseDto>> getSavedSetById(@PathVariable UUID id) {
-        return savedSetService.getSavedSetById(id).map(ResponseEntity::ok);
     }
 
     @GetMapping

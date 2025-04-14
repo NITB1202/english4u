@@ -1,8 +1,8 @@
 package com.nitb.apigateway.service.UserVocabulary;
 
+import com.nitb.apigateway.dto.General.DataWithMessageResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetResponseDto;
 import com.nitb.apigateway.grpc.UserVocabularyServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.CachedSetMapper;
@@ -27,7 +27,7 @@ public class CachedSetServiceImpl implements CachedSetService{
     private final VocabularyServiceGrpcClient vocabularyGrpc;
 
     @Override
-    public Mono<CachedSetResponseDto> cacheSet(UUID userId, CreateCachedSetRequestDto request) {
+    public Mono<DataWithMessageResponseDto> cacheSet(UUID userId, CreateCachedSetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
 
@@ -42,11 +42,19 @@ public class CachedSetServiceImpl implements CachedSetService{
             //Done study -> Not cache, delete
             if(request.getLearnedWords() == set.getWordCount()){
                 userVocabularyGrpc.deleteCachedSetIfExists(userId, request.getSetId());
-                return null;
+
+                return DataWithMessageResponseDto.builder()
+                        .message("The learned words have reached the maximum count, so the set no longer needs to be cached.")
+                        .data(null)
+                        .build();
             }
 
             CachedSetResponse response = userVocabularyGrpc.createCachedSet(userId, request);
-            return CachedSetMapper.toCachedSetResponseDto(response);
+
+            return DataWithMessageResponseDto.builder()
+                    .message("Cache successfully.")
+                    .data(CachedSetMapper.toCachedSetResponseDto(response))
+                    .build();
 
         }).subscribeOn(Schedulers.boundedElastic());
     }

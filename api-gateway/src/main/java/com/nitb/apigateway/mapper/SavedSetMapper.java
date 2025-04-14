@@ -25,7 +25,9 @@ public class SavedSetMapper {
         return SavedSetDetailResponseDto.builder()
                 .id(UUID.fromString(savedSet.getId()))
                 .userId(UUID.fromString(savedSet.getUserId()))
-                .set(VocabularySetMapper.toVocabularySetResponseDto(set))
+                .setId(UUID.fromString(savedSet.getSetId()))
+                .setName(set.getName())
+                .wordCount(set.getWordCount())
                 .learnedWords(savedSet.getLearnedWords())
                 .lastAccess(LocalDateTime.parse(savedSet.getLastAccess()))
                 .build();

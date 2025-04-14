@@ -1,6 +1,6 @@
 package com.nitb.apigateway.service.Vocabulary;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.request.AddVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.DeleteVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;

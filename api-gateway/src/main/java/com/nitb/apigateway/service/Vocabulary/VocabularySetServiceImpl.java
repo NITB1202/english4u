@@ -38,6 +38,8 @@ public class VocabularySetServiceImpl implements VocabularySetService {
                 wordsResponse = words.getWordsList().stream()
                         .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                         .toList();
+
+                setResponse.setWordCount(wordsResponse.size());
             }
 
             return VocabularySetDetailResponseDto.builder()
