@@ -103,14 +103,6 @@ public class UserVocabularyController extends UserVocabularyServiceGrpc.UserVoca
     }
 
     @Override
-    public void getCachedSetById(GetCachedSetByIdRequest request, StreamObserver<CachedSetResponse> responseObserver){
-        CachedSet set = cachedSetService.getCachedSetById(request);
-        CachedSetResponse response = CachedSetMapper.toCachedSetResponse(set);
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
-
-    @Override
     public void getAllCachedSets(GetAllCachedSetsRequest request, StreamObserver<CachedSetsResponse> responseObserver){
         List<CachedSet> sets = cachedSetService.getAllCachedSets(request);
 
@@ -127,20 +119,13 @@ public class UserVocabularyController extends UserVocabularyServiceGrpc.UserVoca
     }
 
     @Override
-    public void updateCachedSet(UpdateCachedSetRequest request, StreamObserver<CachedSetResponse> responseObserver){
-        CachedSet set = cachedSetService.updateCachedSet(request);
-        CachedSetResponse response = CachedSetMapper.toCachedSetResponse(set);
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
-
-    @Override
-    public void deleteCachedSet(DeleteCachedSetRequest request, StreamObserver<ActionResponse> responseObserver){
-        cachedSetService.deleteCachedSet(request);
+    public void deleteCachedSetIfExists(DeleteCachedSetIfExistsRequest request, StreamObserver<ActionResponse> responseObserver){
+        boolean success = cachedSetService.deleteCachedSetIfExists(request);
+        String message = success ? "Delete success." : "Cached set does not exist.";
 
         ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Delete success.")
+                .setSuccess(success)
+                .setMessage(message)
                 .build();
 
         responseObserver.onNext(response);

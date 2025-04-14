@@ -80,14 +80,6 @@ public class UserVocabularyServiceGrpcClient {
         return blockingStub.createCachedSet(request);
     }
 
-    public CachedSetResponse getCachedSetByUserIdAndSetId(UUID userId, UUID setId) {
-        GetCachedSetByIdRequest request = GetCachedSetByIdRequest.newBuilder()
-                .setId(userId.toString())
-                .build();
-
-        return blockingStub.getCachedSetById(request);
-    }
-
     public CachedSetsResponse getAllCachedSets(UUID userId) {
         GetAllCachedSetsRequest request = GetAllCachedSetsRequest.newBuilder()
                 .setUserId(userId.toString())
@@ -96,11 +88,12 @@ public class UserVocabularyServiceGrpcClient {
         return blockingStub.getAllCachedSets(request);
     }
 
-    public ActionResponse deleteCachedSet(UUID id) {
-        DeleteCachedSetRequest request = DeleteCachedSetRequest.newBuilder()
-                .setId(id.toString())
+    public ActionResponse deleteCachedSetIfExists(UUID userId, UUID setId) {
+        DeleteCachedSetIfExistsRequest request = DeleteCachedSetIfExistsRequest.newBuilder()
+                .setUserId(userId.toString())
+                .setSetId(setId.toString())
                 .build();
 
-        return blockingStub.deleteCachedSet(request);
+        return blockingStub.deleteCachedSetIfExists(request);
     }
 }
