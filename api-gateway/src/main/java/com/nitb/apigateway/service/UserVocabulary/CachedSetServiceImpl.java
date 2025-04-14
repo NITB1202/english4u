@@ -61,6 +61,7 @@ public class CachedSetServiceImpl implements CachedSetService{
             }
 
             return responses;
+
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
