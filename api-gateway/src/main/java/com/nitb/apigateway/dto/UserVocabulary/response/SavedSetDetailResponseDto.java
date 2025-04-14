@@ -18,7 +18,11 @@ public class SavedSetDetailResponseDto {
 
     private UUID userId;
 
-    private VocabularySetResponseDto set;
+    private UUID setId;
+
+    private String setName;
+
+    private Integer wordCount;
 
     private Integer learnedWords;
 

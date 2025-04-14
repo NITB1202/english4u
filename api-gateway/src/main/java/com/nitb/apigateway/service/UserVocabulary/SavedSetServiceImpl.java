@@ -52,15 +52,6 @@ public class SavedSetServiceImpl implements SavedSetService{
     }
 
     @Override
-    public Mono<SavedSetDetailResponseDto> getSavedSetById(UUID id) {
-        return Mono.fromCallable(()->{
-            SavedSetResponse savedSet = userVocabularyGrpc.getSavedSetById(id);
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
-            return SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
     public Mono<SavedSetsPaginationResponseDto> getSavedSets(UUID userId, int page, int size) {
         return Mono.fromCallable(()->{
             SavedSetsPaginationResponse paginationSets = userVocabularyGrpc.getSavedSets(userId, page, size);
