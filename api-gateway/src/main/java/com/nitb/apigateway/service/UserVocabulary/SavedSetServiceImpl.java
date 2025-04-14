@@ -82,7 +82,7 @@ public class SavedSetServiceImpl implements SavedSetService{
 
             for(SavedSetResponse savedSet : allSavedSets.getSetsList()){
                 VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
-                if(set.getName().contains(handledKeyword)) {
+                if(set.getName().toLowerCase().contains(handledKeyword)) {
                     SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
                     acceptedSets.add(detail);
                 }
@@ -90,7 +90,9 @@ public class SavedSetServiceImpl implements SavedSetService{
 
             int totalItems =  acceptedSets.size();
             int totalPages =  (int)Math.ceil((double)totalItems/size);
-            int fromIndex = Math.min(page * size, totalItems);
+
+            int zeroBasedPage = page > 0 ? page - 1 : 0;
+            int fromIndex = Math.min(zeroBasedPage * size, totalItems);
             int toIndex = Math.min(fromIndex + size, totalItems);
 
             List<SavedSetDetailResponseDto> paginated = acceptedSets.subList(fromIndex, toIndex);
