@@ -1,6 +1,5 @@
 package com.nitb.uservocabularyservice.service;
 
-import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.entity.CachedSet;
 import com.nitb.uservocabularyservice.grpc.*;
 import com.nitb.uservocabularyservice.repository.CachedSetRepository;
@@ -28,7 +27,7 @@ public class CachedSetService {
             int learnedWords = Math.max(cachedSet.getLearnedWords(), request.getLearnedWords());
             cachedSet.setLearnedWords(learnedWords);
             cachedSet.setLastAccess(LocalDateTime.now());
-            return cachedSet;
+            return cachedSetRepository.save(cachedSet);
         }
 
         //If not, delete saved sets until we have enough slots for the new one.
@@ -49,32 +48,21 @@ public class CachedSetService {
         return cachedSetRepository.save(set);
     }
 
-    public CachedSet getCachedSetById(GetCachedSetByIdRequest request) {
-        return cachedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(() -> new NotFoundException("Cached set not found."));
-    }
-
     public List<CachedSet> getAllCachedSets(GetAllCachedSetsRequest request) {
         return cachedSetRepository.findByUserIdOrderByLastAccessDesc(UUID.fromString(request.getUserId()));
     }
 
-    public CachedSet updateCachedSet(UpdateCachedSetRequest request) {
-        CachedSet set = cachedSetRepository.findById(UUID.fromString(request.getId())).orElseThrow(
-                ()-> new NotFoundException("Cached set not found.")
-        );
+    public boolean deleteCachedSetIfExists(DeleteCachedSetIfExistsRequest request) {
+        UUID userId = UUID.fromString(request.getUserId());
+        UUID setId = UUID.fromString(request.getSetId());
 
-        set.setLearnedWords(Math.max(request.getLearnedWords(), set.getLearnedWords()));
-        set.setLastAccess(LocalDateTime.now());
+        CachedSet set = cachedSetRepository.findByUserIdAndSetId(userId, setId);
 
-        return cachedSetRepository.save(set);
-    }
-
-    public void deleteCachedSet(DeleteCachedSetRequest request) {
-        UUID id = UUID.fromString(request.getId());
-
-        if(!cachedSetRepository.existsById(id)) {
-            throw new NotFoundException("Cached set not found.");
+        if (set != null) {
+            cachedSetRepository.delete(set);
+            return true;
         }
 
-        cachedSetRepository.deleteById(id);
+        return false;
     }
 }

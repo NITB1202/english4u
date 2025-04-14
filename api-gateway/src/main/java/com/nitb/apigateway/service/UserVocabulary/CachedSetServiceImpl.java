@@ -39,13 +39,9 @@ public class CachedSetServiceImpl implements CachedSetService{
                 throw new BusinessException("Learned words exceeds maximum number of words.");
             }
 
+            //Done study -> Not cache, delete
             if(request.getLearnedWords() == set.getWordCount()){
-                CachedSetResponse cachedSet = userVocabularyGrpc.getCachedSetByUserIdAndSetId(userId, request.getSetId());
-
-                if(cachedSet != null) {
-                    userVocabularyGrpc.deleteCachedSet(UUID.fromString(cachedSet.getId()));
-                }
-
+                userVocabularyGrpc.deleteCachedSetIfExists(userId, request.getSetId());
                 return null;
             }
 

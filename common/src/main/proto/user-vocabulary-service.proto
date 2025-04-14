@@ -71,10 +71,6 @@ message CachedSetResponse {
   string last_access = 5;
 }
 
-message GetCachedSetByIdRequest {
-  string id = 1;
-}
-
 message GetAllCachedSetsRequest {
   string user_id = 1;
 }
@@ -83,13 +79,9 @@ message CachedSetsResponse {
   repeated CachedSetResponse sets = 1;
 }
 
-message UpdateCachedSetRequest {
-  string id = 1;
-  int32 learned_words = 2;
-}
-
-message DeleteCachedSetRequest {
-  string id = 1;
+message DeleteCachedSetIfExistsRequest {
+  string user_id = 1;
+  string set_id = 2;
 }
 
 service UserVocabularyService {
@@ -103,8 +95,6 @@ service UserVocabularyService {
 
   //Cached sets
   rpc CreateCachedSet(CreateCachedSetRequest) returns (CachedSetResponse);
-  rpc GetCachedSetById(GetCachedSetByIdRequest) returns (CachedSetResponse);
   rpc GetAllCachedSets(GetAllCachedSetsRequest) returns (CachedSetsResponse);
-  rpc UpdateCachedSet(UpdateCachedSetRequest) returns (CachedSetResponse);
-  rpc DeleteCachedSet(DeleteCachedSetRequest) returns (common.ActionResponse);
+  rpc DeleteCachedSetIfExists(DeleteCachedSetIfExistsRequest) returns (common.ActionResponse);
 }
