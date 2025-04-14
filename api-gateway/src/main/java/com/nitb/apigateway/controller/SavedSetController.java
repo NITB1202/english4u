@@ -1,6 +1,6 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.UpdateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetResponseDto;

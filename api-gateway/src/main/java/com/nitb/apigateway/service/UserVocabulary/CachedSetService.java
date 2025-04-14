@@ -1,6 +1,6 @@
 package com.nitb.apigateway.service.UserVocabulary;
 
-import com.nitb.apigateway.dto.Action.DataWithMessageResponseDto;
+import com.nitb.apigateway.dto.General.DataWithMessageResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
 import reactor.core.publisher.Mono;

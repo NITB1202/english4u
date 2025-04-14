@@ -1,6 +1,6 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Action.ActionResponseDto;
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.common.grpc.ActionResponse;
 
 public class ActionMapper {

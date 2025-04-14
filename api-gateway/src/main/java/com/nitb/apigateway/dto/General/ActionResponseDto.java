@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.Action;
+package com.nitb.apigateway.dto.General;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataWithMessageResponseDto {
-    private String message;
+public class ActionResponseDto {
+    boolean success;
 
-    private Object data;
+    String message;
 }
