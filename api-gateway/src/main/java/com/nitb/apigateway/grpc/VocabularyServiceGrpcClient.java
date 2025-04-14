@@ -3,7 +3,7 @@ package com.nitb.apigateway.grpc;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
-import com.nitb.apigateway.mapper.VocabularyMapper;
+import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.vocabularyservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -29,7 +29,7 @@ public class VocabularyServiceGrpcClient {
 
     public VocabularyWordsResponse createVocabularyWords(UUID setId, UUID userId, List<CreateVocabularyWordRequestDto> words) {
         List<CreateVocabularyWordRequest> wordRequests = words.stream()
-                .map(VocabularyMapper::toCreateVocabularyWordRequest)
+                .map(VocabularyWordMapper::toCreateVocabularyWordRequest)
                 .toList();
 
         CreateVocabularyWordsRequest request =CreateVocabularyWordsRequest.newBuilder()

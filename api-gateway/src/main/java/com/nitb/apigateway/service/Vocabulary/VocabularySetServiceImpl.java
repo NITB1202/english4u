@@ -7,7 +7,8 @@ import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetsPaginationResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
-import com.nitb.apigateway.mapper.VocabularyMapper;
+import com.nitb.apigateway.mapper.VocabularyWordMapper;
+import com.nitb.apigateway.mapper.VocabularySetMapper;
 import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
 import com.nitb.vocabularyservice.grpc.VocabularySetsResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsResponse;
@@ -28,14 +29,14 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetDetailResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            VocabularySetResponseDto setResponse = VocabularyMapper.toVocabularySetResponseDto(set);
+            VocabularySetResponseDto setResponse = VocabularySetMapper.toVocabularySetResponseDto(set);
 
             List<VocabularyWordResponseDto> wordsResponse = null;
 
             if(request.getWords() != null) {
                 VocabularyWordsResponse words = grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
                 wordsResponse = words.getWordsList().stream()
-                        .map(VocabularyMapper::toVocabularyWordResponseDto)
+                        .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                         .toList();
             }
 
@@ -51,7 +52,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetResponseDto> getVocabularySetById(UUID id) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.getVocabularySetById(id);
-            return VocabularyMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -61,7 +62,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
             VocabularySetsResponse sets = grpcClient.getVocabularySets(page, size);
             List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
                     .stream()
-                    .map(VocabularyMapper::toVocabularySetResponseDto)
+                    .map(VocabularySetMapper::toVocabularySetResponseDto)
                     .toList();
 
             return VocabularySetsPaginationResponseDto.builder()
@@ -79,7 +80,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
             VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
             List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
                     .stream()
-                    .map(VocabularyMapper::toVocabularySetResponseDto)
+                    .map(VocabularySetMapper::toVocabularySetResponseDto)
                     .toList();
 
             return VocabularySetsPaginationResponseDto.builder()
@@ -95,7 +96,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.updateVocabularySet(id, userId, request);
-            return VocabularyMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -103,7 +104,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
-            return VocabularyMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }

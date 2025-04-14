@@ -1,17 +1,14 @@
 package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.vocabularyservice.grpc.CreateVocabularyWordRequest;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class VocabularyMapper {
-    private VocabularyMapper() {}
+public class VocabularyWordMapper {
+    private VocabularyWordMapper() {}
 
     public static CreateVocabularyWordRequest toCreateVocabularyWordRequest(CreateVocabularyWordRequestDto word) {
         return CreateVocabularyWordRequest.newBuilder()
@@ -19,19 +16,6 @@ public class VocabularyMapper {
                 .setPronun(word.getPronunciation())
                 .setTrans(word.getTranslation())
                 .setEx(word.getExample())
-                .build();
-    }
-
-    public static VocabularySetResponseDto toVocabularySetResponseDto(VocabularySetResponse set) {
-        return VocabularySetResponseDto.builder()
-                .id(UUID.fromString(set.getId()))
-                .createdBy(UUID.fromString(set.getCreatedBy()))
-                .createAt(LocalDateTime.parse(set.getCreateAt()))
-                .name(set.getName())
-                .wordCount(set.getWordCount())
-                .updatedBy(UUID.fromString(set.getUpdatedBy()))
-                .updatedAt(LocalDateTime.parse(set.getUpdateAt()))
-                .isDeleted(set.getIsDeleted())
                 .build();
     }
 

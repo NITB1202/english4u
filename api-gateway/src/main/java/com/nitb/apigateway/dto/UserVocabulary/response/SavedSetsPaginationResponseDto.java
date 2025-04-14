@@ -14,7 +14,7 @@ import java.util.List;
 public class SavedSetsPaginationResponseDto {
     private List<SavedSetDetailResponseDto> sets;
 
-    private Integer totalItems;
+    private Long totalItems;
 
     private Integer totalPages;
 }
