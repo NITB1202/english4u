@@ -25,7 +25,7 @@ public class CachedSetMapper {
         return CachedSetDetailResponseDto.builder()
                 .id(UUID.fromString(cachedSet.getId()))
                 .userId(UUID.fromString(cachedSet.getUserId()))
-                .set(VocabularyMapper.toVocabularySetResponseDto(set))
+                .set(VocabularySetMapper.toVocabularySetResponseDto(set))
                 .learnedWords(cachedSet.getLearnedWords())
                 .lastAccess(LocalDateTime.parse(cachedSet.getLastAccess()))
                 .build();

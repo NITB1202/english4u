@@ -8,7 +8,7 @@ import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.ActionMapper;
-import com.nitb.apigateway.mapper.VocabularyMapper;
+import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsPaginationResponse;
@@ -31,7 +31,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
         return Mono.fromCallable(() -> {
             VocabularyWordsResponse response = grpcClient.createVocabularyWords(dto.getSetId(), userId, dto.getWords());
             return response.getWordsList().stream()
-                    .map(VocabularyMapper::toVocabularyWordResponseDto)
+                    .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                     .toList();
         }).subscribeOn(Schedulers.boundedElastic());
     }
@@ -41,7 +41,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
         return Mono.fromCallable(()->{
             VocabularyWordsPaginationResponse response = grpcClient.getVocabularyWords(setId, page, size);
             List<VocabularyWordResponseDto> words = response.getWordsList().stream()
-                    .map(VocabularyMapper::toVocabularyWordResponseDto)
+                    .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                     .toList();
 
             return VocabularyWordsPaginationResponseDto.builder()
@@ -58,7 +58,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
         return Mono.fromCallable(()->{
             VocabularyWordsPaginationResponse response = grpcClient.searchVocabularyWordByWord(keyword, setId, page, size);
             List<VocabularyWordResponseDto> words = response.getWordsList().stream()
-                    .map(VocabularyMapper::toVocabularyWordResponseDto)
+                    .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                     .toList();
 
             return VocabularyWordsPaginationResponseDto.builder()
@@ -74,7 +74,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     public Mono<VocabularyWordResponseDto> updateVocabularyWord(UUID id, UUID userId, UpdateVocabularyWordRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularyWordResponse word = grpcClient.updateVocabularyWord(id, userId, request);
-            return VocabularyMapper.toVocabularyWordResponseDto(word);
+            return VocabularyWordMapper.toVocabularyWordResponseDto(word);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
