@@ -1,6 +1,5 @@
 package com.nitb.uservocabularyservice.service;
 
-import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.entity.CachedSet;
 import com.nitb.uservocabularyservice.grpc.*;
 import com.nitb.uservocabularyservice.repository.CachedSetRepository;
