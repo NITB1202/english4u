@@ -58,6 +58,15 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.getVocabularySets(request);
     }
 
+    public VocabularySetsResponse getDeletedVocabularySets(int page, int size) {
+        GetVocabularySetsRequest request = GetVocabularySetsRequest.newBuilder()
+                .setPage(page)
+                .setSize(size)
+                .build();
+
+        return blockingStub.getDeletedVocabularySets(request);
+    }
+
     public VocabularySetsResponse searchVocabularySetByName(String keyword, int page, int size) {
         SearchVocabularySetByNameRequest request = SearchVocabularySetByNameRequest.newBuilder()
                 .setKeyword(keyword)
@@ -85,6 +94,23 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.deleteVocabularySet(request);
+    }
+
+    public DeleteVocabularySetResponse restoreVocabularySet(UUID id, UUID userId) {
+        RestoreVocabularySetRequest request = RestoreVocabularySetRequest.newBuilder()
+                .setId(id.toString())
+                .setUserId(userId.toString())
+                .build();
+
+        return blockingStub.restoreVocabularySet(request);
+    }
+
+    public CountPublishedVocabularySetsResponse countPublishedVocabularySets(UUID userId) {
+        CountPublishedVocabularySetsRequest request = CountPublishedVocabularySetsRequest.newBuilder()
+                .setUserId(userId.toString())
+                .build();
+
+        return blockingStub.countPublishedVocabularySets(request);
     }
 
     public VocabularyWordsPaginationResponse getVocabularyWords(UUID setId, int page, int size) {

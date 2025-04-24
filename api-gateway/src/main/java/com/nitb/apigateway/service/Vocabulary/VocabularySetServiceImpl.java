@@ -48,6 +48,14 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
+    public Mono<VocabularySetsPaginationResponseDto> getDeletedVocabularySets(int page, int size) {
+        return Mono.fromCallable(()->{
+            VocabularySetsResponse sets = grpcClient.getDeletedVocabularySets(page, size);
+            return VocabularySetMapper.vocabularySetsPaginationResponseDto(sets);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
     public Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size) {
         return Mono.fromCallable(()-> {
             VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
@@ -68,6 +76,24 @@ public class VocabularySetServiceImpl implements VocabularySetService {
         return Mono.fromCallable(()->{
             DeleteVocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
             return VocabularySetMapper.toDeleteVocabularySetResponseDto(set);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<DeleteVocabularySetResponseDto> restoreVocabularySet(UUID id, UUID userId) {
+        return Mono.fromCallable(()->{
+            DeleteVocabularySetResponse set = grpcClient.restoreVocabularySet(id, userId);
+            return VocabularySetMapper.toDeleteVocabularySetResponseDto(set);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<VocabularySetStatisticResponseDto> getVocabularySetStatistics(UUID userId) {
+        return Mono.fromCallable(()->{
+            CountPublishedVocabularySetsResponse response = grpcClient.countPublishedVocabularySets(userId);
+            return VocabularySetStatisticResponseDto.builder()
+                    .publishedCount(response.getCount())
+                    .build();
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }
