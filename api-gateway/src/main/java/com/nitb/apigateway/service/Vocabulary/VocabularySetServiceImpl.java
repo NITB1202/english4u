@@ -2,12 +2,8 @@ package com.nitb.apigateway.service.Vocabulary;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetDetailResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetSummaryResponse;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetsPaginationResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
+import com.nitb.apigateway.dto.Vocabulary.response.*;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
-import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.apigateway.mapper.VocabularySetMapper;
 import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
 import com.nitb.vocabularyservice.grpc.VocabularySetsResponse;
@@ -26,35 +22,23 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     private final VocabularyServiceGrpcClient grpcClient;
 
     @Override
-    public Mono<VocabularySetDetailResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
+    public Mono<VocabularySetWithWordsResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            VocabularySetSummaryResponse setResponse = VocabularySetMapper.toVocabularySetResponseDto(set);
+            VocabularyWordsResponse words = request.getWords() != null ?
+                    grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords())
+                    : null;
 
-            List<VocabularyWordResponseDto> wordsResponse = null;
-
-            if(request.getWords() != null) {
-                VocabularyWordsResponse words = grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
-                wordsResponse = words.getWordsList().stream()
-                        .map(VocabularyWordMapper::toVocabularyWordResponseDto)
-                        .toList();
-
-                setResponse.setWordCount(wordsResponse.size());
-            }
-
-            return VocabularySetDetailResponseDto.builder()
-                    .set(setResponse)
-                    .words(wordsResponse)
-                    .build();
+            return VocabularySetMapper.toVocabularySetWithWordsResponse(set, words);
 
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<VocabularySetSummaryResponse> getVocabularySetById(UUID id) {
+    public Mono<VocabularySetDetailResponseDto> getVocabularySetById(UUID id) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.getVocabularySetById(id);
-            return VocabularySetMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toVocabularySetDetailResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -62,9 +46,9 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size) {
         return Mono.fromCallable(()->{
             VocabularySetsResponse sets = grpcClient.getVocabularySets(page, size);
-            List<VocabularySetSummaryResponse> setsResponse = sets.getSetsList()
+            List<VocabularySetSummaryResponseDto> setsResponse = sets.getSetsList()
                     .stream()
-                    .map(VocabularySetMapper::toVocabularySetResponseDto)
+                    .map(VocabularySetMapper::toVocabularySetSummaryResponseDto)
                     .toList();
 
             return VocabularySetsPaginationResponseDto.builder()
@@ -80,9 +64,9 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size) {
         return Mono.fromCallable(()-> {
             VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
-            List<VocabularySetSummaryResponse> setsResponse = sets.getSetsList()
+            List<VocabularySetSummaryResponseDto> setsResponse = sets.getSetsList()
                     .stream()
-                    .map(VocabularySetMapper::toVocabularySetResponseDto)
+                    .map(VocabularySetMapper::toVocabularySetSummaryResponseDto)
                     .toList();
 
             return VocabularySetsPaginationResponseDto.builder()
@@ -95,18 +79,18 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetSummaryResponse> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
+    public Mono<UpdateVocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.updateVocabularySet(id, userId, request);
-            return VocabularySetMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toUpdateVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<VocabularySetSummaryResponse> deleteVocabularySet(UUID id, UUID userId) {
+    public Mono<DeleteVocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
-            return VocabularySetMapper.toVocabularySetResponseDto(set);
+            return VocabularySetMapper.toDeleteVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }
