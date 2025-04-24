@@ -14,7 +14,14 @@ message CreateVocabularySetRequest{
   string name = 2;
 }
 
-message VocabularySetResponse{
+message CreateVocabularySetResponse{
+  string id = 1;
+  string name = 2;
+  string created_by = 3;
+  string create_at = 4;
+}
+
+message VocabularySetDetailResponse{
   string id = 1;
   string created_by = 2;
   string create_at  = 3;
@@ -34,8 +41,14 @@ message GetVocabularySetsRequest{
   int32 size = 2;
 }
 
+message VocabularySetSummaryResponse{
+  string id = 1;
+  string name = 2;
+  int32 wordCount = 3;
+}
+
 message VocabularySetsResponse{
-  repeated VocabularySetResponse sets = 1;
+  repeated VocabularySetSummaryResponse sets = 1;
   int64 total_items = 2;
   int32 total_pages = 3;
 }
@@ -52,34 +65,59 @@ message UpdateVocabularySetRequest{
   string name = 3;
 }
 
+message UpdateVocabularySetResponse{
+  string id = 1;
+  string name = 2;
+  string updated_by = 3;
+  string update_at = 4;
+}
+
 message DeleteVocabularySetRequest{
   string id = 1;
   string user_id = 2;
 }
 
+message DeleteVocabularySetResponse{
+  string id = 1;
+  string updated_by = 2;
+  string update_at = 3;
+  bool is_deleted = 4;
+}
+
+message RestoreVocabularySetRequest{
+  string id = 1;
+  string user_id = 2;
+}
+
+message CountPublishedVocabularySetsRequest{
+  string user_id = 1;
+}
+
+message CountPublishedVocabularySetsResponse{
+  int32 count = 1;
+}
+
 //Words
 message CreateVocabularyWordRequest{
   string word = 1;
-  string pronun = 2;
-  string ex = 3;
-  string trans = 4;
-}
-
-message VocabularyWordResponse{
-  string id = 1;
-  string set_id = 2;
-  int32 position = 3;
-  string word = 4;
-  string pronun = 5;
-  string ex = 6;
-  string trans = 7;
-  string image_url = 8;
+  string pronunciation = 2;
+  string example = 3;
+  string translation = 4;
 }
 
 message CreateVocabularyWordsRequest{
   repeated CreateVocabularyWordRequest words = 1;
   string user_id = 2;
   string set_id = 3;
+}
+
+message VocabularyWordResponse{
+  string id = 1;
+  int32 position = 2;
+  string word = 3;
+  string pronunciation = 4;
+  string example = 5;
+  string translation = 6;
 }
 
 message VocabularyWordsResponse{
@@ -92,8 +130,18 @@ message GetVocabularyWordsRequest{
   int32 size = 3;
 }
 
+message VocabularyWordDetailResponse{
+  string id = 1;
+  int32 position = 2;
+  string word = 3;
+  string pronunciation = 4;
+  string example = 5;
+  string translation = 6;
+  string imageUrl = 7;
+}
+
 message VocabularyWordsPaginationResponse{
-  repeated VocabularyWordResponse words = 1;
+  repeated VocabularyWordDetailResponse words = 1;
   int64 total_items = 2;
   int32 total_page = 3;
 }
@@ -109,9 +157,9 @@ message UpdateVocabularyWordRequest{
   string id = 1;
   string user_id = 2;
   string word = 3;
-  string pronun = 4;
-  string ex = 5;
-  string trans = 6;
+  string pronunciation = 4;
+  string example = 5;
+  string translation = 6;
 }
 
 message UploadVocabularyWordImageRequest{
@@ -134,12 +182,15 @@ message DeleteVocabularyWordsRequest{
 
 service VocabularyService {
   //Sets
-  rpc CreateVocabularySet(CreateVocabularySetRequest) returns (VocabularySetResponse);
-  rpc GetVocabularySetById(GetVocabularySetByIdRequest) returns (VocabularySetResponse);
+  rpc CreateVocabularySet(CreateVocabularySetRequest) returns (CreateVocabularySetResponse);
+  rpc GetVocabularySetById(GetVocabularySetByIdRequest) returns (VocabularySetDetailResponse);
   rpc GetVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
+  rpc GetDeletedVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
   rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
-  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (VocabularySetResponse);
-  rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (VocabularySetResponse);
+  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (UpdateVocabularySetResponse);
+  rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (DeleteVocabularySetResponse);
+  rpc RestoreVocabularySet(RestoreVocabularySetRequest) returns (DeleteVocabularySetResponse);
+  rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);
 
   //Words
   rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);

@@ -9,5 +9,8 @@ import java.util.UUID;
 
 public interface VocabularySetRepository extends JpaRepository<VocabularySet, UUID> {
     boolean existsByName(String name);
-    Page<VocabularySet> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<VocabularySet> findAllByIsDeletedFalse(Pageable pageable);
+    Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
+    Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);
+    int countByUpdatedBy(UUID userId);
 }
