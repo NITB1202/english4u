@@ -3,7 +3,7 @@ package com.nitb.apigateway.service.UserVocabulary;
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateSavedSetRequestDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.UpdateSavedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetDetailResponseDto;
+import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetSummaryResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetStateStatisticResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetsPaginationResponseDto;
@@ -56,11 +56,11 @@ public class SavedSetServiceImpl implements SavedSetService{
         return Mono.fromCallable(()->{
             SavedSetsPaginationResponse paginationSets = userVocabularyGrpc.getSavedSets(userId, page, size);
 
-            List<SavedSetDetailResponseDto> response = new ArrayList<>();
+            List<SavedSetSummaryResponseDto> response = new ArrayList<>();
 
             for(SavedSetResponse savedSet : paginationSets.getSetsList()){
                 VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
-                SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
+                SavedSetSummaryResponseDto detail = SavedSetMapper.toSavedSetSummaryResponseDto(savedSet, set);
                 response.add(detail);
             }
 
@@ -78,12 +78,12 @@ public class SavedSetServiceImpl implements SavedSetService{
         return Mono.fromCallable(()->{
             String handledKeyword = keyword.toLowerCase().trim();
             SavedSetsResponse allSavedSets = userVocabularyGrpc.getAllSavedSets(userId);
-            List<SavedSetDetailResponseDto> acceptedSets = new ArrayList<>();
+            List<SavedSetSummaryResponseDto> acceptedSets = new ArrayList<>();
 
             for(SavedSetResponse savedSet : allSavedSets.getSetsList()){
                 VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
                 if(set.getName().toLowerCase().contains(handledKeyword)) {
-                    SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
+                    SavedSetSummaryResponseDto detail = SavedSetMapper.toSavedSetSummaryResponseDto(savedSet, set);
                     acceptedSets.add(detail);
                 }
             }
@@ -95,7 +95,7 @@ public class SavedSetServiceImpl implements SavedSetService{
             int fromIndex = Math.min(zeroBasedPage * size, totalItems);
             int toIndex = Math.min(fromIndex + size, totalItems);
 
-            List<SavedSetDetailResponseDto> paginated = acceptedSets.subList(fromIndex, toIndex);
+            List<SavedSetSummaryResponseDto> paginated = acceptedSets.subList(fromIndex, toIndex);
 
             return SavedSetsPaginationResponseDto.builder()
                     .sets(paginated)

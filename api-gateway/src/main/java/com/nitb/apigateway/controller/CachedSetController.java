@@ -2,7 +2,7 @@ package com.nitb.apigateway.controller;
 
 import com.nitb.apigateway.dto.General.DataWithMessageResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
+import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetSummaryResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.UserVocabulary.CachedSetService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +37,7 @@ public class CachedSetController {
     @GetMapping
     @Operation(summary = "Get all user's cached sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<List<CachedSetDetailResponseDto>>> getAllCachedSets(@RequestParam UUID userId) {
+    public Mono<ResponseEntity<List<CachedSetSummaryResponseDto>>> getAllCachedSets(@RequestParam UUID userId) {
         return cachedSetService.getAllCachedSets(userId).map(ResponseEntity::ok);
     }
 }
