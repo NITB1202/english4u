@@ -3,7 +3,7 @@ package com.nitb.apigateway.controller;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetDetailResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetResponseDto;
+import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetSummaryResponse;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetsPaginationResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Vocabulary.VocabularySetService;
@@ -43,7 +43,7 @@ public class VocabularySetController {
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<VocabularySetResponseDto>> getVocabularySetById(@PathVariable UUID id) {
+    public Mono<ResponseEntity<VocabularySetSummaryResponse>> getVocabularySetById(@PathVariable UUID id) {
         return vocabularySetService.getVocabularySetById(id).map(ResponseEntity::ok);
     }
 
@@ -71,9 +71,9 @@ public class VocabularySetController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<VocabularySetResponseDto>> updateVocabularySet(@RequestParam UUID id,
-                                                                              @RequestParam UUID userId,
-                                                                              @Valid @RequestBody UpdateVocabularySetRequestDto request) {
+    public Mono<ResponseEntity<VocabularySetSummaryResponse>> updateVocabularySet(@RequestParam UUID id,
+                                                                                  @RequestParam UUID userId,
+                                                                                  @Valid @RequestBody UpdateVocabularySetRequestDto request) {
         return vocabularySetService.updateVocabularySet(id, userId, request).map(ResponseEntity::ok);
     }
 
@@ -82,8 +82,8 @@ public class VocabularySetController {
     @ApiResponse(responseCode = "200", description = "Delete successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<VocabularySetResponseDto>> deleteVocabularySet(@RequestParam UUID id,
-                                                                              @RequestParam UUID userId) {
+    public Mono<ResponseEntity<VocabularySetSummaryResponse>> deleteVocabularySet(@RequestParam UUID id,
+                                                                                  @RequestParam UUID userId) {
         return vocabularySetService.deleteVocabularySet(id, userId).map(ResponseEntity::ok);
     }
 }

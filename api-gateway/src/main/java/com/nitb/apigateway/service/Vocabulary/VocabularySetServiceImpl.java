@@ -3,7 +3,7 @@ package com.nitb.apigateway.service.Vocabulary;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetDetailResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetResponseDto;
+import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetSummaryResponse;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularySetsPaginationResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
@@ -29,7 +29,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetDetailResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            VocabularySetResponseDto setResponse = VocabularySetMapper.toVocabularySetResponseDto(set);
+            VocabularySetSummaryResponse setResponse = VocabularySetMapper.toVocabularySetResponseDto(set);
 
             List<VocabularyWordResponseDto> wordsResponse = null;
 
@@ -51,7 +51,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetResponseDto> getVocabularySetById(UUID id) {
+    public Mono<VocabularySetSummaryResponse> getVocabularySetById(UUID id) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.getVocabularySetById(id);
             return VocabularySetMapper.toVocabularySetResponseDto(set);
@@ -62,7 +62,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size) {
         return Mono.fromCallable(()->{
             VocabularySetsResponse sets = grpcClient.getVocabularySets(page, size);
-            List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
+            List<VocabularySetSummaryResponse> setsResponse = sets.getSetsList()
                     .stream()
                     .map(VocabularySetMapper::toVocabularySetResponseDto)
                     .toList();
@@ -80,7 +80,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size) {
         return Mono.fromCallable(()-> {
             VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
-            List<VocabularySetResponseDto> setsResponse = sets.getSetsList()
+            List<VocabularySetSummaryResponse> setsResponse = sets.getSetsList()
                     .stream()
                     .map(VocabularySetMapper::toVocabularySetResponseDto)
                     .toList();
@@ -95,7 +95,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
+    public Mono<VocabularySetSummaryResponse> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.updateVocabularySet(id, userId, request);
             return VocabularySetMapper.toVocabularySetResponseDto(set);
@@ -103,7 +103,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId) {
+    public Mono<VocabularySetSummaryResponse> deleteVocabularySet(UUID id, UUID userId) {
         return Mono.fromCallable(()->{
             VocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
             return VocabularySetMapper.toVocabularySetResponseDto(set);

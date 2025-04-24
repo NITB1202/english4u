@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VocabularySetDetailResponseDto {
-    private VocabularySetResponseDto set;
+    private VocabularySetSummaryResponse set;
 
     private List<VocabularyWordResponseDto> words;
 }
