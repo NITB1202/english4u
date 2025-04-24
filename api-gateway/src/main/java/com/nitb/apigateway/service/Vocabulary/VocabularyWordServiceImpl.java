@@ -39,34 +39,16 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     @Override
     public Mono<VocabularyWordsPaginationResponseDto> getVocabularyWords(UUID setId, int page, int size) {
         return Mono.fromCallable(()->{
-            VocabularyWordsPaginationResponse response = grpcClient.getVocabularyWords(setId, page, size);
-            List<VocabularyWordResponseDto> words = response.getWordsList().stream()
-                    .map(VocabularyWordMapper::toVocabularyWordResponseDto)
-                    .toList();
-
-            return VocabularyWordsPaginationResponseDto.builder()
-                    .words(words)
-                    .totalItems(response.getTotalItems())
-                    .totalPages(response.getTotalPage())
-                    .build();
-
+            VocabularyWordsPaginationResponse pagination = grpcClient.getVocabularyWords(setId, page, size);
+            return VocabularyWordMapper.vocabularyWordsPaginationResponseDto(pagination);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
     public Mono<VocabularyWordsPaginationResponseDto> searchVocabularyWordByWord(UUID setId, String keyword, int page, int size) {
         return Mono.fromCallable(()->{
-            VocabularyWordsPaginationResponse response = grpcClient.searchVocabularyWordByWord(keyword, setId, page, size);
-            List<VocabularyWordResponseDto> words = response.getWordsList().stream()
-                    .map(VocabularyWordMapper::toVocabularyWordResponseDto)
-                    .toList();
-
-            return VocabularyWordsPaginationResponseDto.builder()
-                    .words(words)
-                    .totalItems(response.getTotalItems())
-                    .totalPages(response.getTotalPage())
-                    .build();
-
+            VocabularyWordsPaginationResponse pagination = grpcClient.searchVocabularyWordByWord(keyword, setId, page, size);
+            return VocabularyWordMapper.vocabularyWordsPaginationResponseDto(pagination);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -92,11 +74,5 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
             ActionResponse response = grpcClient.deleteVocabularyWords(dto.getSetId(), userId, dto.getIds());
             return ActionMapper.toResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
-    public boolean uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl) {
-        ActionResponse response = grpcClient.uploadVocabularyWordImage(id, userId, imageUrl);
-        return response.getSuccess();
     }
 }

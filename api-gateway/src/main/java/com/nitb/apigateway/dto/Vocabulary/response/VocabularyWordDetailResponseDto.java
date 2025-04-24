@@ -11,7 +11,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VocabularyWordResponseDto {
+public class VocabularyWordDetailResponseDto {
     private UUID id;
 
     private Integer position;
@@ -23,4 +23,6 @@ public class VocabularyWordResponseDto {
     private String translation;
 
     private String example;
+
+    private String imageUrl;
 }
