@@ -19,7 +19,6 @@ public class CachedSetMapper {
 
     public static CachedSetSummaryResponse toCachedSetSummaryResponse(CachedSet cachedSet) {
         return CachedSetSummaryResponse.newBuilder()
-                .setId(cachedSet.getId().toString())
                 .setSetId(cachedSet.getSetId().toString())
                 .setLearnedWords(cachedSet.getLearnedWords())
                 .build();

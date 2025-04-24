@@ -14,6 +14,7 @@ import com.nitb.apigateway.mapper.SavedSetMapper;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetResponse;
+import com.nitb.uservocabularyservice.grpc.SavedSetSummaryResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetsPaginationResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetsResponse;
 import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
@@ -58,7 +59,7 @@ public class SavedSetServiceImpl implements SavedSetService{
 
             List<SavedSetSummaryResponseDto> response = new ArrayList<>();
 
-            for(SavedSetResponse savedSet : paginationSets.getSetsList()){
+            for(SavedSetSummaryResponse savedSet : paginationSets.getSetsList()){
                 VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
                 SavedSetSummaryResponseDto detail = SavedSetMapper.toSavedSetSummaryResponseDto(savedSet, set);
                 response.add(detail);

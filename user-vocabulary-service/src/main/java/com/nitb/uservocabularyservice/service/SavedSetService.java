@@ -49,9 +49,8 @@ public class SavedSetService {
         return savedSetRepository.findByUserId(UUID.fromString(request.getUserId()), PageRequest.of(page, size));
     }
 
-    public List<UUID> getAllSetIds(GetAllSetIdsRequest request) {
-        List<SavedSet> sets = savedSetRepository.findByUserId(UUID.fromString(request.getUserId()));
-        return sets.stream().map(SavedSet::getSetId).toList();
+    public List<SavedSet> getAllSavedSets(GetAllSavedSetsRequest request) {
+        return savedSetRepository.findByUserId(UUID.fromString(request.getUserId()));
     }
 
     public SavedSet updateSavedSet(UpdateSavedSetRequest request) {
