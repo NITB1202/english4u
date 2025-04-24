@@ -23,7 +23,6 @@ import java.util.stream.IntStream;
 public class VocabularyWordService {
     private final VocabularyWordRepository vocabularyWordRepository;
     private final VocabularySetRepository vocabularySetRepository;
-
     private final int DEFAULT_SIZE = 10;
 
     public List<VocabularyWord> createVocabularyWords(CreateVocabularyWordsRequest request) {
@@ -49,9 +48,9 @@ public class VocabularyWordService {
                     .setId(setId)
                     .position(position)
                     .word(wordRequest.getWord())
-                    .pronunciation(wordRequest.getPronun())
-                    .translation(wordRequest.getTrans())
-                    .example(wordRequest.getEx())
+                    .pronunciation(wordRequest.getPronunciation())
+                    .translation(wordRequest.getTranslation())
+                    .example(wordRequest.getExample())
                     .build();
 
             result.add(word);
@@ -94,9 +93,9 @@ public class VocabularyWordService {
 
         //Update word
         String word = request.getWord();
-        String pronun = request.getPronun();
-        String trans = request.getTrans();
-        String ex = request.getEx();
+        String pronunciation = request.getPronunciation();
+        String translation = request.getTranslation();
+        String example = request.getExample();
 
         if(!word.isBlank()){
             if(vocabularyWordRepository.existsByWordAndSetId(word, vocabularyWord.getSetId()))
@@ -105,16 +104,16 @@ public class VocabularyWordService {
                 vocabularyWord.setWord(word);
         }
 
-        if(!pronun.isBlank()){
-            vocabularyWord.setPronunciation(pronun);
+        if(!pronunciation.isBlank()){
+            vocabularyWord.setPronunciation(pronunciation);
         }
 
-        if(!trans.isBlank()){
-            vocabularyWord.setTranslation(trans);
+        if(!translation.isBlank()){
+            vocabularyWord.setTranslation(translation);
         }
 
-        if(!ex.isBlank()){
-            vocabularyWord.setExample(ex);
+        if(!example.isBlank()){
+            vocabularyWord.setExample(example);
         }
 
         //Update set

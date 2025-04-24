@@ -102,14 +102,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<VocabularyWordsResponse> streamObserver){
         List<VocabularyWord> words = vocabularyWordService.createVocabularyWords(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsResponse response = VocabularyWordsResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .build();
-
+        VocabularyWordsResponse response = VocabularyWordMapper.toVocabularyWordsResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -117,16 +110,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void getVocabularyWords(GetVocabularyWordsRequest request, StreamObserver<VocabularyWordsPaginationResponse> streamObserver){
         Page<VocabularyWord> words = vocabularyWordService.getVocabularyWords(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsPaginationResponse response = VocabularyWordsPaginationResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .setTotalItems(words.getTotalElements())
-                .setTotalPage(words.getTotalPages())
-                .build();
-
+        VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -134,16 +118,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void searchVocabularyWordByWord(SearchVocabularyWordByWordRequest request, StreamObserver<VocabularyWordsPaginationResponse> streamObserver){
         Page<VocabularyWord> words = vocabularyWordService.searchVocabularyWordByWord(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsPaginationResponse response = VocabularyWordsPaginationResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .setTotalItems(words.getTotalElements())
-                .setTotalPage(words.getTotalPages())
-                .build();
-
+        VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
