@@ -16,7 +16,7 @@ import com.nitb.common.grpc.ActionResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetsPaginationResponse;
 import com.nitb.uservocabularyservice.grpc.SavedSetsResponse;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -35,7 +35,7 @@ public class SavedSetServiceImpl implements SavedSetService{
     @Override
     public Mono<SavedSetResponseDto> createSavedSet(UUID userId, CreateSavedSetRequestDto request) {
         return Mono.fromCallable(()->{
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
+            VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
 
             if(set == null) {
                 throw new BusinessException("Set not found.");
@@ -59,7 +59,7 @@ public class SavedSetServiceImpl implements SavedSetService{
             List<SavedSetDetailResponseDto> response = new ArrayList<>();
 
             for(SavedSetResponse savedSet : paginationSets.getSetsList()){
-                VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
+                VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
                 SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
                 response.add(detail);
             }
@@ -81,7 +81,7 @@ public class SavedSetServiceImpl implements SavedSetService{
             List<SavedSetDetailResponseDto> acceptedSets = new ArrayList<>();
 
             for(SavedSetResponse savedSet : allSavedSets.getSetsList()){
-                VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
+                VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
                 if(set.getName().toLowerCase().contains(handledKeyword)) {
                     SavedSetDetailResponseDto detail = SavedSetMapper.toSavedSetDetailResponseDto(savedSet, set);
                     acceptedSets.add(detail);
@@ -115,7 +115,7 @@ public class SavedSetServiceImpl implements SavedSetService{
                 throw new BusinessException("Saved set not found.");
             }
 
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
+            VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
 
             if(request.getLearnedWords() > set.getWordCount()){
                 throw new BusinessException("Learned words exceeds word count.");
@@ -150,7 +150,7 @@ public class SavedSetServiceImpl implements SavedSetService{
                     continue;
                 }
 
-                VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
+                VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(savedSet.getSetId()));
 
                 if(savedSet.getLearnedWords() < set.getWordCount()){
                     learning++;

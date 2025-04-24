@@ -18,7 +18,7 @@ public class VocabularyServiceGrpcClient {
     @GrpcClient("vocabulary-service")
     private VocabularyServiceGrpc.VocabularyServiceBlockingStub blockingStub;
 
-    public VocabularySetResponse createVocabularySet(UUID userId, String name) {
+    public CreateVocabularySetResponse createVocabularySet(UUID userId, String name) {
         CreateVocabularySetRequest request = CreateVocabularySetRequest.newBuilder()
                 .setUserId(userId.toString())
                 .setName(name)
@@ -41,7 +41,7 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.createVocabularyWords(request);
     }
 
-    public VocabularySetResponse getVocabularySetById(UUID id) {
+    public VocabularySetDetailResponse getVocabularySetById(UUID id) {
         GetVocabularySetByIdRequest request = GetVocabularySetByIdRequest.newBuilder()
                 .setId(id.toString())
                 .build();
@@ -68,7 +68,7 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.searchVocabularySetByName(request);
     }
 
-    public VocabularySetResponse updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto dto) {
+    public UpdateVocabularySetResponse updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto dto) {
         UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
                 .setId(id.toString())
                 .setUserId(userId.toString())
@@ -78,7 +78,7 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.updateVocabularySet(request);
     }
 
-    public VocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {
+    public DeleteVocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {
         DeleteVocabularySetRequest request = DeleteVocabularySetRequest.newBuilder()
                 .setId(id.toString())
                 .setUserId(userId.toString())
@@ -113,9 +113,9 @@ public class VocabularyServiceGrpcClient {
                 .setId(id.toString())
                 .setUserId(userId.toString())
                 .setWord(Optional.ofNullable(dto.getWord()).orElse(""))
-                .setPronun(Optional.ofNullable(dto.getPronunciation()).orElse(""))
-                .setTrans(Optional.ofNullable(dto.getTranslation()).orElse(""))
-                .setEx(Optional.ofNullable(dto.getExample()).orElse(""))
+                .setPronunciation(Optional.ofNullable(dto.getPronunciation()).orElse(""))
+                .setTranslation(Optional.ofNullable(dto.getTranslation()).orElse(""))
+                .setExample(Optional.ofNullable(dto.getExample()).orElse(""))
                 .build();
 
         return blockingStub.updateVocabularyWord(request);

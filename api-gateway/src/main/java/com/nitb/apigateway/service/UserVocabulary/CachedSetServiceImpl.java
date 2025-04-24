@@ -10,7 +10,7 @@ import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.grpc.CachedSetResponse;
 import com.nitb.uservocabularyservice.grpc.CachedSetsResponse;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -29,7 +29,7 @@ public class CachedSetServiceImpl implements CachedSetService{
     @Override
     public Mono<DataWithMessageResponseDto> cacheSet(UUID userId, CreateCachedSetRequestDto request) {
         return Mono.fromCallable(()->{
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
+            VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
 
             if(set == null) {
                 throw new NotFoundException("Set not found.");
@@ -67,7 +67,7 @@ public class CachedSetServiceImpl implements CachedSetService{
             List<CachedSetDetailResponseDto> responses = new ArrayList<>();
 
             for(CachedSetResponse cachedSet : cachedSets.getSetsList()){
-                VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
+                VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
                 CachedSetDetailResponseDto response = CachedSetMapper.toCachedSetDetailResponseDto(cachedSet, set);
                 responses.add(response);
             }

@@ -3,7 +3,7 @@ package com.nitb.apigateway.mapper;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetResponseDto;
 import com.nitb.uservocabularyservice.grpc.CachedSetResponse;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class CachedSetMapper {
                 .build();
     }
 
-    public static CachedSetDetailResponseDto toCachedSetDetailResponseDto(CachedSetResponse cachedSet, VocabularySetResponse set){
+    public static CachedSetDetailResponseDto toCachedSetDetailResponseDto(CachedSetResponse cachedSet, VocabularySetDetailResponse set){
         return CachedSetDetailResponseDto.builder()
                 .id(UUID.fromString(cachedSet.getId()))
                 .userId(UUID.fromString(cachedSet.getUserId()))
