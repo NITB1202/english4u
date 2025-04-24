@@ -18,6 +18,4 @@ public interface VocabularyWordService {
     Mono<VocabularyWordResponseDto> updateVocabularyWord(UUID id, UUID userId, UpdateVocabularyWordRequestDto request);
     Mono<ActionResponseDto> switchWordPosition(UUID userId, UUID word1Id, UUID word2Id);
     Mono<ActionResponseDto> deleteVocabularyWords(UUID userId, DeleteVocabularyWordsRequestDto request);
-
-    boolean uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl);
 }

@@ -40,7 +40,6 @@ public class VocabularyWordController {
         return vocabularyWordService.addWordsToSet(userId, request).map(ResponseEntity::ok);
     }
 
-
     @GetMapping
     @Operation(summary = "Get paginated vocabulary words.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")

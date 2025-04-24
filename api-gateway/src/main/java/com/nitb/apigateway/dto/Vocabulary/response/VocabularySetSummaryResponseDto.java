@@ -5,17 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VocabularySetsPaginationResponseDto {
-    private List<VocabularySetSummaryResponseDto> sets;
+public class VocabularySetSummaryResponseDto {
+    private UUID id;
 
-    private Long totalItems;
+    private String name;
 
-    private Integer totalPages;
-
+    private Integer wordCount;
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VocabularyWordsPaginationResponseDto {
-    private List<VocabularyWordResponseDto> words;
+    private List<VocabularyWordDetailResponseDto> words;
 
     private Long totalItems;
 

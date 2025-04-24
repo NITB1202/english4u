@@ -13,22 +13,13 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VocabularySetDetailResponseDto {
+public class DeleteVocabularySetResponseDto {
     private UUID id;
-
-    private UUID createdBy;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
-
-    private String name;
-
-    private Integer wordCount;
 
     private UUID updatedBy;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updatedAt;
+    private LocalDateTime updateAt;
 
     private Boolean isDeleted;
 }
