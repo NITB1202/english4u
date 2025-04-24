@@ -14,6 +14,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -41,31 +42,21 @@ public class UserVocabularyController extends UserVocabularyServiceGrpc.UserVoca
     @Override
     public void getSavedSets(GetSavedSetsRequest request, StreamObserver<SavedSetsPaginationResponse> responseObserver){
         Page<SavedSet> sets = savedSetService.getSavedSets(request);
-
-        List<SavedSetResponse> setsResponse = sets.getContent().stream()
-                .map(SavedSetMapper::toSavedSetResponse)
-                .toList();
-
-        SavedSetsPaginationResponse response = SavedSetsPaginationResponse.newBuilder()
-                .addAllSets(setsResponse)
-                .setTotalItems(sets.getTotalElements())
-                .setTotalPages(sets.getTotalPages())
-                .build();
-
+        SavedSetsPaginationResponse response = SavedSetMapper.toSavedSetsPaginationResponse(sets);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
     @Override
-    public void getAllSavedSets(GetAllSavedSetsRequest request, StreamObserver<SavedSetsResponse> responseObserver){
-        List<SavedSet> sets = savedSetService.getAllSavedSets(request);
+    public void getAllSetIds(GetAllSetIdsRequest request, StreamObserver<SetIdsResponse> responseObserver){
+        List<UUID> ids = savedSetService.getAllSetIds(request);
 
-        List<SavedSetResponse> setsResponse = sets.stream()
-                .map(SavedSetMapper::toSavedSetResponse)
+        List<String> idsResponse = ids.stream()
+                .map(UUID::toString)
                 .toList();
 
-        SavedSetsResponse response = SavedSetsResponse.newBuilder()
-                .addAllSets(setsResponse)
+        SetIdsResponse response = SetIdsResponse.newBuilder()
+                .addAllIds(idsResponse)
                 .build();
 
         responseObserver.onNext(response);
@@ -106,8 +97,8 @@ public class UserVocabularyController extends UserVocabularyServiceGrpc.UserVoca
     public void getAllCachedSets(GetAllCachedSetsRequest request, StreamObserver<CachedSetsResponse> responseObserver){
         List<CachedSet> sets = cachedSetService.getAllCachedSets(request);
 
-        List<CachedSetResponse> setsResponse = sets.stream()
-                .map(CachedSetMapper::toCachedSetResponse)
+        List<CachedSetSummaryResponse> setsResponse = sets.stream()
+                .map(CachedSetMapper::toCachedSetSummaryResponse)
                 .toList();
 
         CachedSetsResponse response = CachedSetsResponse.newBuilder()
