@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SavedSetsPaginationResponseDto {
-    private List<SavedSetDetailResponseDto> sets;
+    private List<SavedSetSummaryResponseDto> sets;
 
     private Long totalItems;
 

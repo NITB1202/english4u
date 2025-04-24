@@ -1,9 +1,9 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetDetailResponseDto;
+import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetSummaryResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetResponseDto;
 import com.nitb.uservocabularyservice.grpc.SavedSetResponse;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,15 +21,12 @@ public class SavedSetMapper {
                 .build();
     }
 
-    public static SavedSetDetailResponseDto toSavedSetDetailResponseDto(SavedSetResponse savedSet, VocabularySetResponse set){
-        return SavedSetDetailResponseDto.builder()
-                .id(UUID.fromString(savedSet.getId()))
-                .userId(UUID.fromString(savedSet.getUserId()))
+    public static SavedSetSummaryResponseDto toSavedSetSummaryResponseDto(SavedSetResponse savedSet, VocabularySetDetailResponse set){
+        return SavedSetSummaryResponseDto.builder()
                 .setId(UUID.fromString(savedSet.getSetId()))
                 .setName(set.getName())
                 .wordCount(set.getWordCount())
                 .learnedWords(savedSet.getLearnedWords())
-                .lastAccess(LocalDateTime.parse(savedSet.getLastAccess()))
                 .build();
     }
 }

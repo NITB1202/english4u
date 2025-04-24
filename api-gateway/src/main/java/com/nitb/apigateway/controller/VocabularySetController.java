@@ -53,6 +53,14 @@ public class VocabularySetController {
         return vocabularySetService.getVocabularySets(page, size).map(ResponseEntity::ok);
     }
 
+    @GetMapping("/deleted")
+    @Operation(summary = "Get paginated list of deleted vocabulary sets.")
+    @ApiResponse(responseCode = "200", description = "Get successfully.")
+    public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> getDeletedVocabularySets(@Positive(message = "Page must be positive") @RequestParam int page,
+                                                                                              @RequestParam(defaultValue = "10") int size){
+        return vocabularySetService.getDeletedVocabularySets(page, size).map(ResponseEntity::ok);
+    }
+
     @GetMapping("/search")
     @Operation(summary = "Search for a vocabulary set by name.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
@@ -83,5 +91,22 @@ public class VocabularySetController {
     public Mono<ResponseEntity<DeleteVocabularySetResponseDto>> deleteVocabularySet(@RequestParam UUID id,
                                                                                     @RequestParam UUID userId) {
         return vocabularySetService.deleteVocabularySet(id, userId).map(ResponseEntity::ok);
+    }
+
+    @PatchMapping("/restore")
+    @Operation(summary = "Restore a deleted vocabulary set.")
+    @ApiResponse(responseCode = "200", description = "Delete successfully.")
+    @ApiResponse(responseCode = "404", description = "Not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    public Mono<ResponseEntity<DeleteVocabularySetResponseDto>> restoreVocabularySet(@RequestParam UUID id,
+                                                                                     @RequestParam UUID userId) {
+        return vocabularySetService.restoreVocabularySet(id, userId).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/statistic")
+    @Operation(summary = "Get statistical summary of vocabulary sets.")
+    @ApiResponse(responseCode = "200", description = "Get successfully.")
+    public Mono<ResponseEntity<VocabularySetStatisticResponseDto>> getVocabularySetStatistics(@RequestParam UUID userId) {
+        return vocabularySetService.getVocabularySetStatistics(userId).map(ResponseEntity::ok);
     }
 }

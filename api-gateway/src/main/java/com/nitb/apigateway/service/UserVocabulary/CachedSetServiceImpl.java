@@ -2,7 +2,7 @@ package com.nitb.apigateway.service.UserVocabulary;
 
 import com.nitb.apigateway.dto.General.DataWithMessageResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.request.CreateCachedSetRequestDto;
-import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetDetailResponseDto;
+import com.nitb.apigateway.dto.UserVocabulary.response.CachedSetSummaryResponseDto;
 import com.nitb.apigateway.grpc.UserVocabularyServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.CachedSetMapper;
@@ -10,7 +10,7 @@ import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.grpc.CachedSetResponse;
 import com.nitb.uservocabularyservice.grpc.CachedSetsResponse;
-import com.nitb.vocabularyservice.grpc.VocabularySetResponse;
+import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -29,7 +29,7 @@ public class CachedSetServiceImpl implements CachedSetService{
     @Override
     public Mono<DataWithMessageResponseDto> cacheSet(UUID userId, CreateCachedSetRequestDto request) {
         return Mono.fromCallable(()->{
-            VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
+            VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
 
             if(set == null) {
                 throw new NotFoundException("Set not found.");
@@ -60,15 +60,15 @@ public class CachedSetServiceImpl implements CachedSetService{
     }
 
     @Override
-    public Mono<List<CachedSetDetailResponseDto>> getAllCachedSets(UUID userId) {
+    public Mono<List<CachedSetSummaryResponseDto>> getAllCachedSets(UUID userId) {
         return Mono.fromCallable(()->{
             CachedSetsResponse cachedSets = userVocabularyGrpc.getAllCachedSets(userId);
 
-            List<CachedSetDetailResponseDto> responses = new ArrayList<>();
+            List<CachedSetSummaryResponseDto> responses = new ArrayList<>();
 
             for(CachedSetResponse cachedSet : cachedSets.getSetsList()){
-                VocabularySetResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
-                CachedSetDetailResponseDto response = CachedSetMapper.toCachedSetDetailResponseDto(cachedSet, set);
+                VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
+                CachedSetSummaryResponseDto response = CachedSetMapper.toCachedSetSummaryResponseDto(cachedSet, set);
                 responses.add(response);
             }
 

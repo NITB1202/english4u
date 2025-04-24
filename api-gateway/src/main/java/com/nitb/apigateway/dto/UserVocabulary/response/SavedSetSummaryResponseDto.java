@@ -5,18 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CachedSetDetailResponseDto {
-    private UUID id;
-
-    private UUID userId;
-
+public class SavedSetSummaryResponseDto {
     private UUID setId;
 
     private String setName;
@@ -24,6 +19,4 @@ public class CachedSetDetailResponseDto {
     private Integer wordCount;
 
     private Integer learnedWords;
-
-    private LocalDateTime lastAccess;
 }
