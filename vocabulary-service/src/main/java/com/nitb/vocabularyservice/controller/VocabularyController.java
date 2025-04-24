@@ -23,17 +23,17 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     //Set section
     @Override
-    public void createVocabularySet(CreateVocabularySetRequest request, StreamObserver<VocabularySetResponse> streamObserver) {
+    public void createVocabularySet(CreateVocabularySetRequest request, StreamObserver<CreateVocabularySetResponse> streamObserver) {
         VocabularySet set = vocabularySetService.createVocabularySet(request);
-        VocabularySetResponse response = VocabularySetMapper.toVocabularySetResponse(set);
+        CreateVocabularySetResponse response = VocabularySetMapper.toCreateVocabularySetResponse(set);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
     @Override
-    public void getVocabularySetById(GetVocabularySetByIdRequest request, StreamObserver<VocabularySetResponse> streamObserver) {
+    public void getVocabularySetById(GetVocabularySetByIdRequest request, StreamObserver<VocabularySetDetailResponse> streamObserver) {
         VocabularySet set = vocabularySetService.getVocabularySetById(request);
-        VocabularySetResponse response = VocabularySetMapper.toVocabularySetResponse(set);
+        VocabularySetDetailResponse response = VocabularySetMapper.toVocabularySetDetailResponse(set);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -41,17 +41,15 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void getVocabularySets(GetVocabularySetsRequest request, StreamObserver<VocabularySetsResponse> streamObserver){
         Page<VocabularySet> sets = vocabularySetService.getVocabularySets(request);
+        VocabularySetsResponse response = VocabularySetMapper.toVocabularySetsResponse(sets);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
 
-        List<VocabularySetResponse> setResponses = sets.stream()
-                .map(VocabularySetMapper::toVocabularySetResponse)
-                .toList();
-
-        VocabularySetsResponse response = VocabularySetsResponse.newBuilder()
-                .addAllSets(setResponses)
-                .setTotalItems(sets.getTotalElements())
-                .setTotalPages(sets.getTotalPages())
-                .build();
-
+    @Override
+    public void getDeletedVocabularySets(GetVocabularySetsRequest request, StreamObserver<VocabularySetsResponse> streamObserver) {
+        Page<VocabularySet> sets = vocabularySetService.getDeletedVocabularySets(request);
+        VocabularySetsResponse response = VocabularySetMapper.toVocabularySetsResponse(sets);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -59,34 +57,42 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void searchVocabularySetByName(SearchVocabularySetByNameRequest request, StreamObserver<VocabularySetsResponse> streamObserver){
         Page<VocabularySet> sets = vocabularySetService.searchVocabularySetByName(request);
-
-        List<VocabularySetResponse> setResponses = sets.stream()
-                .map(VocabularySetMapper::toVocabularySetResponse)
-                .toList();
-
-        VocabularySetsResponse response = VocabularySetsResponse.newBuilder()
-                .addAllSets(setResponses)
-                .setTotalItems(sets.getTotalElements())
-                .setTotalPages(sets.getTotalPages())
-                .build();
-
+        VocabularySetsResponse response = VocabularySetMapper.toVocabularySetsResponse(sets);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
 
     }
 
     @Override
-    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<VocabularySetResponse> streamObserver){
+    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<UpdateVocabularySetResponse> streamObserver){
         VocabularySet set = vocabularySetService.updateVocabularySet(request);
-        VocabularySetResponse response = VocabularySetMapper.toVocabularySetResponse(set);
+        UpdateVocabularySetResponse response = VocabularySetMapper.toUpdateVocabularySetResponse(set);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
     @Override
-    public void deleteVocabularySet(DeleteVocabularySetRequest request, StreamObserver<VocabularySetResponse> streamObserver){
+    public void deleteVocabularySet(DeleteVocabularySetRequest request, StreamObserver<DeleteVocabularySetResponse> streamObserver){
         VocabularySet set = vocabularySetService.deleteVocabularySet(request);
-        VocabularySetResponse response = VocabularySetMapper.toVocabularySetResponse(set);
+        DeleteVocabularySetResponse response = VocabularySetMapper.toDeleteVocabularySetResponse(set);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void restoreVocabularySet(RestoreVocabularySetRequest request, StreamObserver<DeleteVocabularySetResponse> streamObserver){
+        VocabularySet set = vocabularySetService.restoreVocabularySet(request);
+        DeleteVocabularySetResponse response = VocabularySetMapper.toDeleteVocabularySetResponse(set);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void countPublishedVocabularySets(CountPublishedVocabularySetsRequest request, StreamObserver<CountPublishedVocabularySetsResponse> streamObserver){
+        int count = vocabularySetService.countPublishedVocabularySets(request);
+        CountPublishedVocabularySetsResponse response = CountPublishedVocabularySetsResponse.newBuilder()
+                .setCount(count)
+                .build();
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -96,14 +102,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<VocabularyWordsResponse> streamObserver){
         List<VocabularyWord> words = vocabularyWordService.createVocabularyWords(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsResponse response = VocabularyWordsResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .build();
-
+        VocabularyWordsResponse response = VocabularyWordMapper.toVocabularyWordsResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -111,16 +110,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void getVocabularyWords(GetVocabularyWordsRequest request, StreamObserver<VocabularyWordsPaginationResponse> streamObserver){
         Page<VocabularyWord> words = vocabularyWordService.getVocabularyWords(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsPaginationResponse response = VocabularyWordsPaginationResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .setTotalItems(words.getTotalElements())
-                .setTotalPage(words.getTotalPages())
-                .build();
-
+        VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -128,16 +118,7 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     @Override
     public void searchVocabularyWordByWord(SearchVocabularyWordByWordRequest request, StreamObserver<VocabularyWordsPaginationResponse> streamObserver){
         Page<VocabularyWord> words = vocabularyWordService.searchVocabularyWordByWord(request);
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        VocabularyWordsPaginationResponse response = VocabularyWordsPaginationResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .setTotalItems(words.getTotalElements())
-                .setTotalPage(words.getTotalPages())
-                .build();
-
+        VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

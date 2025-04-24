@@ -16,7 +16,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VocabularySetService {
     private final VocabularySetRepository vocabularySetRepository;
-
     private final int DEFAULT_SIZE = 10;
 
     public VocabularySet createVocabularySet(CreateVocabularySetRequest request) {
@@ -50,14 +49,21 @@ public class VocabularySetService {
         int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
         int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
 
-        return vocabularySetRepository.findAll(PageRequest.of(page, size));
+        return vocabularySetRepository.findAllByIsDeletedFalse(PageRequest.of(page, size));
+    }
+
+    public Page<VocabularySet> getDeletedVocabularySets(GetVocabularySetsRequest request) {
+        int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
+        int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
+
+        return vocabularySetRepository.findAllByIsDeletedTrue(PageRequest.of(page, size));
     }
 
     public Page<VocabularySet> searchVocabularySetByName(SearchVocabularySetByNameRequest request){
         int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
         int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
 
-        return vocabularySetRepository.findByNameContainingIgnoreCase(request.getKeyword(), PageRequest.of(page, size));
+        return vocabularySetRepository.findByNameContainingIgnoreCaseAndIsDeletedFalse(request.getKeyword(), PageRequest.of(page, size));
     }
 
     public VocabularySet updateVocabularySet(UpdateVocabularySetRequest request) {
@@ -66,6 +72,10 @@ public class VocabularySetService {
         VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
                 () -> new BusinessException("No vocabulary set found with id: " + request.getId())
         );
+
+        if(set.getIsDeleted()) {
+            throw new BusinessException("This vocabulary set has been deleted. Please restore it before updating.");
+        }
 
         if(vocabularySetRepository.existsByName(request.getName())) {
             throw new BusinessException("This name has been used already.");
@@ -92,4 +102,24 @@ public class VocabularySetService {
 
         return vocabularySetRepository.save(set);
     }
+
+    public VocabularySet restoreVocabularySet(RestoreVocabularySetRequest request) {
+        UUID setId = UUID.fromString(request.getId());
+
+        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
+                () -> new BusinessException("No vocabulary set found with id: " + request.getId())
+        );
+
+        set.setIsDeleted(false);
+        set.setUpdatedBy(UUID.fromString(request.getUserId()));
+        set.setUpdatedAt(LocalDateTime.now());
+
+        return vocabularySetRepository.save(set);
+    }
+
+    public int countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
+        UUID userId = UUID.fromString(request.getUserId());
+        return vocabularySetRepository.countByUpdatedBy(userId);
+    }
+
 }
