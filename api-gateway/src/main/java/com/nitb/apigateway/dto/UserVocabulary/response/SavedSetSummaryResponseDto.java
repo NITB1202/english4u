@@ -12,6 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SavedSetSummaryResponseDto {
+    private UUID id;
+    
     private UUID setId;
 
     private String setName;

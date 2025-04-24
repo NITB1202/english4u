@@ -9,6 +9,7 @@ import com.nitb.apigateway.mapper.CachedSetMapper;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.uservocabularyservice.grpc.CachedSetResponse;
+import com.nitb.uservocabularyservice.grpc.CachedSetSummaryResponse;
 import com.nitb.uservocabularyservice.grpc.CachedSetsResponse;
 import com.nitb.vocabularyservice.grpc.VocabularySetDetailResponse;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class CachedSetServiceImpl implements CachedSetService{
 
             List<CachedSetSummaryResponseDto> responses = new ArrayList<>();
 
-            for(CachedSetResponse cachedSet : cachedSets.getSetsList()){
+            for(CachedSetSummaryResponse cachedSet : cachedSets.getSetsList()){
                 VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(UUID.fromString(cachedSet.getSetId()));
                 CachedSetSummaryResponseDto response = CachedSetMapper.toCachedSetSummaryResponseDto(cachedSet, set);
                 responses.add(response);

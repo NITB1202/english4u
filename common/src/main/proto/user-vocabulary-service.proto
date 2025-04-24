@@ -45,12 +45,12 @@ message SavedSetsPaginationResponse {
   int32 total_pages = 3;
 }
 
-message GetAllSetIdsRequest {
+message GetAllSavedSetsRequest {
   string user_id = 1;
 }
 
-message SetIdsResponse {
-  repeated string ids = 1;
+message SavedSetsResponse {
+  repeated SavedSetResponse sets = 1;
 }
 
 message UpdateSavedSetRequest {
@@ -82,9 +82,8 @@ message GetAllCachedSetsRequest {
 }
 
 message CachedSetSummaryResponse {
-  string id = 1;
-  string set_id = 2;
-  int32 learned_words = 3;
+  string set_id = 1;
+  int32 learned_words = 2;
 }
 
 message CachedSetsResponse {
@@ -101,7 +100,7 @@ service UserVocabularyService {
   rpc CreateSavedSet(CreateSavedSetRequest) returns (SavedSetResponse);
   rpc GetSavedSetById(GetSavedSetByIdRequest) returns (SavedSetResponse);
   rpc GetSavedSets(GetSavedSetsRequest) returns (SavedSetsPaginationResponse);
-  rpc GetAllSetIds(GetAllSetIdsRequest) returns (SetIdsResponse);
+  rpc GetAllSavedSets(GetAllSavedSetsRequest) returns (SavedSetsResponse);
   rpc UpdateSavedSet(UpdateSavedSetRequest) returns (SavedSetResponse);
   rpc DeleteSavedSet(DeleteSavedSetRequest) returns (common.ActionResponse);
 

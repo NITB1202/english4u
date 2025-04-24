@@ -14,7 +14,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.UUID;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -48,15 +47,15 @@ public class UserVocabularyController extends UserVocabularyServiceGrpc.UserVoca
     }
 
     @Override
-    public void getAllSetIds(GetAllSetIdsRequest request, StreamObserver<SetIdsResponse> responseObserver){
-        List<UUID> ids = savedSetService.getAllSetIds(request);
+    public void getAllSavedSets(GetAllSavedSetsRequest request, StreamObserver<SavedSetsResponse> responseObserver){
+        List<SavedSet> sets = savedSetService.getAllSavedSets(request);
 
-        List<String> idsResponse = ids.stream()
-                .map(UUID::toString)
+        List<SavedSetResponse> setsResponse = sets.stream()
+                .map(SavedSetMapper::toSavedSetResponse)
                 .toList();
 
-        SetIdsResponse response = SetIdsResponse.newBuilder()
-                .addAllIds(idsResponse)
+        SavedSetsResponse response = SavedSetsResponse.newBuilder()
+                .addAllSets(setsResponse)
                 .build();
 
         responseObserver.onNext(response);
