@@ -5,6 +5,7 @@ import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Vocabulary.VocabularySetService;
+import com.nitb.common.enums.GroupBy;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,11 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Validated
@@ -106,7 +109,10 @@ public class VocabularySetController {
     @GetMapping("/statistic")
     @Operation(summary = "Get statistical summary of vocabulary sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<VocabularySetStatisticResponseDto>> getVocabularySetStatistics(@RequestParam UUID userId) {
-        return vocabularySetService.getVocabularySetStatistics(userId).map(ResponseEntity::ok);
+    public Mono<ResponseEntity<VocabularySetStatisticsResponseDto>> getVocabularySetStatistics(@RequestParam UUID userId,
+                                                                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                                                                               @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+                                                                                               @RequestParam GroupBy groupBy) {
+        return vocabularySetService.getVocabularySetStatistics(userId, from, to, groupBy).map(ResponseEntity::ok);
     }
 }

@@ -5,12 +5,14 @@ import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.VocabularySetMapper;
+import com.nitb.common.enums.GroupBy;
 import com.nitb.vocabularyservice.grpc.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Service
@@ -88,12 +90,10 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<VocabularySetStatisticResponseDto> getVocabularySetStatistics(UUID userId) {
+    public Mono<VocabularySetStatisticsResponseDto> getVocabularySetStatistics(UUID userId, LocalDate from , LocalDate to, GroupBy groupBy) {
         return Mono.fromCallable(()->{
-            CountPublishedVocabularySetsResponse response = grpcClient.countPublishedVocabularySets(userId);
-            return VocabularySetStatisticResponseDto.builder()
-                    .publishedCount(response.getCount())
-                    .build();
+            CountPublishedVocabularySetsResponse response = grpcClient.countPublishedVocabularySets(userId, from, to, groupBy);
+            return VocabularySetMapper.toVocabularySetStatisticsResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }

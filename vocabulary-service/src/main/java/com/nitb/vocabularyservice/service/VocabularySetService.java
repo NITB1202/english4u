@@ -1,6 +1,7 @@
 package com.nitb.vocabularyservice.service;
 
 import com.nitb.common.exceptions.BusinessException;
+import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
 import com.nitb.vocabularyservice.repository.VocabularySetRepository;
@@ -119,16 +120,20 @@ public class VocabularySetService {
         return vocabularySetRepository.save(set);
     }
 
-    public List<VocabularySetStatistic> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
+    public List<VocabularySetStatisticDto> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
-        LocalDate from = LocalDate.parse(request.getFrom());
-        LocalDate to = LocalDate.parse(request.getTo());
-
-        return switch (request.getGroupBy()) {
-            case WEEK -> vocabularySetRepository.countPublishedByWeek(userId, from, to);
-            case MONTH -> vocabularySetRepository.countPublishedByMonth(userId, from, to);
-            case YEAR -> vocabularySetRepository.countPublishedByYear(userId, from, to);
-            default -> throw new BusinessException("Invalid group by type.");
+        LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
+        LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
+        String pattern = switch (request.getGroupBy()) {
+            case WEEK -> "IYYY-IW";
+            case MONTH -> "YYYY-MM";
+            case YEAR -> "YYYY";
+            default -> "";
         };
+
+        return vocabularySetRepository.countByPattern(userId, from, to, pattern)
+                .stream()
+                .map(p -> new VocabularySetStatisticDto(p.getTime(), p.getCount()))
+                .toList();
     }
 }

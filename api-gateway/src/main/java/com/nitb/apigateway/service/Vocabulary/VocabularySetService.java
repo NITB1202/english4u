@@ -3,8 +3,10 @@ package com.nitb.apigateway.service.Vocabulary;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
+import com.nitb.common.enums.GroupBy;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public interface VocabularySetService {
@@ -16,5 +18,5 @@ public interface VocabularySetService {
     Mono<UpdateVocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request);
     Mono<DeleteVocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId);
     Mono<DeleteVocabularySetResponseDto> restoreVocabularySet(UUID id, UUID userId);
-    Mono<VocabularySetStatisticResponseDto> getVocabularySetStatistics(UUID userId);
+    Mono<VocabularySetStatisticsResponseDto> getVocabularySetStatistics(UUID userId, LocalDate from, LocalDate to, GroupBy groupBy);
 }

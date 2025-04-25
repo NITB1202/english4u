@@ -1,6 +1,7 @@
 package com.nitb.vocabularyservice.controller;
 
 import com.nitb.common.grpc.ActionResponse;
+import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.*;
@@ -89,10 +90,8 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     @Override
     public void countPublishedVocabularySets(CountPublishedVocabularySetsRequest request, StreamObserver<CountPublishedVocabularySetsResponse> streamObserver){
-        List<VocabularySetStatistic> statistics = vocabularySetService.countPublishedVocabularySets(request);
-        CountPublishedVocabularySetsResponse response = CountPublishedVocabularySetsResponse.newBuilder()
-                .addAllStatistics(statistics)
-                .build();
+        List<VocabularySetStatisticDto> statistics = vocabularySetService.countPublishedVocabularySets(request);
+        CountPublishedVocabularySetsResponse response = VocabularySetMapper.toCountPublishedVocabularySetsResponse(statistics);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

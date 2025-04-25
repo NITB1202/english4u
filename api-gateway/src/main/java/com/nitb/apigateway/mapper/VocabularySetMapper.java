@@ -78,4 +78,21 @@ public class VocabularySetMapper {
                 .isDeleted(set.getIsDeleted())
                 .build();
     }
+
+    public static VocabularySetStatisticResponseDto toVocabularySetStatisticResponseDto(VocabularySetStatistic statistic) {
+        return VocabularySetStatisticResponseDto.builder()
+                .time(statistic.getTime())
+                .publishedCount(statistic.getCount())
+                .build();
+    }
+
+    public static VocabularySetStatisticsResponseDto toVocabularySetStatisticsResponseDto(CountPublishedVocabularySetsResponse statistics) {
+        List<VocabularySetStatisticResponseDto> dto = statistics.getStatisticsList().stream()
+                .map(VocabularySetMapper::toVocabularySetStatisticResponseDto)
+                .toList();
+
+        return VocabularySetStatisticsResponseDto.builder()
+                .statistics(dto)
+                .build();
+    }
 }

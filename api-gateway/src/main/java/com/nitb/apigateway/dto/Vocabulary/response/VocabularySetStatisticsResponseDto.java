@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VocabularySetStatisticResponseDto {
-    private String time;
-
-    private long publishedCount;
+public class VocabularySetStatisticsResponseDto {
+    private List<VocabularySetStatisticResponseDto> statistics;
 }
