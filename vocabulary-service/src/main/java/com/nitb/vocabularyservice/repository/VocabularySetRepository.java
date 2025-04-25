@@ -16,11 +16,9 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
     Page<VocabularySet> findAllByIsDeletedFalse(Pageable pageable);
     Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
     Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);
+
     @Query("""
-    SELECT new com.nitb.vocabularyservice.grpc.VocabularySetStatistic(
-        TO_CHAR(v.createdAt, 'IYYY-IW'),
-        COUNT(v)
-    )
+    SELECT TO_CHAR(v.createdAt, 'IYYY-IW') AS time, COUNT(v) AS count
     FROM VocabularySet v
     WHERE v.createdBy = :userId
       AND v.isDeleted = false
@@ -31,10 +29,7 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
     List<VocabularySetStatistic> countPublishedByWeek(UUID userId, LocalDate from, LocalDate to);
 
     @Query("""
-    SELECT new com.nitb.vocabularyservice.grpc.VocabularySetStatistic(
-        TO_CHAR(v.createdAt, 'YYYY-MM'),
-        COUNT(v)
-    )
+    SELECT TO_CHAR(v.createdAt, 'YYYY-MM') AS time, COUNT(v) AS count
     FROM VocabularySet v
     WHERE v.createdBy = :userId
       AND v.isDeleted = false
@@ -45,10 +40,7 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
     List<VocabularySetStatistic> countPublishedByMonth(UUID userId, LocalDate from, LocalDate to);
 
     @Query("""
-    SELECT new com.nitb.vocabularyservice.grpc.VocabularySetStatistic(
-        TO_CHAR(v.createdAt, 'YYYY'),
-        COUNT(v)
-    )
+    SELECT TO_CHAR(v.createdAt, 'YYYY') AS time, COUNT(v) AS count
     FROM VocabularySet v
     WHERE v.createdBy = :userId
       AND v.isDeleted = false
@@ -57,6 +49,5 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
     ORDER BY TO_CHAR(v.createdAt, 'YYYY')
 """)
     List<VocabularySetStatistic> countPublishedByYear(UUID userId, LocalDate from, LocalDate to);
-
 
 }
