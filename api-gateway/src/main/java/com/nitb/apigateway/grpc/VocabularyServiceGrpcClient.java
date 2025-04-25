@@ -4,11 +4,14 @@ import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
+import com.nitb.common.enums.GroupBy;
 import com.nitb.common.grpc.ActionResponse;
+import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.vocabularyservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -105,9 +108,12 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.restoreVocabularySet(request);
     }
 
-    public CountPublishedVocabularySetsResponse countPublishedVocabularySets(UUID userId) {
+    public CountPublishedVocabularySetsResponse countPublishedVocabularySets(UUID userId, LocalDate from, LocalDate to, GroupBy groupBy) {
         CountPublishedVocabularySetsRequest request = CountPublishedVocabularySetsRequest.newBuilder()
                 .setUserId(userId.toString())
+                .setFrom(from.toString())
+                .setTo(to.toString())
+                .setGroupBy(GroupByMapper.toGrpcEnum(groupBy))
                 .build();
 
         return blockingStub.countPublishedVocabularySets(request);

@@ -1,5 +1,6 @@
 package com.nitb.vocabularyservice.mapper;
 
+import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
 import org.springframework.data.domain.Page;
@@ -66,6 +67,23 @@ public class VocabularySetMapper {
                 .setUpdatedBy(set.getUpdatedBy().toString())
                 .setUpdateAt(set.getUpdatedAt().toString())
                 .setIsDeleted(set.getIsDeleted())
+                .build();
+    }
+
+    public static VocabularySetStatistic toVocabularySetStatistic(VocabularySetStatisticDto dto) {
+        return VocabularySetStatistic.newBuilder()
+                .setTime(dto.getTime())
+                .setCount(dto.getCount())
+                .build();
+    }
+
+    public static CountPublishedVocabularySetsResponse toCountPublishedVocabularySetsResponse(List<VocabularySetStatisticDto> dto) {
+        List<VocabularySetStatistic> statistics = dto.stream()
+                .map(VocabularySetMapper::toVocabularySetStatistic)
+                .toList();
+
+        return CountPublishedVocabularySetsResponse.newBuilder()
+                .addAllStatistics(statistics)
                 .build();
     }
 }
