@@ -9,7 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -117,9 +119,16 @@ public class VocabularySetService {
         return vocabularySetRepository.save(set);
     }
 
-    public int countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
+    public List<VocabularySetStatistic> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
-        return vocabularySetRepository.countByUpdatedBy(userId);
-    }
+        LocalDate from = LocalDate.parse(request.getFrom());
+        LocalDate to = LocalDate.parse(request.getTo());
 
+        return switch (request.getGroupBy()) {
+            case WEEK -> vocabularySetRepository.countPublishedByWeek(userId, from, to);
+            case MONTH -> vocabularySetRepository.countPublishedByMonth(userId, from, to);
+            case YEAR -> vocabularySetRepository.countPublishedByYear(userId, from, to);
+            default -> throw new BusinessException("Invalid group by type.");
+        };
+    }
 }
