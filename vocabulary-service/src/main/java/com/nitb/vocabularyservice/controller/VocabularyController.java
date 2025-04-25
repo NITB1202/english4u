@@ -89,14 +89,13 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     @Override
     public void countPublishedVocabularySets(CountPublishedVocabularySetsRequest request, StreamObserver<CountPublishedVocabularySetsResponse> streamObserver){
-        int count = vocabularySetService.countPublishedVocabularySets(request);
+        List<VocabularySetStatistic> statistics = vocabularySetService.countPublishedVocabularySets(request);
         CountPublishedVocabularySetsResponse response = CountPublishedVocabularySetsResponse.newBuilder()
-                .setCount(count)
+                .addAllStatistics(statistics)
                 .build();
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
-
 
     //Word section
     @Override
