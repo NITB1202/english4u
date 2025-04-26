@@ -2,7 +2,6 @@ package com.nitb.apigateway.controller;
 
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.request.AddVocabularyWordsRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.request.DeleteVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
@@ -83,13 +82,5 @@ public class VocabularyWordController {
                                                                       @RequestParam UUID word1,
                                                                       @RequestParam UUID word2) {
         return vocabularyWordService.switchWordPosition(userId, word1, word2).map(ResponseEntity::ok);
-    }
-
-    @DeleteMapping
-    @Operation(summary = "Delete vocabulary words.")
-    @ApiResponse(responseCode = "200", description = "Delete successfully.")
-    public Mono<ResponseEntity<ActionResponseDto>> deleteVocabularyWords(@RequestParam UUID userId,
-                                                                         @Valid @RequestBody DeleteVocabularyWordsRequestDto request) {
-        return vocabularyWordService.deleteVocabularyWords(userId, request).map(ResponseEntity::ok);
     }
 }

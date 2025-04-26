@@ -152,16 +152,4 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
-
-    @Override
-    public void deleteVocabularyWords(DeleteVocabularyWordsRequest request, StreamObserver<ActionResponse> streamObserver){
-        vocabularyWordService.deleteVocabularyWords(request);
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Delete successfully.")
-                .build();
-
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
 }

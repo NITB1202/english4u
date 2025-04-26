@@ -189,12 +189,6 @@ message SwitchWordPositionRequest{
   string user_id = 3;
 }
 
-message DeleteVocabularyWordsRequest{
-  repeated string ids = 1;
-  string user_id = 2;
-  string set_id = 3;
-}
-
 service VocabularyService {
   //Sets
   rpc CreateVocabularySet(CreateVocabularySetRequest) returns (CreateVocabularySetResponse);
@@ -214,5 +208,4 @@ service VocabularyService {
   rpc UpdateVocabularyWord(UpdateVocabularyWordRequest) returns (VocabularyWordResponse);
   rpc SwitchWordPosition(SwitchWordPositionRequest) returns (common.ActionResponse);
   rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);
-  rpc DeleteVocabularyWords(DeleteVocabularyWordsRequest) returns (common.ActionResponse);
 }

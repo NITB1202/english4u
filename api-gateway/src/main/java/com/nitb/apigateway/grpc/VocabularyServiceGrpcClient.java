@@ -163,18 +163,6 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.switchWordPosition(request);
     }
 
-    public ActionResponse deleteVocabularyWords(UUID setId, UUID userId, List<UUID> ids){
-        List<String> idsString = ids.stream().map(UUID::toString).toList();
-
-        DeleteVocabularyWordsRequest request = DeleteVocabularyWordsRequest.newBuilder()
-                .setSetId(setId.toString())
-                .setUserId(userId.toString())
-                .addAllIds(idsString)
-                .build();
-
-        return blockingStub.deleteVocabularyWords(request);
-    }
-
     public ActionResponse uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl){
         UploadVocabularyWordImageRequest request = UploadVocabularyWordImageRequest.newBuilder()
                 .setId(id.toString())
