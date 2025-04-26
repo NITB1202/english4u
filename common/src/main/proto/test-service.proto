@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package test;
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.testservice.grpc";
+option java_outer_classname = "TestProto";
+
+//Tests
+message CreateTestRequest {
+  string user_id = 1;
+  string name = 2;
+  int32 minutes = 3;
+  string topic = 4;
+}
+
+message CreateTestResponse {
+  string id = 1;
+  string created_by = 2;
+  string create_at = 3;
+  string name = 4;
+  int32 minutes = 5;
+  string topic = 6;
+}
+
+message GetTestByIdRequest {
+  string id = 1;
+}
+
+message TestDetailResponse {
+  string id = 1;
+  string created_by = 2;
+  string create_at = 3;
+  string name = 4;
+  int32 minutes = 5;
+  string topic = 6;
+  int32 part_count = 7;
+  int32 question_count = 8;
+  int64 completed_users = 9;
+  string updated_by = 10;
+  string update_at = 11;
+  bool is_deleted = 12;
+}
+
+message GetTestRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message TestSummaryResponse {
+  string id = 1;
+  string name = 2;
+  int32 question_count = 3;
+  int32 minutes = 4;
+  string topic = 5;
+}
+
+message TestsPaginationResponse {
+  repeated TestSummaryResponse tests = 1;
+  int64 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message GetDeletedTestRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message SearchTestByNameRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message UpdateTestRequest {
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+  int32 minutes = 4;
+  string topic = 5;
+}
+
+message UpdateTestResponse {
+  string id = 1;
+  string updated_by = 2;
+  string update_at = 3;
+  string name = 4;
+  int32 minutes = 5;
+  string topic = 6;
+}
+
+message DeleteTestRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+message DeleteTestResponse {
+  string id = 1;
+  string updated_by = 2;
+  string update_at = 3;
+  bool is_deleted = 4;
+}
+
+message RestoreTestRequest {
+  string id = 1;
+  string user_id = 2;
+}
+
+//Parts
+message CreatePartRequest {
+  string user_id = 1;
+  string test_id = 2;
+  string content = 3;
+}
+
+message PartResponse {
+  string id = 1;
+  string test_id = 2;
+  int32 order = 3;
+  string content = 4;
+}
+
+message GetPartContentByIdRequest {
+  string id = 1;
+}
+
+message GetPartContentByIdResponse {
+  string content = 1;
+}
+
+message GetAllPartsForTestRequest {
+  string test_id = 1;
+}
+
+message PartSummaryResponse {
+  string id = 1;
+  int32 order = 2;
+  int32 total_questions = 3;
+}
+
+message GetAllPartsForTestResponse {
+  repeated PartSummaryResponse parts = 1;
+}
+
+message UpdatePartRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message SwapPartsPositionRequest {
+  string user_id = 1;
+  int32 part1_id = 2;
+  int32 part2_id = 3;
+}
+
+//Questions
+message CreateQuestionRequest {
+  string content = 1;
+  repeated string answers = 2;
+  string correct_answer = 3;
+  string explanation = 4;
+}
+
+message CreateQuestionsRequest {
+  string user_id = 1;
+  string part_id = 2;
+  repeated CreateQuestionRequest requests = 3;
+}
+
+message QuestionResponse {
+  string id = 1;
+  int32 order = 2;
+  string content = 3;
+  repeated string answers = 4;
+  string correct_answer = 5;
+  string explanation = 6;
+}
+
+message QuestionsResponse {
+  repeated QuestionResponse response = 1;
+}
+
+message GetQuestionByIdRequest {
+  string id = 1;
+}
+
+message GetAllQuestionsForPartRequest {
+  string part_id = 1;
+}
+
+message UpdateQuestionRequest {
+  string id = 1;
+  string user_id = 2;
+  string content = 3;
+  repeated string answers = 4;
+  string correct_answer = 5;
+  string explanation = 6;
+}
+
+message SwapQuestionsPositionRequest {
+  string user_id = 1;
+  string question1_id = 2;
+  string question2_id = 3;
+}
+
+service TestService {
+  rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
+  rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
+  rpc GetTests(GetTestRequest) returns (TestsPaginationResponse);
+  rpc GetDeletedTests(GetDeletedTestRequest) returns (TestsPaginationResponse);
+  rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);
+  rpc UpdateTest(UpdateTestRequest) returns (UpdateTestResponse);
+  rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
+  rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
+
+  rpc CreatePart(CreatePartRequest) returns (PartResponse);
+  rpc GetPartContentById(GetPartContentByIdRequest) returns (GetPartContentByIdResponse);
+  rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (GetAllPartsForTestResponse);
+  rpc UpdatePart(UpdatePartRequest) returns (common.ActionResponse);
+  rpc SwapPartsPosition(SwapPartsPositionRequest) returns (common.ActionResponse);
+
+  rpc CreateQuestions(CreateQuestionsRequest) returns (QuestionsResponse);
+  rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionResponse);
+  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(QuestionsResponse);
+  rpc UpdateQuestion(UpdateQuestionRequest) returns (QuestionsResponse);
+  rpc SwapQuestionsPosition(SwapQuestionsPositionRequest) returns (common.ActionResponse);
+}
