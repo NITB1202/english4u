@@ -167,32 +167,6 @@ public class VocabularyWordService {
         updateLastModified(word.getSetId(), UUID.fromString(request.getUserId()));
     }
 
-    public void deleteVocabularyWords(DeleteVocabularyWordsRequest request){
-        UUID setId = UUID.fromString(request.getSetId());
-
-        //Update word
-        List<String> idsString = request.getIdsList();
-        List<UUID> ids = idsString.stream().map(UUID::fromString).toList();
-
-        vocabularyWordRepository.deleteAllById(ids);
-
-        //Number remaining words
-        List<VocabularyWord> remainingWords = vocabularyWordRepository.findBySetIdOrderByPositionAsc(setId);
-        IntStream.range(0, remainingWords.size()).forEach(i -> remainingWords.get(i).setPosition(i + 1));
-        vocabularyWordRepository.saveAll(remainingWords);
-
-        //Update set
-        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
-                () -> new NotFoundException("Vocabulary set not found.")
-        );
-
-        set.setWordCount(remainingWords.size());
-        set.setUpdatedBy(UUID.fromString(request.getUserId()));
-        set.setUpdatedAt(LocalDateTime.now());
-
-        vocabularySetRepository.save(set);
-    }
-
     private void updateLastModified(UUID setId, UUID userId){
         VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
                 () -> new NotFoundException("Vocabulary set not found.")
