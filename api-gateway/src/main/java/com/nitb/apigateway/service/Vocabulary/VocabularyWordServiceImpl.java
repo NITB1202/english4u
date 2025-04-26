@@ -2,7 +2,6 @@ package com.nitb.apigateway.service.Vocabulary;
 
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.request.AddVocabularyWordsRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.request.DeleteVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
@@ -64,14 +63,6 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     public Mono<ActionResponseDto> switchWordPosition(UUID userId, UUID word1Id, UUID word2Id) {
         return Mono.fromCallable(()->{
             ActionResponse response = grpcClient.switchWordPosition(word1Id, word2Id, userId);
-            return ActionMapper.toResponseDto(response);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
-    public Mono<ActionResponseDto> deleteVocabularyWords(UUID userId, DeleteVocabularyWordsRequestDto dto) {
-        return Mono.fromCallable(()->{
-            ActionResponse response = grpcClient.deleteVocabularyWords(dto.getSetId(), userId, dto.getIds());
             return ActionMapper.toResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }

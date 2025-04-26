@@ -2,7 +2,6 @@ package com.nitb.apigateway.service.Vocabulary;
 
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.request.AddVocabularyWordsRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.request.DeleteVocabularyWordsRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
@@ -17,5 +16,4 @@ public interface VocabularyWordService {
     Mono<VocabularyWordsPaginationResponseDto> searchVocabularyWordByWord(UUID setId, String keyword, int page, int size);
     Mono<VocabularyWordResponseDto> updateVocabularyWord(UUID id, UUID userId, UpdateVocabularyWordRequestDto request);
     Mono<ActionResponseDto> switchWordPosition(UUID userId, UUID word1Id, UUID word2Id);
-    Mono<ActionResponseDto> deleteVocabularyWords(UUID userId, DeleteVocabularyWordsRequestDto request);
 }
