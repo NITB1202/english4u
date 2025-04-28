@@ -44,7 +44,7 @@ message TestDetailResponse {
   bool is_deleted = 12;
 }
 
-message GetTestRequest {
+message GetTestsRequest {
   int32 page = 1;
   int32 size = 2;
 }
@@ -63,7 +63,7 @@ message TestsPaginationResponse {
   int32 total_pages = 3;
 }
 
-message GetDeletedTestRequest {
+message GetDeletedTestsRequest {
   int32 page = 1;
   int32 size = 2;
 }
@@ -152,8 +152,8 @@ message UpdatePartRequest {
 
 message SwapPartsPositionRequest {
   string user_id = 1;
-  int32 part1_id = 2;
-  int32 part2_id = 3;
+  string part1_id = 2;
+  string part2_id = 3;
 }
 
 //Questions
@@ -209,8 +209,8 @@ message SwapQuestionsPositionRequest {
 service TestService {
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
-  rpc GetTests(GetTestRequest) returns (TestsPaginationResponse);
-  rpc GetDeletedTests(GetDeletedTestRequest) returns (TestsPaginationResponse);
+  rpc GetTests(GetTestsRequest) returns (TestsPaginationResponse);
+  rpc GetDeletedTests(GetDeletedTestsRequest) returns (TestsPaginationResponse);
   rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);
   rpc UpdateTest(UpdateTestRequest) returns (UpdateTestResponse);
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface VocabularySetRepository extends JpaRepository<VocabularySet, UUID> {
-    boolean existsByName(String name);
+    boolean existsByNameAndIsDeletedFalse(String name);
     Page<VocabularySet> findAllByIsDeletedFalse(Pageable pageable);
     Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
     Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);

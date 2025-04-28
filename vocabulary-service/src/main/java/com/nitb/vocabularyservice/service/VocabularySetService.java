@@ -22,7 +22,7 @@ public class VocabularySetService {
     private final int DEFAULT_SIZE = 10;
 
     public VocabularySet createVocabularySet(CreateVocabularySetRequest request) {
-        if(vocabularySetRepository.existsByName(request.getName())) {
+        if(vocabularySetRepository.existsByNameAndIsDeletedFalse(request.getName())) {
             throw new BusinessException("This name has been used already.");
         }
 
@@ -80,7 +80,7 @@ public class VocabularySetService {
             throw new BusinessException("This vocabulary set has been deleted. Please restore it before updating.");
         }
 
-        if(vocabularySetRepository.existsByName(request.getName())) {
+        if(vocabularySetRepository.existsByNameAndIsDeletedFalse(request.getName())) {
             throw new BusinessException("This name has been used already.");
         }
 
