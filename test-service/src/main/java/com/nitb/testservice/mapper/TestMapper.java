@@ -1,5 +1,6 @@
 package com.nitb.testservice.mapper;
 
+import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
 import org.springframework.data.domain.Page;
@@ -72,6 +73,23 @@ public class TestMapper {
                 .setUpdatedBy(test.getUpdatedBy().toString())
                 .setUpdateAt(test.getUpdatedAt().toString())
                 .setIsDeleted(test.getIsDeleted())
+                .build();
+    }
+
+    public static TestStatistic toTestStatistic(TestStatisticDto dto) {
+        return TestStatistic.newBuilder()
+                .setTime(dto.getTime())
+                .setTestCount(dto.getTestCount())
+                .setCompletedUsers(dto.getCompletedUsers())
+                .build();
+    }
+
+    public static GetPublishedTestStatisticsResponse toGetPublishedTestStatisticsResponse(List<TestStatisticDto> dto) {
+        List<TestStatistic> statistics = dto.stream()
+                .map(TestMapper::toTestStatistic)
+                .toList();
+        return GetPublishedTestStatisticsResponse.newBuilder()
+                .addAllStatistics(statistics)
                 .build();
     }
 }

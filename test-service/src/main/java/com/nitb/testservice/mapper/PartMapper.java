@@ -13,7 +13,7 @@ public class PartMapper {
     public static PartResponse toPartResponse(Part part) {
         return PartResponse.newBuilder()
                 .setId(part.getId().toString())
-                .setOrder(part.getOrder())
+                .setPosition(part.getPosition())
                 .setContent(part.getContent())
                 .setQuestionCount(part.getQuestionCount())
                 .build();
@@ -22,7 +22,7 @@ public class PartMapper {
     public static PartSummaryResponse toPartSummaryResponse(Part part) {
         return PartSummaryResponse.newBuilder()
                 .setId(part.getId().toString())
-                .setOrder(part.getOrder())
+                .setPosition(part.getPosition())
                 .setQuestionCount(part.getQuestionCount())
                 .build();
     }

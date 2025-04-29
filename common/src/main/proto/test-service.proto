@@ -117,7 +117,7 @@ message CreatePartRequest {
 
 message PartResponse {
   string id = 1;
-  int32 order = 2;
+  int32 position = 2;
   string content = 3;
   int32 question_count = 4;
 }
@@ -136,7 +136,7 @@ message GetAllPartsForTestRequest {
 
 message PartSummaryResponse {
   string id = 1;
-  int32 order = 2;
+  int32 position = 2;
   int32 question_count = 3;
 }
 
@@ -156,6 +156,23 @@ message SwapPartsPositionRequest {
   string part2_id = 3;
 }
 
+message GetPublishedTestStatisticsRequest {
+  string user_id = 1;
+  string from = 2;
+  string to = 3;
+  common.GroupBy group_by = 4;
+}
+
+message TestStatistic {
+  string time = 1;
+  int32 test_count = 2;
+  int64 completed_users = 3;
+}
+
+message GetPublishedTestStatisticsResponse {
+  repeated TestStatistic statistics = 1;
+}
+
 //Questions
 message CreateQuestionRequest {
   string content = 1;
@@ -172,7 +189,7 @@ message CreateQuestionsRequest {
 
 message QuestionResponse {
   string id = 1;
-  int32 order = 2;
+  int32 position = 2;
   string content = 3;
   string answers = 4;
   string correct_answer = 5;
@@ -193,7 +210,7 @@ message GetAllQuestionsForPartRequest {
 
 message QuestionSummaryResponse {
   string id = 1;
-  int32 order = 2;
+  int32 position = 2;
   string content = 3;
   string answers = 4;
 }
@@ -226,6 +243,7 @@ service TestService {
   rpc UpdateTest(UpdateTestRequest) returns (UpdateTestResponse);
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
+  rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
 
   rpc CreatePart(CreatePartRequest) returns (PartResponse);
   rpc GetPartContentById(GetPartContentByIdRequest) returns (GetPartContentByIdResponse);

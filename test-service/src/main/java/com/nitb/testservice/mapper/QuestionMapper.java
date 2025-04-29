@@ -14,7 +14,7 @@ public class QuestionMapper {
     public static QuestionResponse toQuestionResponse(Question question) {
         return QuestionResponse.newBuilder()
                 .setId(question.getId().toString())
-                .setOrder(question.getOrder())
+                .setPosition(question.getPosition())
                 .setContent(question.getContent())
                 .setAnswers(question.getAnswers())
                 .setCorrectAnswer(question.getCorrectAnswer())
@@ -35,7 +35,7 @@ public class QuestionMapper {
     public static QuestionSummaryResponse toQuestionSummaryResponse(Question question) {
         return QuestionSummaryResponse.newBuilder()
                 .setId(question.getId().toString())
-                .setOrder(question.getOrder())
+                .setPosition(question.getPosition())
                 .setContent(question.getContent())
                 .setAnswers(question.getAnswers())
                 .build();

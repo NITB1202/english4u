@@ -21,8 +21,8 @@ public class Question {
     @Column(name = "part_id", nullable = false)
     private UUID partId;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "position", nullable = false)
+    private Integer position;
 
     @Column(name = "content", nullable = false)
     private String content;

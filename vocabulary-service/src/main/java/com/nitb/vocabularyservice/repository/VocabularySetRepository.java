@@ -18,18 +18,48 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
     Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
     Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);
     @Query(value = """
-    SELECT TO_CHAR(created_at, :pattern) AS time, COUNT(*) AS count
-    FROM vocabulary_sets
-    WHERE created_by = :userId
-        AND is_deleted = false
-        AND created_at BETWEEN :from AND :to
-    GROUP BY TO_CHAR(created_at, :pattern)
-    ORDER BY TO_CHAR(created_at, :pattern)
-    """, nativeQuery = true)
-    List<VocabularySetStatisticProjection> countByPattern(
+        SELECT TO_CHAR(created_at, 'IYYY-IW') AS time,
+               COUNT(*) AS count
+        FROM vocabulary_sets
+        WHERE created_by = :userId
+          AND is_deleted = false
+          AND created_at BETWEEN :from AND :to
+        GROUP BY TO_CHAR(created_at, 'IYYY-IW')
+        ORDER BY TO_CHAR(created_at, 'IYYY-IW')
+        """, nativeQuery = true)
+    List<VocabularySetStatisticProjection> countByWeek(
             @Param("userId") UUID userId,
             @Param("from") LocalDateTime from,
-            @Param("to") LocalDateTime to,
-            @Param("pattern") String pattern
+            @Param("to") LocalDateTime to
+    );
+    @Query(value = """
+        SELECT TO_CHAR(created_at, 'YYYY-MM') AS time,
+               COUNT(*) AS count
+        FROM vocabulary_sets
+        WHERE created_by = :userId
+          AND is_deleted = false
+          AND created_at BETWEEN :from AND :to
+        GROUP BY TO_CHAR(created_at, 'YYYY-MM')
+        ORDER BY TO_CHAR(created_at, 'YYYY-MM')
+        """, nativeQuery = true)
+    List<VocabularySetStatisticProjection> countByMonth(
+            @Param("userId") UUID userId,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to
+    );
+    @Query(value = """
+        SELECT TO_CHAR(created_at, 'YYYY') AS time,
+               COUNT(*) AS count
+        FROM vocabulary_sets
+        WHERE created_by = :userId
+          AND is_deleted = false
+          AND created_at BETWEEN :from AND :to
+        GROUP BY TO_CHAR(created_at, 'YYYY')
+        ORDER BY TO_CHAR(created_at, 'YYYY')
+        """, nativeQuery = true)
+    List<VocabularySetStatisticProjection> countByYear(
+            @Param("userId") UUID userId,
+            @Param("from") LocalDateTime from,
+            @Param("to") LocalDateTime to
     );
 }

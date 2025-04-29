@@ -1,10 +1,11 @@
 package com.nitb.testservice.service;
 
+import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.grpc.*;
 import com.nitb.testservice.repository.PartRepository;
-import com.nitb.testservice.repository.TestRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +16,22 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PartService {
     private final PartRepository partRepository;
-    private final TestRepository testRepository;
+    private final TestService testService;
 
+    @Transactional
     public Part createPart(CreatePartRequest request) {
         UUID testId = UUID.fromString(request.getTestId());
+        UUID userId = UUID.fromString(request.getUserId());
 
-        if(!testRepository.existsById(testId)) {
-            throw new NotFoundException("Test not found.");
-        }
+        //Update test
+        testService.increasePartCount(testId, userId);
 
-        int order = partRepository.countByTestId(testId) + 1;
+        //Create part
+        int position = partRepository.countByTestId(testId) + 1;
 
         Part part = Part.builder()
                 .testId(testId)
-                .order(order)
+                .position(position)
                 .content(request.getContent())
                 .questionCount(0)
                 .build();
@@ -49,14 +52,19 @@ public class PartService {
         return partRepository.getAllByTestId(UUID.fromString(request.getTestId()));
     }
 
+    @Transactional
     public void updatePart(UpdatePartRequest request) {
         UUID id = UUID.fromString(request.getId());
+        UUID userId = UUID.fromString(request.getUserId());
+
         Part part = partRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Part not found.")
         );
 
         part.setContent(request.getContent());
         partRepository.save(part);
+
+        testService.updateLastModified(part.getTestId(), userId);
     }
 
     public void swapPartsPosition(SwapPartsPositionRequest request){
@@ -68,12 +76,18 @@ public class PartService {
                 () -> new NotFoundException("Second part not found.")
         );
 
-        int temp = firstPart.getOrder();
-        firstPart.setOrder(secondPart.getOrder());
-        secondPart.setOrder(temp);
+        if(!firstPart.getTestId().equals(secondPart.getTestId())){
+            throw new BusinessException("First and second parts are not in the same test.");
+        }
+
+        int temp = firstPart.getPosition();
+        firstPart.setPosition(secondPart.getPosition());
+        secondPart.setPosition(temp);
 
         partRepository.save(firstPart);
         partRepository.save(secondPart);
+
+        testService.updateLastModified(firstPart.getTestId(), UUID.fromString(request.getUserId()));
     }
 
     public int getTotalQuestion(UUID testId) {
@@ -86,5 +100,24 @@ public class PartService {
         }
 
         return count;
+    }
+
+    public void updateQuestionCount(UUID partId, int count, UUID userId) {
+        Part part = partRepository.findById(partId).orElseThrow(
+                () -> new NotFoundException("Part not found.")
+        );
+
+        part.setQuestionCount(count);
+        partRepository.save(part);
+
+        testService.updateLastModified(part.getTestId(), userId);
+    }
+
+    public void updateLastModified(UUID partId, UUID userId) {
+        Part part = partRepository.findById(partId).orElseThrow(
+                () -> new NotFoundException("Part not found.")
+        );
+
+        testService.updateLastModified(part.getTestId(), userId);
     }
 }

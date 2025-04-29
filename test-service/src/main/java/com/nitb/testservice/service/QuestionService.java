@@ -4,7 +4,6 @@ import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.grpc.*;
-import com.nitb.testservice.repository.PartRepository;
 import com.nitb.testservice.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,17 +16,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
-    private final PartRepository partRepository;
+    private final PartService partService;
 
     public List<Question> createQuestions(CreateQuestionsRequest requests) {
         UUID partId = UUID.fromString(requests.getPartId());
+        UUID userId = UUID.fromString(requests.getUserId());
 
-        if(!partRepository.existsById(partId)) {
-            throw new NotFoundException("Part not found.");
-        }
-
+        //Create questions
         List<Question> savedQuestions = new ArrayList<>();
-        int order = questionRepository.countByPartId(partId) + 1;
+        int position = questionRepository.countByPartId(partId);
 
         for(CreateQuestionRequest request : requests.getRequestsList()){
             if(request.getContent().isEmpty()){
@@ -42,9 +39,11 @@ public class QuestionService {
                 throw new BusinessException("Correct answer is empty.");
             }
 
+            position++;
 
             Question question = Question.builder()
-                    .order(order)
+                    .partId(partId)
+                    .position(position)
                     .content(request.getContent())
                     .answers(request.getAnswers())
                     .correctAnswer(request.getCorrectAnswer())
@@ -52,12 +51,13 @@ public class QuestionService {
                     .build();
 
             savedQuestions.add(question);
-            order++;
+
         }
 
-        questionRepository.saveAll(savedQuestions);
+        //Update part
+        partService.updateQuestionCount(partId, position, userId);
 
-        return savedQuestions;
+        return questionRepository.saveAll(savedQuestions);
     }
 
     public Question getQuestionById(GetQuestionByIdRequest request) {
@@ -94,6 +94,9 @@ public class QuestionService {
             question.setExplanation(request.getExplanation());
         }
 
+        //Update part
+        partService.updateLastModified(question.getPartId(), UUID.fromString(request.getUserId()));
+
         return questionRepository.save(question);
     }
 
@@ -106,11 +109,18 @@ public class QuestionService {
                 () -> new NotFoundException("Second question not found.")
         );
 
-        int temp = firstQuestion.getOrder();
-        firstQuestion.setOrder(secondQuestion.getOrder());
-        secondQuestion.setOrder(temp);
+        if(!firstQuestion.getPartId().equals(secondQuestion.getPartId())){
+            throw new BusinessException("First and second questions are not in the same part.");
+        }
+
+        int temp = firstQuestion.getPosition();
+        firstQuestion.setPosition(secondQuestion.getPosition());
+        secondQuestion.setPosition(temp);
 
         questionRepository.save(firstQuestion);
         questionRepository.save(secondQuestion);
+
+        //Update part
+        partService.updateLastModified(firstQuestion.getPartId(), UUID.fromString(request.getUserId()));
     }
 }

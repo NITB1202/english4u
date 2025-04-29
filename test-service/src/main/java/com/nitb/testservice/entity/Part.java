@@ -21,8 +21,8 @@ public class Part {
     @Column(name = "test_id", nullable = false)
     private UUID testId;
 
-    @Column(name = "order", nullable = false)
-    private Integer order;
+    @Column(name = "position", nullable = false)
+    private Integer position;
 
     @Column(name = "content")
     private String content;

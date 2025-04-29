@@ -1,7 +1,9 @@
 package com.nitb.vocabularyservice.service;
 
 import com.nitb.common.exceptions.BusinessException;
+import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
+import com.nitb.vocabularyservice.dto.VocabularySetStatisticProjection;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
 import com.nitb.vocabularyservice.repository.VocabularySetRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -124,16 +127,41 @@ public class VocabularySetService {
         UUID userId = UUID.fromString(request.getUserId());
         LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
         LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
-        String pattern = switch (request.getGroupBy()) {
-            case WEEK -> "IYYY-IW";
-            case MONTH -> "YYYY-MM";
-            case YEAR -> "YYYY";
-            default -> "";
-        };
 
-        return vocabularySetRepository.countByPattern(userId, from, to, pattern)
-                .stream()
+        List<VocabularySetStatisticProjection> result = new ArrayList<>();
+
+        switch (request.getGroupBy()){
+            case WEEK -> result.addAll(vocabularySetRepository.countByWeek(userId, from, to));
+            case MONTH -> result.addAll(vocabularySetRepository.countByMonth(userId, from, to));
+            case YEAR -> result.addAll(vocabularySetRepository.countByYear(userId, from, to));
+            default -> throw new BusinessException("Invalid group by.");
+        }
+
+        return result.stream()
                 .map(p -> new VocabularySetStatisticDto(p.getTime(), p.getCount()))
                 .toList();
+    }
+
+    public void updateWordCount(UUID setId, int count, UUID userId) {
+        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
+                () -> new NotFoundException("Vocabulary set not found.")
+        );
+
+        set.setWordCount(count);
+        set.setUpdatedBy(userId);
+        set.setUpdatedAt(LocalDateTime.now());
+
+        vocabularySetRepository.save(set);
+    }
+
+    public void updateLastModified(UUID setId, UUID userId){
+        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
+                () -> new NotFoundException("Vocabulary set not found.")
+        );
+
+        set.setUpdatedBy(userId);
+        set.setUpdatedAt(LocalDateTime.now());
+
+        vocabularySetRepository.save(set);
     }
 }

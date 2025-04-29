@@ -1,6 +1,7 @@
 package com.nitb.testservice.controller;
 
 import com.nitb.common.grpc.ActionResponse;
+import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.entity.Test;
@@ -90,6 +91,14 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     public void restoreTest(RestoreTestRequest request, StreamObserver<DeleteTestResponse> streamObserver) {
         Test test = testService.restoreTest(request);
         DeleteTestResponse response = TestMapper.toDeleteTestResponse(test);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void getPublishedTestStatistics(GetPublishedTestStatisticsRequest request, StreamObserver<GetPublishedTestStatisticsResponse> streamObserver) {
+        List<TestStatisticDto> statistics = testService.getPublishedTestStatistics(request);
+        GetPublishedTestStatisticsResponse response = TestMapper.toGetPublishedTestStatisticsResponse(statistics);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
