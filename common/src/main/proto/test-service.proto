@@ -44,7 +44,7 @@ message TestDetailResponse {
   bool is_deleted = 12;
 }
 
-message GetTestRequest {
+message GetTestsRequest {
   int32 page = 1;
   int32 size = 2;
 }
@@ -63,7 +63,7 @@ message TestsPaginationResponse {
   int32 total_pages = 3;
 }
 
-message GetDeletedTestRequest {
+message GetDeletedTestsRequest {
   int32 page = 1;
   int32 size = 2;
 }
@@ -117,9 +117,9 @@ message CreatePartRequest {
 
 message PartResponse {
   string id = 1;
-  string test_id = 2;
-  int32 order = 3;
-  string content = 4;
+  int32 position = 2;
+  string content = 3;
+  int32 question_count = 4;
 }
 
 message GetPartContentByIdRequest {
@@ -136,8 +136,8 @@ message GetAllPartsForTestRequest {
 
 message PartSummaryResponse {
   string id = 1;
-  int32 order = 2;
-  int32 total_questions = 3;
+  int32 position = 2;
+  int32 question_count = 3;
 }
 
 message GetAllPartsForTestResponse {
@@ -152,14 +152,31 @@ message UpdatePartRequest {
 
 message SwapPartsPositionRequest {
   string user_id = 1;
-  int32 part1_id = 2;
-  int32 part2_id = 3;
+  string part1_id = 2;
+  string part2_id = 3;
+}
+
+message GetPublishedTestStatisticsRequest {
+  string user_id = 1;
+  string from = 2;
+  string to = 3;
+  common.GroupBy group_by = 4;
+}
+
+message TestStatistic {
+  string time = 1;
+  int32 test_count = 2;
+  int64 completed_users = 3;
+}
+
+message GetPublishedTestStatisticsResponse {
+  repeated TestStatistic statistics = 1;
 }
 
 //Questions
 message CreateQuestionRequest {
   string content = 1;
-  repeated string answers = 2;
+  string answers = 2;
   string correct_answer = 3;
   string explanation = 4;
 }
@@ -172,9 +189,9 @@ message CreateQuestionsRequest {
 
 message QuestionResponse {
   string id = 1;
-  int32 order = 2;
+  int32 position = 2;
   string content = 3;
-  repeated string answers = 4;
+  string answers = 4;
   string correct_answer = 5;
   string explanation = 6;
 }
@@ -191,11 +208,22 @@ message GetAllQuestionsForPartRequest {
   string part_id = 1;
 }
 
+message QuestionSummaryResponse {
+  string id = 1;
+  int32 position = 2;
+  string content = 3;
+  string answers = 4;
+}
+
+message GetAllQuestionForPartResponse {
+  repeated QuestionSummaryResponse questions = 1;
+}
+
 message UpdateQuestionRequest {
   string id = 1;
   string user_id = 2;
   string content = 3;
-  repeated string answers = 4;
+  string answers = 4;
   string correct_answer = 5;
   string explanation = 6;
 }
@@ -209,12 +237,13 @@ message SwapQuestionsPositionRequest {
 service TestService {
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
-  rpc GetTests(GetTestRequest) returns (TestsPaginationResponse);
-  rpc GetDeletedTests(GetDeletedTestRequest) returns (TestsPaginationResponse);
+  rpc GetTests(GetTestsRequest) returns (TestsPaginationResponse);
+  rpc GetDeletedTests(GetDeletedTestsRequest) returns (TestsPaginationResponse);
   rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);
   rpc UpdateTest(UpdateTestRequest) returns (UpdateTestResponse);
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
+  rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
 
   rpc CreatePart(CreatePartRequest) returns (PartResponse);
   rpc GetPartContentById(GetPartContentByIdRequest) returns (GetPartContentByIdResponse);
@@ -224,7 +253,7 @@ service TestService {
 
   rpc CreateQuestions(CreateQuestionsRequest) returns (QuestionsResponse);
   rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionResponse);
-  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(QuestionsResponse);
-  rpc UpdateQuestion(UpdateQuestionRequest) returns (QuestionsResponse);
+  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(GetAllQuestionForPartResponse);
+  rpc UpdateQuestion(UpdateQuestionRequest) returns (QuestionResponse);
   rpc SwapQuestionsPosition(SwapQuestionsPositionRequest) returns (common.ActionResponse);
 }

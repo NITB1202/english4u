@@ -2,38 +2,31 @@ package com.nitb.vocabularyservice.service;
 
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
-import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.*;
-import com.nitb.vocabularyservice.repository.VocabularySetRepository;
 import com.nitb.vocabularyservice.repository.VocabularyWordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
 public class VocabularyWordService {
     private final VocabularyWordRepository vocabularyWordRepository;
-    private final VocabularySetRepository vocabularySetRepository;
+    private final VocabularySetService vocabularySetService;
     private final int DEFAULT_SIZE = 10;
 
     public List<VocabularyWord> createVocabularyWords(CreateVocabularyWordsRequest request) {
         List<CreateVocabularyWordRequest> wordRequests = request.getWordsList();
         UUID setId = UUID.fromString(request.getSetId());
+        UUID userId = UUID.fromString(request.getUserId());
 
-        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
-                () -> new NotFoundException("Vocabulary set not found.")
-        );
-
-        int position = set.getWordCount();
+        int position = vocabularyWordRepository.countBySetId(setId);
         List<VocabularyWord> result = new ArrayList<>();
 
         //Create words
@@ -57,11 +50,7 @@ public class VocabularyWordService {
         }
 
         //Update set
-        set.setWordCount(position);
-        set.setUpdatedBy(UUID.fromString(request.getUserId()));
-        set.setUpdatedAt(LocalDateTime.now());
-
-        vocabularySetRepository.save(set);
+        vocabularySetService.updateWordCount(setId, position, userId);
 
         return vocabularyWordRepository.saveAll(result);
     }
@@ -117,7 +106,7 @@ public class VocabularyWordService {
         }
 
         //Update set
-        updateLastModified(vocabularyWord.getSetId(), UUID.fromString(request.getUserId()));
+        vocabularySetService.updateLastModified(vocabularyWord.getSetId(), UUID.fromString(request.getUserId()));
 
         return vocabularyWordRepository.save(vocabularyWord);
     }
@@ -147,7 +136,7 @@ public class VocabularyWordService {
         vocabularyWordRepository.save(secondWord);
 
         //Update set
-        updateLastModified(firstWord.getSetId(), UUID.fromString(request.getUserId()));
+        vocabularySetService.updateLastModified(firstWord.getSetId(), UUID.fromString(request.getUserId()));
     }
 
     public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
@@ -164,17 +153,6 @@ public class VocabularyWordService {
         vocabularyWordRepository.save(word);
 
         //Update set
-        updateLastModified(word.getSetId(), UUID.fromString(request.getUserId()));
-    }
-
-    private void updateLastModified(UUID setId, UUID userId){
-        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
-                () -> new NotFoundException("Vocabulary set not found.")
-        );
-
-        set.setUpdatedBy(userId);
-        set.setUpdatedAt(LocalDateTime.now());
-
-        vocabularySetRepository.save(set);
+        vocabularySetService.updateLastModified(word.getSetId(), UUID.fromString(request.getUserId()));
     }
 }

@@ -1,6 +1,6 @@
 package com.nitb.common.mappers;
 
-import com.nitb.vocabularyservice.grpc.GroupBy;
+import com.nitb.common.grpc.GroupBy;
 
 public class GroupByMapper {
     private GroupByMapper() {}

@@ -8,13 +8,6 @@ option java_multiple_files = true;
 option java_package = "com.nitb.vocabularyservice.grpc";
 option java_outer_classname = "VocabularyProto";
 
-enum GroupBy {
-  GROUP_BY_UNSPECIFIED = 0;
-  WEEK = 1;
-  MONTH = 2;
-  YEAR = 3;
-}
-
 //Sets
 message CreateVocabularySetRequest{
   string user_id = 1;
@@ -100,7 +93,7 @@ message CountPublishedVocabularySetsRequest{
   string user_id = 1;
   string from = 2;
   string to = 3;
-  GroupBy group_by = 4;
+  common.GroupBy group_by = 4;
 }
 
 message VocabularySetStatistic{
