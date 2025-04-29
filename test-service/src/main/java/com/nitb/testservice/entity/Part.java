@@ -1,6 +1,5 @@
 package com.nitb.testservice.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +26,7 @@ public class Part {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "question_count", nullable = false)
+    private Integer questionCount;
 }

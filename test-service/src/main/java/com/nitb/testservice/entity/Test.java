@@ -37,9 +37,6 @@ public class Test {
     @Column(name = "part_count", nullable = false)
     private Integer partCount;
 
-    @Column(name = "question_count", nullable = false)
-    private Integer questionCount;
-
     @Column(name = "completed_users", nullable = false)
     private Long completedUsers;
 

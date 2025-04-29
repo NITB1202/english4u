@@ -34,7 +34,7 @@ public class QuestionService {
                 throw new BusinessException("Content is empty.");
             }
 
-            if(request.getAnswersList().isEmpty()){
+            if(request.getAnswers().isEmpty()){
                 throw new BusinessException("Answers list is empty.");
             }
 
@@ -42,10 +42,11 @@ public class QuestionService {
                 throw new BusinessException("Correct answer is empty.");
             }
 
+
             Question question = Question.builder()
                     .order(order)
                     .content(request.getContent())
-                    .answers(request.getAnswersList().toString())
+                    .answers(request.getAnswers())
                     .correctAnswer(request.getCorrectAnswer())
                     .explanation(request.getExplanation())
                     .build();
@@ -81,8 +82,8 @@ public class QuestionService {
             question.setContent(request.getContent());
         }
 
-        if(!request.getAnswersList().isEmpty()){
-            question.setAnswers(request.getAnswersList().toString());
+        if(!request.getAnswers().isEmpty()){
+            question.setAnswers(request.getAnswers());
         }
 
         if(!request.getCorrectAnswer().isEmpty()){

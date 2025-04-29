@@ -30,6 +30,7 @@ public class PartService {
                 .testId(testId)
                 .order(order)
                 .content(request.getContent())
+                .questionCount(0)
                 .build();
 
         return partRepository.save(part);
@@ -73,5 +74,17 @@ public class PartService {
 
         partRepository.save(firstPart);
         partRepository.save(secondPart);
+    }
+
+    public int getTotalQuestion(UUID testId) {
+        int count = 0;
+
+        List<Part> parts = partRepository.getAllByTestId(testId);
+
+        for(Part part : parts) {
+            count += part.getQuestionCount();
+        }
+
+        return count;
     }
 }

@@ -1,5 +1,6 @@
 package com.nitb.testservice.service;
 
+import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
@@ -20,7 +21,11 @@ public class TestService {
 
     public Test createTest(CreateTestRequest request){
         if(testRepository.existsByNameAndIsDeletedFalse(request.getName())){
-            throw new RuntimeException("Test already exists.");
+            throw new BusinessException("Test already exists.");
+        }
+
+        if(request.getMinutes() <= 0){
+            throw new BusinessException("Minutes must be greater than 0.");
         }
 
         UUID userId = UUID.fromString(request.getUserId());
@@ -32,7 +37,6 @@ public class TestService {
                 .minutes(request.getMinutes())
                 .topic(request.getTopic())
                 .partCount(0)
-                .questionCount(0)
                 .completedUsers(0L)
                 .updatedBy(userId)
                 .updatedAt(LocalDateTime.now())
