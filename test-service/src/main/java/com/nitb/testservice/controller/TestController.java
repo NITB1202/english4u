@@ -183,9 +183,9 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
-    public void getAllQuestionsForPart(GetAllQuestionsForPartRequest request, StreamObserver<GetAllQuestionForPartResponse> streamObserver) {
+    public void getAllQuestionsForPart(GetAllQuestionsForPartRequest request, StreamObserver<GetAllQuestionsForPartResponse> streamObserver) {
         List<Question> questions = questionService.getAllQuestionsForPart(request);
-        GetAllQuestionForPartResponse response = QuestionMapper.toGetAllQuestionForPartResponse(questions);
+        GetAllQuestionsForPartResponse response = QuestionMapper.toGetAllQuestionsForPartResponse(questions);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

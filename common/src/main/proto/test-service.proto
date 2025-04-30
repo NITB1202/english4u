@@ -215,7 +215,7 @@ message QuestionSummaryResponse {
   string answers = 4;
 }
 
-message GetAllQuestionForPartResponse {
+message GetAllQuestionsForPartResponse {
   repeated QuestionSummaryResponse questions = 1;
 }
 
@@ -253,7 +253,7 @@ service TestService {
 
   rpc CreateQuestions(CreateQuestionsRequest) returns (QuestionsResponse);
   rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionResponse);
-  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(GetAllQuestionForPartResponse);
+  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(GetAllQuestionsForPartResponse);
   rpc UpdateQuestion(UpdateQuestionRequest) returns (QuestionResponse);
   rpc SwapQuestionsPosition(SwapQuestionsPositionRequest) returns (common.ActionResponse);
 }

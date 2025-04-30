@@ -1,7 +1,7 @@
 package com.nitb.testservice.mapper;
 
 import com.nitb.testservice.entity.Question;
-import com.nitb.testservice.grpc.GetAllQuestionForPartResponse;
+import com.nitb.testservice.grpc.GetAllQuestionsForPartResponse;
 import com.nitb.testservice.grpc.QuestionResponse;
 import com.nitb.testservice.grpc.QuestionSummaryResponse;
 import com.nitb.testservice.grpc.QuestionsResponse;
@@ -41,12 +41,12 @@ public class QuestionMapper {
                 .build();
     }
 
-    public static GetAllQuestionForPartResponse toGetAllQuestionForPartResponse(List<Question> questions) {
+    public static GetAllQuestionsForPartResponse toGetAllQuestionsForPartResponse(List<Question> questions) {
         List<QuestionSummaryResponse> questionResponses = questions.stream()
                 .map(QuestionMapper::toQuestionSummaryResponse)
                 .toList();
 
-        return GetAllQuestionForPartResponse.newBuilder()
+        return GetAllQuestionsForPartResponse.newBuilder()
                 .addAllQuestions(questionResponses)
                 .build();
     }
