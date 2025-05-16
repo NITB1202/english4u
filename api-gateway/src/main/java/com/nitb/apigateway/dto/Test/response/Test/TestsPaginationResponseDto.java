@@ -9,7 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TestPaginationResponseDto {
+public class TestsPaginationResponseDto {
     private List<TestSummaryResponseDto> tests;
 
     private Long totalItems;

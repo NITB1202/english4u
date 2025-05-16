@@ -25,11 +25,11 @@ public class TestServiceGrpcClient {
 
     //Tests
     public CreateTestResponse createTest(UUID userId, CreateTestRequestDto dto) {
-        String topic = dto.getTopic() != null ? dto.getTopic() : "";
+        String topic = dto.getTopic() != null ? dto.getTopic().trim() : "";
 
         CreateTestRequest request = CreateTestRequest.newBuilder()
                 .setUserId(userId.toString())
-                .setName(dto.getName())
+                .setName(dto.getName().trim())
                 .setMinutes(dto.getMinutes())
                 .setTopic(topic)
                 .build();
@@ -74,9 +74,9 @@ public class TestServiceGrpcClient {
     }
 
     public UpdateTestResponse updateTest(UUID id, UUID userId, UpdateTestRequestDto dto) {
-        String name = dto.getName() != null ? dto.getName() : "";
+        String name = dto.getName() != null ? dto.getName().trim() : "";
         int minutes = dto.getMinutes() != null ? dto.getMinutes() : 0;
-        String topic = dto.getTopic() != null ? dto.getTopic() : "";
+        String topic = dto.getTopic() != null ? dto.getTopic().trim() : "";
 
         UpdateTestRequest request = UpdateTestRequest.newBuilder()
                 .setId(id.toString())
