@@ -1,8 +1,10 @@
 package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Test.request.Question.CreateQuestionRequestDto;
+import com.nitb.apigateway.dto.Test.response.Question.QuestionResponseDto;
 import com.nitb.apigateway.dto.Test.response.Question.QuestionSummaryResponseDto;
 import com.nitb.testservice.grpc.CreateQuestionRequest;
+import com.nitb.testservice.grpc.QuestionResponse;
 import com.nitb.testservice.grpc.QuestionSummaryResponse;
 
 import java.util.Arrays;
@@ -32,6 +34,20 @@ public class QuestionMapper {
                 .position(question.getPosition())
                 .content(question.getContent())
                 .answers(answers)
+                .build();
+    }
+
+    public static QuestionResponseDto toQuestionResponseDto(QuestionResponse question) {
+        List<String> answers = Arrays.asList(question.getAnswers().split(","));
+        char correctAnswer = question.getCorrectAnswer().charAt(0);
+
+        return QuestionResponseDto.builder()
+                .id(UUID.fromString(question.getId()))
+                .position(question.getPosition())
+                .content(question.getContent())
+                .answers(answers)
+                .correctAnswer(correctAnswer)
+                .explanation(question.getExplanation())
                 .build();
     }
 }

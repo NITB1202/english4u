@@ -33,12 +33,14 @@ public class PartController {
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<PartResponseDto>> addPartToTest(@RequestParam UUID userId,
-                                                               @PathVariable UUID testId, CreatePartRequestDto request) {
+                                                               @PathVariable UUID testId,
+                                                               @Valid @RequestBody CreatePartRequestDto request) {
         return partService.addPartToTest(userId, testId, request).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get details of a part by id.")
+    @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<PartDetailResponseDto>> getPartDetailById(@PathVariable UUID id) {
@@ -68,7 +70,7 @@ public class PartController {
     }
 
     @PatchMapping("/swap")
-    @Operation(summary = "Swap the positions of two parts within the same set.")
+    @Operation(summary = "Swap the positions of two parts within the same test.")
     @ApiResponse(responseCode = "200", description = "Swap successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))

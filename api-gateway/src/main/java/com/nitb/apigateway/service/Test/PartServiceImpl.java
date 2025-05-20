@@ -31,8 +31,14 @@ public class PartServiceImpl implements PartService {
         return Mono.fromCallable(()->{
             PartResponse part = testGrpc.createPart(userId, testId, request);
             UUID partId = UUID.fromString(part.getId());
+
             testGrpc.createQuestions(userId, partId, request.getQuestions());
-            return PartMapper.toPartResponseDto(part);
+
+            int questionCount = request.getQuestions().size();
+            PartResponseDto response = PartMapper.toPartResponseDto(part);
+            response.setQuestionCount(questionCount);
+
+            return response;
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

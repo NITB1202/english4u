@@ -120,10 +120,12 @@ public class TestServiceGrpcClient {
 
     //Parts
     public PartResponse createPart(UUID userId, UUID testId, CreatePartRequestDto dto) {
+        String content = dto.getContent() != null ? dto.getContent().trim() : "";
+
         CreatePartRequest request = CreatePartRequest.newBuilder()
                 .setTestId(testId.toString())
                 .setUserId(userId.toString())
-                .setContent(dto.getContent())
+                .setContent(content)
                 .build();
 
         return blockingStub.createPart(request);
@@ -216,12 +218,12 @@ public class TestServiceGrpcClient {
     }
 
     public ActionResponse swapQuestionsPosition(UUID userId, UUID question1Id, UUID question2Id) {
-        SwapPartsPositionRequest request = SwapPartsPositionRequest.newBuilder()
+        SwapQuestionsPositionRequest request = SwapQuestionsPositionRequest.newBuilder()
                 .setUserId(userId.toString())
-                .setPart1Id(question1Id.toString())
-                .setPart2Id(question2Id.toString())
+                .setQuestion1Id(question1Id.toString())
+                .setQuestion2Id(question2Id.toString())
                 .build();
 
-        return blockingStub.swapPartsPosition(request);
+        return blockingStub.swapQuestionsPosition(request);
     }
 }
