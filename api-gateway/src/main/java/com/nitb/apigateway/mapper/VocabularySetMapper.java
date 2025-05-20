@@ -10,20 +10,13 @@ import java.util.UUID;
 public class VocabularySetMapper {
     private VocabularySetMapper() {}
 
-    public static VocabularySetWithWordsResponseDto toVocabularySetWithWordsResponse(CreateVocabularySetResponse set, VocabularyWordsResponse words) {
-        List<VocabularyWordResponseDto> dto = words != null ?
-                words.getWordsList().stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponseDto)
-                .toList()
-                : null;
-
-        return VocabularySetWithWordsResponseDto.builder()
+    public static CreateVocabularySetResponseDto toCreateVocabularySetResponseDto(CreateVocabularySetResponse set) {
+        return CreateVocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .name(set.getName())
-                .wordCount(dto != null ? dto.size() : 0)
+                .version(1)
                 .createdBy(UUID.fromString(set.getCreatedBy()))
-                .createAt(LocalDateTime.parse(set.getCreateAt()))
-                .words(dto)
+                .createdAt(LocalDateTime.parse(set.getCreateAt()))
                 .build();
     }
 
@@ -31,6 +24,7 @@ public class VocabularySetMapper {
         return VocabularySetSummaryResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .name(set.getName())
+                .version(-1)
                 .wordCount(set.getWordCount())
                 .build();
     }
@@ -41,6 +35,7 @@ public class VocabularySetMapper {
                 .createdBy(UUID.fromString(set.getCreatedBy()))
                 .createdAt(LocalDateTime.parse(set.getCreateAt()))
                 .name(set.getName())
+                .version(-1)
                 .wordCount(set.getWordCount())
                 .updatedBy(UUID.fromString(set.getUpdatedBy()))
                 .updatedAt(LocalDateTime.parse(set.getUpdateAt()))
@@ -65,6 +60,7 @@ public class VocabularySetMapper {
         return UpdateVocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .name(set.getName())
+                .version(-1)
                 .updatedBy(UUID.fromString(set.getUpdatedBy()))
                 .updateAt(LocalDateTime.parse(set.getUpdateAt()))
                 .build();
@@ -73,6 +69,7 @@ public class VocabularySetMapper {
     public static DeleteVocabularySetResponseDto toDeleteVocabularySetResponseDto(DeleteVocabularySetResponse set) {
         return DeleteVocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
+                .version(-1)
                 .updatedBy(UUID.fromString(set.getUpdatedBy()))
                 .updateAt(LocalDateTime.parse(set.getUpdateAt()))
                 .isDeleted(set.getIsDeleted())

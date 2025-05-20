@@ -7,24 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VocabularySetWithWordsResponseDto {
+public class CreateVocabularySetResponseDto {
     private UUID id;
 
     private String name;
 
-    private Integer wordCount;
+    private int version;
 
     private UUID createdBy;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createAt;
-
-    private List<VocabularyWordResponseDto> words;
+    private LocalDateTime createdAt;
 }
