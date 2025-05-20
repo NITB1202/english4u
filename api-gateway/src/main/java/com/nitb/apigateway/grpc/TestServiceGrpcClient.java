@@ -119,9 +119,9 @@ public class TestServiceGrpcClient {
     }
 
     //Parts
-    public PartResponse createPart(UUID userId, CreatePartRequestDto dto) {
+    public PartResponse createPart(UUID userId, UUID testId, CreatePartRequestDto dto) {
         CreatePartRequest request = CreatePartRequest.newBuilder()
-                .setTestId(dto.getTestId().toString())
+                .setTestId(testId.toString())
                 .setUserId(userId.toString())
                 .setContent(dto.getContent())
                 .build();

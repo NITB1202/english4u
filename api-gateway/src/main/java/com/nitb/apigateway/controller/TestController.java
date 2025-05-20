@@ -95,7 +95,7 @@ public class TestController {
     }
 
     @PatchMapping("/restore/{id}")
-    @Operation(summary = "Restore a deleted plan.")
+    @Operation(summary = "Restore a deleted test.")
     @ApiResponse(responseCode = "200", description = "Restore successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))

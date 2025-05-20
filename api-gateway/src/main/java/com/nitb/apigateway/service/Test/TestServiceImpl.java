@@ -1,5 +1,6 @@
 package com.nitb.apigateway.service.Test;
 
+import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
 import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
 import com.nitb.apigateway.dto.Test.response.Test.*;
@@ -23,8 +24,20 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<CreateTestResponseDto> createTest(UUID userId, CreateTestRequestDto request) {
         return Mono.fromCallable(()->{
-            CreateTestResponse response = testGrpc.createTest(userId, request);
-            return TestMapper.toCreateTestResponseDto(response);
+            //Create test
+            CreateTestResponse test = testGrpc.createTest(userId, request);
+            UUID testId = UUID.fromString(test.getId());
+
+            //Create parts
+            for(CreatePartRequestDto part : request.getParts() ) {
+                PartResponse savedPart = testGrpc.createPart(userId, testId, part);
+                UUID savedPartId = UUID.fromString(savedPart.getId());
+
+                //Create questions
+                testGrpc.createQuestions(userId, savedPartId, part.getQuestions());
+            }
+
+            return TestMapper.toCreateTestResponseDto(test);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -15,9 +14,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class CreatePartRequestDto {
-    @NotNull(message = "Test id is required.")
-    private UUID testId;
-
     private String content;
 
     @NotNull(message = "Questions are required.")
