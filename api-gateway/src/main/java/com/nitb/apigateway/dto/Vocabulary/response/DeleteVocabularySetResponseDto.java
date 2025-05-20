@@ -16,6 +16,8 @@ import java.util.UUID;
 public class DeleteVocabularySetResponseDto {
     private UUID id;
 
+    private int version;
+
     private UUID updatedBy;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -2,7 +2,6 @@ package com.nitb.apigateway.grpc;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularyWordRequestDto;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.common.grpc.ActionResponse;
@@ -80,15 +79,15 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.searchVocabularySetByName(request);
     }
 
-    public UpdateVocabularySetResponse updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto dto) {
-        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
-                .setId(id.toString())
-                .setUserId(userId.toString())
-                .setName(dto.getName())
-                .build();
-
-        return blockingStub.updateVocabularySet(request);
-    }
+//    public UpdateVocabularySetResponse updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto dto) {
+//        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
+//                .setId(id.toString())
+//                .setUserId(userId.toString())
+//                .setName(dto.getName())
+//                .build();
+//
+//        return blockingStub.updateVocabularySet(request);
+//    }
 
     public DeleteVocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {
         DeleteVocabularySetRequest request = DeleteVocabularySetRequest.newBuilder()
@@ -140,18 +139,18 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.searchVocabularyWordByWord(request);
     }
 
-    public VocabularyWordResponse updateVocabularyWord(UUID id, UUID userId, UpdateVocabularyWordRequestDto dto){
-        UpdateVocabularyWordRequest request = UpdateVocabularyWordRequest.newBuilder()
-                .setId(id.toString())
-                .setUserId(userId.toString())
-                .setWord(Optional.ofNullable(dto.getWord()).orElse(""))
-                .setPronunciation(Optional.ofNullable(dto.getPronunciation()).orElse(""))
-                .setTranslation(Optional.ofNullable(dto.getTranslation()).orElse(""))
-                .setExample(Optional.ofNullable(dto.getExample()).orElse(""))
-                .build();
-
-        return blockingStub.updateVocabularyWord(request);
-    }
+//    public VocabularyWordResponse updateVocabularyWord(UUID id, UUID userId, UpdateVocabularyWordRequestDto dto){
+//        UpdateVocabularyWordRequest request = UpdateVocabularyWordRequest.newBuilder()
+//                .setId(id.toString())
+//                .setUserId(userId.toString())
+//                .setWord(Optional.ofNullable(dto.getWord()).orElse(""))
+//                .setPronunciation(Optional.ofNullable(dto.getPronunciation()).orElse(""))
+//                .setTranslation(Optional.ofNullable(dto.getTranslation()).orElse(""))
+//                .setExample(Optional.ofNullable(dto.getExample()).orElse(""))
+//                .build();
+//
+//        return blockingStub.updateVocabularyWord(request);
+//    }
 
     public ActionResponse switchWordPosition(UUID word1Id, UUID word2Id, UUID userId){
         SwitchWordPositionRequest request = SwitchWordPositionRequest.newBuilder()

@@ -34,7 +34,7 @@ public class VocabularySetController {
     @ApiResponse(responseCode = "200", description = "Create successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<VocabularySetWithWordsResponseDto>> createVocabularySet(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CreateVocabularySetResponseDto>> createVocabularySet(@RequestParam UUID userId,
                                                                                        @Valid @RequestBody CreateVocabularySetRequestDto request) {
         return vocabularySetService.createVocabularySet(userId, request).map(ResponseEntity::ok);
     }

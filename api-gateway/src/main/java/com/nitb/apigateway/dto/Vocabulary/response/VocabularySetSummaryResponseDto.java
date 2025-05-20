@@ -16,5 +16,7 @@ public class VocabularySetSummaryResponseDto {
 
     private String name;
 
+    private int version;
+
     private Integer wordCount;
 }

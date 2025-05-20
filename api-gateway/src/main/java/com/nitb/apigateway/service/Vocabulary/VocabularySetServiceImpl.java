@@ -21,15 +21,11 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     private final VocabularyServiceGrpcClient grpcClient;
 
     @Override
-    public Mono<VocabularySetWithWordsResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
+    public Mono<CreateVocabularySetResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             CreateVocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            VocabularyWordsResponse words = request.getWords() != null ?
-                    grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords())
-                    : null;
-
-            return VocabularySetMapper.toVocabularySetWithWordsResponse(set, words);
-
+            grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
+            return VocabularySetMapper.toCreateVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -66,11 +62,13 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
+    public Mono<UpdateVocabularySetResponseDto> updateVocabularySetName(UUID id, UUID userId, String name) {
+        return null;
+    }
+
+    @Override
     public Mono<UpdateVocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
-        return Mono.fromCallable(()->{
-            UpdateVocabularySetResponse set = grpcClient.updateVocabularySet(id, userId, request);
-            return VocabularySetMapper.toUpdateVocabularySetResponseDto(set);
-        }).subscribeOn(Schedulers.boundedElastic());
+        return null;
     }
 
     @Override

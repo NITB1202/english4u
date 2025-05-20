@@ -23,6 +23,8 @@ public class VocabularySetDetailResponseDto {
 
     private String name;
 
+    private int version;
+
     private Integer wordCount;
 
     private UUID updatedBy;

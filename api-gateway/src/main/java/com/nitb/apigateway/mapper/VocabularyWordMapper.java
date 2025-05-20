@@ -2,7 +2,6 @@ package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordDetailResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.vocabularyservice.grpc.CreateVocabularyWordRequest;
 import com.nitb.vocabularyservice.grpc.VocabularyWordDetailResponse;
@@ -21,17 +20,6 @@ public class VocabularyWordMapper {
                 .setPronunciation(word.getPronunciation())
                 .setTranslation(word.getTranslation())
                 .setExample(word.getExample())
-                .build();
-    }
-
-    public static VocabularyWordResponseDto toVocabularyWordResponseDto(VocabularyWordResponse word) {
-        return VocabularyWordResponseDto.builder()
-                .id(UUID.fromString(word.getId()))
-                .position(word.getPosition())
-                .word(word.getWord())
-                .pronunciation(word.getPronunciation())
-                .translation(word.getTranslation())
-                .example(word.getExample())
                 .build();
     }
 
