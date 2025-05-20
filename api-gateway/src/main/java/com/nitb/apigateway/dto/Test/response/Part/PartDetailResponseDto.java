@@ -14,8 +14,6 @@ import java.util.UUID;
 public class PartDetailResponseDto {
     private UUID id;
 
-    private Integer position;
-
     private String content;
 
     private List<QuestionSummaryResponseDto> questions;
