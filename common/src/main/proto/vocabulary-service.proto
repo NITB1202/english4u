@@ -178,14 +178,14 @@ service VocabularyService {
   rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
   rpc SearchDeletedVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
   rpc ValidateUpdateVocabularySet(ValidateUpdateVocabularySetRequest) returns (google.protobuf.Empty);
-  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (common.ActionResponse);
+  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (google.protobuf.Empty);
   rpc UpdateVocabularySetName(UpdateVocabularySetNameRequest) returns (UpdateVocabularySetResponse);
   rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc RestoreVocabularySet(RestoreVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);
 
   //Words
-  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (common.ActionResponse);
+  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (google.protobuf.Empty);
   rpc GetVocabularyWords(GetVocabularyWordsRequest) returns (VocabularyWordsPaginationResponse);
   rpc SearchVocabularyWordByWord(SearchVocabularyWordByWordRequest) returns (VocabularyWordsPaginationResponse);
   rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);

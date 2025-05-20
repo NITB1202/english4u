@@ -81,15 +81,9 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     }
 
     @Override
-    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<ActionResponse> streamObserver){
+    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<Empty> streamObserver){
         vocabularySetService.updateVocabularySet(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Update successfully.")
-                .build();
-
-        streamObserver.onNext(response);
+        streamObserver.onNext(Empty.getDefaultInstance());
         streamObserver.onCompleted();
     }
 
@@ -127,15 +121,9 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     //Word section
     @Override
-    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<ActionResponse> streamObserver){
+    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<Empty> streamObserver){
         vocabularyWordService.createVocabularyWords(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Create successfully.")
-                .build();
-
-        streamObserver.onNext(response);
+        streamObserver.onNext(Empty.getDefaultInstance());
         streamObserver.onCompleted();
     }
 
