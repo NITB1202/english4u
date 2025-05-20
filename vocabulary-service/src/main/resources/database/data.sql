@@ -1,7 +1,7 @@
-INSERT INTO vocabulary_sets (id, created_by, created_at, name, word_count, updated_by, updated_at, is_deleted)
+INSERT INTO vocabulary_sets (id, created_by, created_at, name, version, word_count, updated_by, updated_at, is_deleted)
 VALUES
-    ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', NOW(), 'Basic Vocabulary', 2, '22222222-2222-2222-2222-222222222222', NOW(), FALSE),
-    ('22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333', NOW(), 'Advanced Vocabulary', 2, '44444444-4444-4444-4444-444444444444', NOW(), FALSE);
+    ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', NOW(), 'Basic Vocabulary',1, 2, '22222222-2222-2222-2222-222222222222', NOW(), FALSE),
+    ('22222222-2222-2222-2222-222222222222', '33333333-3333-3333-3333-333333333333', NOW(), 'Advanced Vocabulary', 1,2, '44444444-4444-4444-4444-444444444444', NOW(), FALSE);
 
 INSERT INTO vocabulary_words (id, set_id, position, word, pronun, ex, trans, image_url)
 VALUES

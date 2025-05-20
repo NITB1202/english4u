@@ -14,9 +14,12 @@ import java.util.UUID;
 
 public interface VocabularySetRepository extends JpaRepository<VocabularySet, UUID> {
     boolean existsByNameAndIsDeletedFalse(String name);
+    boolean existsByNameAndVersion(String name, int version);
     Page<VocabularySet> findAllByIsDeletedFalse(Pageable pageable);
     Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
     Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);
+    Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedTrue(String name, Pageable pageable);
+    VocabularySet findByNameAndIsDeletedFalse(String name);
     @Query(value = """
         SELECT TO_CHAR(created_at, 'IYYY-IW') AS time,
                COUNT(*) AS count

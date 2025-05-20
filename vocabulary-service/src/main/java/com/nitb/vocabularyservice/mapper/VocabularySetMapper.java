@@ -25,6 +25,7 @@ public class VocabularySetMapper {
                 .setCreatedBy(set.getCreatedBy().toString())
                 .setCreateAt(set.getCreatedAt().toString())
                 .setName(set.getName())
+                .setVersion(set.getVersion())
                 .setWordCount(set.getWordCount())
                 .setUpdatedBy(set.getUpdatedBy().toString())
                 .setUpdateAt(set.getUpdatedAt().toString())
@@ -36,6 +37,7 @@ public class VocabularySetMapper {
         return VocabularySetSummaryResponse.newBuilder()
                 .setId(set.getId().toString())
                 .setName(set.getName())
+                .setVersion(set.getVersion())
                 .setWordCount(set.getWordCount())
                 .build();
     }
@@ -56,6 +58,7 @@ public class VocabularySetMapper {
         return UpdateVocabularySetResponse.newBuilder()
                 .setId(set.getId().toString())
                 .setName(set.getName())
+                .setVersion(set.getVersion())
                 .setUpdatedBy(set.getUpdatedBy().toString())
                 .setUpdateAt(set.getUpdatedAt().toString())
                 .build();

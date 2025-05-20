@@ -3,6 +3,7 @@ syntax = "proto3";
 package vocabulary;
 
 import "common.proto";
+import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
 option java_package = "com.nitb.vocabularyservice.grpc";
@@ -26,10 +27,11 @@ message VocabularySetDetailResponse{
   string created_by = 2;
   string create_at  = 3;
   string name = 4;
-  int32 word_count = 5;
-  string updated_by = 6;
-  string update_at = 7;
-  bool is_deleted = 8;
+  int32 version = 5;
+  int32 word_count = 6;
+  string updated_by = 7;
+  string update_at = 8;
+  bool is_deleted = 9;
 }
 
 message GetVocabularySetByIdRequest{
@@ -44,7 +46,8 @@ message GetVocabularySetsRequest{
 message VocabularySetSummaryResponse{
   string id = 1;
   string name = 2;
-  int32 wordCount = 3;
+  int32 version = 3;
+  int32 wordCount = 4;
 }
 
 message VocabularySetsResponse{
@@ -59,7 +62,18 @@ message SearchVocabularySetByNameRequest{
   int32 size = 3;
 }
 
+message ValidateUpdateVocabularySetRequest {
+  string id = 1;
+}
+
 message UpdateVocabularySetRequest{
+  string id = 1;
+  int32 version = 2;
+  string created_by = 3;
+  string create_at = 4;
+}
+
+message UpdateVocabularySetNameRequest {
   string id = 1;
   string user_id = 2;
   string name = 3;
@@ -68,8 +82,9 @@ message UpdateVocabularySetRequest{
 message UpdateVocabularySetResponse{
   string id = 1;
   string name = 2;
-  string updated_by = 3;
-  string update_at = 4;
+  int32 version = 3;
+  string updated_by = 4;
+  string update_at = 5;
 }
 
 message DeleteVocabularySetRequest{
@@ -119,26 +134,13 @@ message CreateVocabularyWordsRequest{
   string set_id = 3;
 }
 
-message VocabularyWordResponse{
-  string id = 1;
-  int32 position = 2;
-  string word = 3;
-  string pronunciation = 4;
-  string example = 5;
-  string translation = 6;
-}
-
-message VocabularyWordsResponse{
-  repeated VocabularyWordResponse words = 1;
-}
-
 message GetVocabularyWordsRequest{
   string set_id = 1;
   int32 page = 2;
   int32 size = 3;
 }
 
-message VocabularyWordDetailResponse{
+message VocabularyWordResponse{
   string id = 1;
   int32 position = 2;
   string word = 3;
@@ -149,7 +151,7 @@ message VocabularyWordDetailResponse{
 }
 
 message VocabularyWordsPaginationResponse{
-  repeated VocabularyWordDetailResponse words = 1;
+  repeated VocabularyWordResponse words = 1;
   int64 total_items = 2;
   int32 total_page = 3;
 }
@@ -161,25 +163,10 @@ message SearchVocabularyWordByWordRequest{
   int32 size = 4;
 }
 
-message UpdateVocabularyWordRequest{
-  string id = 1;
-  string user_id = 2;
-  string word = 3;
-  string pronunciation = 4;
-  string example = 5;
-  string translation = 6;
-}
-
 message UploadVocabularyWordImageRequest{
   string id = 1;
   string user_id = 2;
   string image_url = 3;
-}
-
-message SwitchWordPositionRequest{
-  string word1_id = 1;
-  string word2_id = 2;
-  string user_id = 3;
 }
 
 service VocabularyService {
@@ -189,16 +176,17 @@ service VocabularyService {
   rpc GetVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
   rpc GetDeletedVocabularySets(GetVocabularySetsRequest) returns (VocabularySetsResponse);
   rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
-  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (UpdateVocabularySetResponse);
+  rpc SearchDeletedVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
+  rpc ValidateUpdateVocabularySet(ValidateUpdateVocabularySetRequest) returns (google.protobuf.Empty);
+  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (common.ActionResponse);
+  rpc UpdateVocabularySetName(UpdateVocabularySetNameRequest) returns (UpdateVocabularySetResponse);
   rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc RestoreVocabularySet(RestoreVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);
 
   //Words
-  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);
+  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (common.ActionResponse);
   rpc GetVocabularyWords(GetVocabularyWordsRequest) returns (VocabularyWordsPaginationResponse);
   rpc SearchVocabularyWordByWord(SearchVocabularyWordByWordRequest) returns (VocabularyWordsPaginationResponse);
-  rpc UpdateVocabularyWord(UpdateVocabularyWordRequest) returns (VocabularyWordResponse);
-  rpc SwitchWordPosition(SwitchWordPositionRequest) returns (common.ActionResponse);
   rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);
 }

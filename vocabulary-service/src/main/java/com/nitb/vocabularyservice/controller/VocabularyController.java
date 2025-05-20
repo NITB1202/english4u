@@ -1,5 +1,6 @@
 package com.nitb.vocabularyservice.controller;
 
+import com.google.protobuf.Empty;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
@@ -65,8 +66,36 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     }
 
     @Override
-    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<UpdateVocabularySetResponse> streamObserver){
-        VocabularySet set = vocabularySetService.updateVocabularySet(request);
+    public void searchDeletedVocabularySetByName(SearchVocabularySetByNameRequest request, StreamObserver<VocabularySetsResponse> streamObserver) {
+        Page<VocabularySet> sets = vocabularySetService.searchDeletedVocabularySetByName(request);
+        VocabularySetsResponse response = VocabularySetMapper.toVocabularySetsResponse(sets);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void validateUpdateVocabularySet(ValidateUpdateVocabularySetRequest request, StreamObserver<Empty> streamObserver) {
+        vocabularySetService.validateUpdateVocabularySet(request);
+        streamObserver.onNext(Empty.getDefaultInstance());
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<ActionResponse> streamObserver){
+        vocabularySetService.updateVocabularySet(request);
+
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Update successfully.")
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void updateVocabularySetName(UpdateVocabularySetNameRequest request, StreamObserver<UpdateVocabularySetResponse> streamObserver) {
+        VocabularySet set = vocabularySetService.updateVocabularySetName(request);
         UpdateVocabularySetResponse response = VocabularySetMapper.toUpdateVocabularySetResponse(set);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
@@ -98,9 +127,14 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     //Word section
     @Override
-    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<VocabularyWordsResponse> streamObserver){
-        List<VocabularyWord> words = vocabularyWordService.createVocabularyWords(request);
-        VocabularyWordsResponse response = VocabularyWordMapper.toVocabularyWordsResponse(words);
+    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<ActionResponse> streamObserver){
+        vocabularyWordService.createVocabularyWords(request);
+
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Create successfully.")
+                .build();
+
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -117,26 +151,6 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     public void searchVocabularyWordByWord(SearchVocabularyWordByWordRequest request, StreamObserver<VocabularyWordsPaginationResponse> streamObserver){
         Page<VocabularyWord> words = vocabularyWordService.searchVocabularyWordByWord(request);
         VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void updateVocabularyWord(UpdateVocabularyWordRequest request, StreamObserver<VocabularyWordResponse> streamObserver){
-        VocabularyWord word = vocabularyWordService.updateVocabularyWord(request);
-        VocabularyWordResponse response = VocabularyWordMapper.toVocabularyWordResponse(word);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void switchWordPosition(SwitchWordPositionRequest request, StreamObserver<ActionResponse> streamObserver){
-        vocabularyWordService.switchWordPosition(request);
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Switch successfully.")
-                .build();
-
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
