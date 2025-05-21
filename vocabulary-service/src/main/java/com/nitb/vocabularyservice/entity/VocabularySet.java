@@ -28,6 +28,9 @@ public class VocabularySet {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @Column(name = "version", nullable = false)
+    private Integer version;
+
     @Column(name = "word_count", nullable = false)
     private Integer wordCount;
 

@@ -3,6 +3,7 @@ CREATE TABLE vocabulary_sets (
     created_by UUID NOT NULL,
     created_at TIMESTAMP NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
+    version INT NOT NULL,
     word_count INT NOT NULL,
     updated_by UUID NOT NULL,
     updated_at TIMESTAMP NOT NULL,
