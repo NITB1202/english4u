@@ -94,12 +94,10 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.updateVocabularySetName(request);
     }
 
-    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId, UUID createdBy, LocalDateTime createAt) {
+    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId) {
         UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
                 .setOldId(oldId.toString())
                 .setNewId(newId.toString())
-                .setCreatedBy(createdBy.toString())
-                .setCreateAt(createAt.toString())
                 .build();
 
         return blockingStub.updateVocabularySet(request);

@@ -96,11 +96,8 @@ public class VocabularySetServiceImpl implements VocabularySetService {
             UUID updatedSetId = UUID.fromString(updatedSet.getId());
             grpcClient.createVocabularyWords(updatedSetId, userId, request.getWords());
 
-            UUID createdBy = UUID.fromString(setDetail.getCreatedBy());
-            LocalDateTime createAt = LocalDateTime.parse(setDetail.getCreateAt());
-
             //Preserve the original creation info when creating a new version.
-            UpdateVocabularySetResponse response = grpcClient.updateVocabularySet(id, updatedSetId, createdBy, createAt);
+            UpdateVocabularySetResponse response = grpcClient.updateVocabularySet(id, updatedSetId);
             return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
