@@ -67,8 +67,8 @@ message ValidateUpdateVocabularySetRequest {
 }
 
 message UpdateVocabularySetRequest{
-  string id = 1;
-  int32 version = 2;
+  string oldId = 1;
+  string newId = 2;
   string created_by = 3;
   string create_at = 4;
 }
@@ -178,8 +178,8 @@ service VocabularyService {
   rpc SearchVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
   rpc SearchDeletedVocabularySetByName(SearchVocabularySetByNameRequest) returns (VocabularySetsResponse);
   rpc ValidateUpdateVocabularySet(ValidateUpdateVocabularySetRequest) returns (google.protobuf.Empty);
-  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (google.protobuf.Empty);
   rpc UpdateVocabularySetName(UpdateVocabularySetNameRequest) returns (UpdateVocabularySetResponse);
+  rpc UpdateVocabularySet(UpdateVocabularySetRequest) returns (UpdateVocabularySetResponse);
   rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc RestoreVocabularySet(RestoreVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);

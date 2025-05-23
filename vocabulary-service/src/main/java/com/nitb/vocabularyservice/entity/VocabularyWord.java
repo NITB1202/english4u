@@ -27,7 +27,7 @@ public class VocabularyWord {
     @Column(name = "word", nullable = false)
     private String word;
 
-    @Column(name = "pronun", nullable = false)
+    @Column(name = "pronunciation", nullable = false)
     private String pronunciation;
 
     @Column(name = "ex", nullable = false)

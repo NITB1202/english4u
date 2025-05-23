@@ -18,8 +18,6 @@ public class CreateVocabularySetResponseDto {
 
     private String name;
 
-    private int version;
-
     private UUID createdBy;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

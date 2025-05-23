@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,7 +25,10 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<CreateVocabularySetResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
             CreateVocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
-            grpcClient.createVocabularyWords(UUID.fromString(set.getId()), userId, request.getWords());
+
+            UUID setId = UUID.fromString(set.getId());
+            grpcClient.createVocabularyWords(setId, userId, request.getWords());
+
             return VocabularySetMapper.toCreateVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
     }
@@ -41,7 +45,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> getVocabularySets(int page, int size) {
         return Mono.fromCallable(()->{
             VocabularySetsResponse sets = grpcClient.getVocabularySets(page, size);
-            return VocabularySetMapper.vocabularySetsPaginationResponseDto(sets);
+            return VocabularySetMapper.toVocabularySetsPaginationResponseDto(sets);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -49,7 +53,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> getDeletedVocabularySets(int page, int size) {
         return Mono.fromCallable(()->{
             VocabularySetsResponse sets = grpcClient.getDeletedVocabularySets(page, size);
-            return VocabularySetMapper.vocabularySetsPaginationResponseDto(sets);
+            return VocabularySetMapper.toVocabularySetsPaginationResponseDto(sets);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -57,18 +61,48 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetsPaginationResponseDto> searchVocabularySetByName(String keyword, int page, int size) {
         return Mono.fromCallable(()-> {
             VocabularySetsResponse sets = grpcClient.searchVocabularySetByName(keyword, page, size);
-            return VocabularySetMapper.vocabularySetsPaginationResponseDto(sets);
+            return VocabularySetMapper.toVocabularySetsPaginationResponseDto(sets);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<VocabularySetsPaginationResponseDto> searchDeletedVocabularySetByName(String keyword, int page, int size) {
+        return Mono.fromCallable(()->{
+            VocabularySetsResponse sets = grpcClient.searchDeletedVocabularySets(keyword, page, size);
+            return VocabularySetMapper.toVocabularySetsPaginationResponseDto(sets);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
     public Mono<UpdateVocabularySetResponseDto> updateVocabularySetName(UUID id, UUID userId, String name) {
-        return null;
+        return Mono.fromCallable(()->{
+            UpdateVocabularySetResponse response = grpcClient.updateVocabularySetName(id, userId, name);
+            return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
     public Mono<UpdateVocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
-        return null;
+        return Mono.fromCallable(()->{
+            //Check if the vocabulary set has reached the max version.
+            grpcClient.validateUpdateVocabularySet(id);
+
+            //Soft-delete the current version
+            VocabularySetDetailResponse setDetail = grpcClient.getVocabularySetById(id);
+            grpcClient.deleteVocabularySet(id, userId);
+
+            //Create a new version
+            CreateVocabularySetResponse updatedSet = grpcClient.createVocabularySet(userId, setDetail.getName());
+            UUID updatedSetId = UUID.fromString(updatedSet.getId());
+            grpcClient.createVocabularyWords(updatedSetId, userId, request.getWords());
+
+            UUID createdBy = UUID.fromString(setDetail.getCreatedBy());
+            LocalDateTime createAt = LocalDateTime.parse(setDetail.getCreateAt());
+
+            //Preserve the original creation info when creating a new version.
+            UpdateVocabularySetResponse response = grpcClient.updateVocabularySet(id, updatedSetId, createdBy, createAt);
+            return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
+        }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override

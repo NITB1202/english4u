@@ -101,21 +101,6 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public void updateVocabularySet(UpdateVocabularySetRequest request) {
-        UUID id = UUID.fromString(request.getId());
-
-        VocabularySet set = vocabularySetRepository.findById(id).orElseThrow(
-                () -> new BusinessException("No vocabulary set found with id: " + id)
-        );
-
-        set.setVersion(request.getVersion());
-        set.setCreatedBy(UUID.fromString(request.getCreatedBy()));
-        set.setCreatedAt(LocalDateTime.parse(request.getCreateAt()));
-
-        vocabularySetRepository.save(set);
-    }
-
-    @Override
     public VocabularySet updateVocabularySetName(UpdateVocabularySetNameRequest request) {
         UUID setId = UUID.fromString(request.getId());
 
@@ -135,6 +120,31 @@ public class VocabularySetServiceImpl implements VocabularySetService {
         set.setVersion(1);
         set.setUpdatedBy(UUID.fromString(request.getUserId()));
         set.setUpdatedAt(LocalDateTime.now());
+
+        return vocabularySetRepository.save(set);
+    }
+
+    @Override
+    public VocabularySet updateVocabularySet(UpdateVocabularySetRequest request) {
+        UUID oldId = UUID.fromString(request.getOldId());
+        VocabularySet oldSet = vocabularySetRepository.findById(oldId).orElseThrow(
+                () -> new BusinessException("No vocabulary set found with id: " + oldId)
+        );
+
+        UUID newId = UUID.fromString(request.getNewId());
+        VocabularySet set = vocabularySetRepository.findById(newId).orElseThrow(
+                () -> new BusinessException("No vocabulary set found with id: " + newId)
+        );
+
+        if(!oldSet.getName().equals(set.getName())) {
+            throw new BusinessException("These are not 2 different versions of the same vocabulary set.");
+        }
+
+        int latestVersion = vocabularySetRepository.getLatestVersion(oldSet.getName());
+
+        set.setVersion(latestVersion + 1);
+        set.setCreatedBy(UUID.fromString(request.getCreatedBy()));
+        set.setCreatedAt(LocalDateTime.parse(request.getCreateAt()));
 
         return vocabularySetRepository.save(set);
     }

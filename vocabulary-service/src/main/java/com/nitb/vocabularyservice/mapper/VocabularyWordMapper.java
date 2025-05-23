@@ -17,34 +17,13 @@ public class VocabularyWordMapper {
                 .setPronunciation(word.getPronunciation())
                 .setTranslation(word.getTranslation())
                 .setExample(word.getExample())
-                .build();
-    }
-
-    public static VocabularyWordsResponse toVocabularyWordsResponse(List<VocabularyWord> words) {
-        List<VocabularyWordResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordResponse)
-                .toList();
-
-        return VocabularyWordsResponse.newBuilder()
-                .addAllWords(wordResponses)
-                .build();
-    }
-
-    public static VocabularyWordDetailResponse toVocabularyWordDetailResponse(VocabularyWord word) {
-        return VocabularyWordDetailResponse.newBuilder()
-                .setId(word.getId().toString())
-                .setPosition(word.getPosition())
-                .setWord(word.getWord())
-                .setPronunciation(word.getPronunciation())
-                .setTranslation(word.getTranslation())
-                .setExample(word.getExample())
                 .setImageUrl(word.getImageUrl())
                 .build();
     }
 
     public static VocabularyWordsPaginationResponse toVocabularyWordsPaginationResponse(Page<VocabularyWord> words) {
-        List<VocabularyWordDetailResponse> wordResponses = words.stream()
-                .map(VocabularyWordMapper::toVocabularyWordDetailResponse)
+        List<VocabularyWordResponse> wordResponses = words.stream()
+                .map(VocabularyWordMapper::toVocabularyWordResponse)
                 .toList();
 
         return VocabularyWordsPaginationResponse.newBuilder()

@@ -66,8 +66,9 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.searchVocabularySetByName(request);
     }
 
-    public VocabularySetsResponse searchDeletedVocabularySets(int page, int size) {
+    public VocabularySetsResponse searchDeletedVocabularySets(String keyword, int page, int size) {
         SearchVocabularySetByNameRequest request = SearchVocabularySetByNameRequest.newBuilder()
+                .setKeyword(keyword)
                 .setPage(page)
                 .setSize(size)
                 .build();
@@ -83,17 +84,6 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.validateUpdateVocabularySet(request);
     }
 
-    public Empty updateVocabularySet(UUID id, int version, UUID createdBy, LocalDateTime createAt) {
-        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
-                .setId(id.toString())
-                .setVersion(version)
-                .setCreatedBy(createdBy.toString())
-                .setCreateAt(createAt.toString())
-                .build();
-
-        return blockingStub.updateVocabularySet(request);
-    }
-
     public UpdateVocabularySetResponse updateVocabularySetName(UUID id, UUID userId, String name) {
         UpdateVocabularySetNameRequest request = UpdateVocabularySetNameRequest.newBuilder()
                 .setId(id.toString())
@@ -102,6 +92,17 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.updateVocabularySetName(request);
+    }
+
+    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId, UUID createdBy, LocalDateTime createAt) {
+        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
+                .setOldId(oldId.toString())
+                .setNewId(newId.toString())
+                .setCreatedBy(createdBy.toString())
+                .setCreateAt(createAt.toString())
+                .build();
+
+        return blockingStub.updateVocabularySet(request);
     }
 
     public DeleteVocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {
