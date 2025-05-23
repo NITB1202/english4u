@@ -6,12 +6,14 @@ import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
+import com.nitb.testservice.mapper.FileMapper;
 import com.nitb.testservice.mapper.PartMapper;
 import com.nitb.testservice.mapper.QuestionMapper;
 import com.nitb.testservice.mapper.TestMapper;
 import com.nitb.testservice.service.PartService;
 import com.nitb.testservice.service.QuestionService;
 import com.nitb.testservice.service.TestService;
+import com.nitb.testservice.service.FileService;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -27,6 +29,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     private final TestService testService;
     private final PartService partService;
     private final QuestionService questionService;
+    private final FileService fileService;
 
     //Tests
     @Override
@@ -123,6 +126,14 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     public void getPublishedTestStatistics(GetPublishedTestStatisticsRequest request, StreamObserver<GetPublishedTestStatisticsResponse> streamObserver) {
         List<TestStatisticDto> statistics = testService.getPublishedTestStatistics(request);
         GetPublishedTestStatisticsResponse response = TestMapper.toGetPublishedTestStatisticsResponse(statistics);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void generateTestTemplate(Empty request, StreamObserver<TestTemplateResponse> streamObserver) {
+        byte[] data = fileService.generateTestTemplate();
+        TestTemplateResponse response = FileMapper.toTestTemplateResponse(data);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

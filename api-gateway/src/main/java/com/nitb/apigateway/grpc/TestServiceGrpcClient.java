@@ -140,6 +140,10 @@ public class TestServiceGrpcClient {
         return blockingStub.getPublishedTestStatistics(request);
     }
 
+    public TestTemplateResponse generateTestTemplate() {
+        return blockingStub.generateTestTemplate(Empty.getDefaultInstance());
+    }
+
     //Part
     public Empty createParts(UUID userId, UUID testId, List<CreatePartRequestDto> dto) {
         List<CreatePartRequest> parts =  dto.stream().map(PartMapper::toCreatePartRequest).toList();
