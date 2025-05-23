@@ -25,8 +25,11 @@ public class Test {
     @Column(name = "create_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "version", nullable = false)
+    private Integer version;
 
     @Column(name = "minutes", nullable = false)
     private Integer minutes;

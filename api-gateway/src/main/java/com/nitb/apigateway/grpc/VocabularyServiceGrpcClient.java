@@ -11,7 +11,6 @@ import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,12 +93,10 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.updateVocabularySetName(request);
     }
 
-    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId, UUID createdBy, LocalDateTime createAt) {
+    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId) {
         UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
                 .setOldId(oldId.toString())
                 .setNewId(newId.toString())
-                .setCreatedBy(createdBy.toString())
-                .setCreateAt(createAt.toString())
                 .build();
 
         return blockingStub.updateVocabularySet(request);

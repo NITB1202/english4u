@@ -1,7 +1,7 @@
-INSERT INTO tests (id, created_by, create_at, name, minutes, topic, part_count, completed_users, updated_by, update_at, is_deleted)
+INSERT INTO tests (id, created_by, create_at, name, version, minutes, topic, part_count, completed_users, updated_by, update_at, is_deleted)
 VALUES
-    ('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), 'Test 1', 60, 'English Grammar', 2, 100, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), false),
-    ('22222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), 'Test 2', 45, 'Vocabulary', 1, 50, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), false);
+    ('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), 'Test 1', 1, 60, 'English Grammar', 2, 100, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), false),
+    ('22222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), 'Test 2',1, 45, 'Vocabulary', 1, 50, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), false);
 
 INSERT INTO parts (id, test_id, position, content, question_count)
 VALUES

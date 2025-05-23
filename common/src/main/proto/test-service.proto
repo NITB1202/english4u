@@ -3,6 +3,7 @@ syntax = "proto3";
 package test;
 
 import "common.proto";
+import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
 option java_package = "com.nitb.testservice.grpc";
@@ -34,14 +35,15 @@ message TestDetailResponse {
   string created_by = 2;
   string create_at = 3;
   string name = 4;
-  int32 minutes = 5;
-  string topic = 6;
-  int32 part_count = 7;
-  int32 question_count = 8;
-  int64 completed_users = 9;
-  string updated_by = 10;
-  string update_at = 11;
-  bool is_deleted = 12;
+  int32 version = 5;
+  int32 minutes = 6;
+  string topic = 7;
+  int32 part_count = 8;
+  int32 question_count = 9;
+  int64 completed_users = 10;
+  string updated_by = 11;
+  string update_at = 12;
+  bool is_deleted = 13;
 }
 
 message GetTestsRequest {
@@ -52,9 +54,10 @@ message GetTestsRequest {
 message TestSummaryResponse {
   string id = 1;
   string name = 2;
-  int32 question_count = 3;
-  int32 minutes = 4;
-  string topic = 5;
+  int32 version = 3;
+  int32 question_count = 4;
+  int32 minutes = 5;
+  string topic = 6;
 }
 
 message TestsPaginationResponse {
@@ -74,12 +77,26 @@ message SearchTestByNameRequest {
   int32 size = 3;
 }
 
-message UpdateTestRequest {
+message SearchDeletedTestByNameRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message ValidateUpdateTestRequest {
+  string id = 1;
+}
+
+message UpdateTestNameAndTopicRequest {
   string id = 1;
   string user_id = 2;
   string name = 3;
-  int32 minutes = 4;
-  string topic = 5;
+  string topic = 4;
+}
+
+message UpdateTestRequest {
+  string oldId = 1;
+  string newId = 2;
 }
 
 message UpdateTestResponse {
@@ -87,8 +104,9 @@ message UpdateTestResponse {
   string updated_by = 2;
   string update_at = 3;
   string name = 4;
-  int32 minutes = 5;
-  string topic = 6;
+  int32 version = 5;
+  int32 minutes = 6;
+  string topic = 7;
 }
 
 message DeleteTestRequest {
@@ -126,54 +144,6 @@ message GetPublishedTestStatisticsResponse {
 }
 
 //Parts
-message CreatePartRequest {
-  string user_id = 1;
-  string test_id = 2;
-  string content = 3;
-}
-
-message PartResponse {
-  string id = 1;
-  int32 position = 2;
-  string content = 3;
-  int32 question_count = 4;
-}
-
-message GetPartContentByIdRequest {
-  string id = 1;
-}
-
-message GetPartContentByIdResponse {
-  string content = 1;
-}
-
-message GetAllPartsForTestRequest {
-  string test_id = 1;
-}
-
-message PartSummaryResponse {
-  string id = 1;
-  int32 position = 2;
-  int32 question_count = 3;
-}
-
-message GetAllPartsForTestResponse {
-  repeated PartSummaryResponse parts = 1;
-}
-
-message UpdatePartRequest {
-  string id = 1;
-  string user_id = 2;
-  string content = 3;
-}
-
-message SwapPartsPositionRequest {
-  string user_id = 1;
-  string part1_id = 2;
-  string part2_id = 3;
-}
-
-//Questions
 message CreateQuestionRequest {
   string content = 1;
   string answers = 2;
@@ -181,10 +151,19 @@ message CreateQuestionRequest {
   string explanation = 4;
 }
 
-message CreateQuestionsRequest {
-  string user_id = 1;
-  string part_id = 2;
-  repeated CreateQuestionRequest requests = 3;
+message CreatePartRequest {
+  string content = 1;
+  repeated CreateQuestionRequest questions = 2;
+}
+
+message CreatePartsRequest {
+  string test_id = 1;
+  string user_id = 2;
+  repeated CreatePartRequest parts = 3;
+}
+
+message GetAllPartsForTestRequest {
+  string test_id = 1;
 }
 
 message QuestionResponse {
@@ -192,46 +171,33 @@ message QuestionResponse {
   int32 position = 2;
   string content = 3;
   string answers = 4;
-  string correct_answer = 5;
-  string explanation = 6;
 }
 
-message QuestionsResponse {
-  repeated QuestionResponse response = 1;
+message PartResponse {
+  string id = 1;
+  int32 position = 2;
+  string content = 3;
+  int32 question_count = 4;
+  repeated QuestionResponse questions = 5;
 }
 
+message PartsResponse {
+  repeated PartResponse parts = 1;
+}
+
+//Questions
 message GetQuestionByIdRequest {
   string id = 1;
 }
 
-message GetAllQuestionsForPartRequest {
-  string part_id = 1;
-}
-
-message QuestionSummaryResponse {
+message QuestionDetailResponse {
   string id = 1;
   int32 position = 2;
   string content = 3;
   string answers = 4;
-}
-
-message GetAllQuestionsForPartResponse {
-  repeated QuestionSummaryResponse questions = 1;
-}
-
-message UpdateQuestionRequest {
-  string id = 1;
-  string user_id = 2;
-  string content = 3;
-  string answers = 4;
   string correct_answer = 5;
   string explanation = 6;
-}
-
-message SwapQuestionsPositionRequest {
-  string user_id = 1;
-  string question1_id = 2;
-  string question2_id = 3;
+  string part_content = 7;
 }
 
 service TestService {
@@ -240,20 +206,16 @@ service TestService {
   rpc GetTests(GetTestsRequest) returns (TestsPaginationResponse);
   rpc GetDeletedTests(GetDeletedTestsRequest) returns (TestsPaginationResponse);
   rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);
+  rpc SearchDeletedTestByName(SearchDeletedTestByNameRequest) returns (TestsPaginationResponse);
+  rpc ValidateUpdateTest(ValidateUpdateTestRequest) returns (google.protobuf.Empty);
+  rpc UpdateTestNameAndTopic(UpdateTestNameAndTopicRequest) returns (UpdateTestResponse);
   rpc UpdateTest(UpdateTestRequest) returns (UpdateTestResponse);
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
   rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
 
-  rpc CreatePart(CreatePartRequest) returns (PartResponse);
-  rpc GetPartContentById(GetPartContentByIdRequest) returns (GetPartContentByIdResponse);
-  rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (GetAllPartsForTestResponse);
-  rpc UpdatePart(UpdatePartRequest) returns (common.ActionResponse);
-  rpc SwapPartsPosition(SwapPartsPositionRequest) returns (common.ActionResponse);
+  rpc CreateParts(CreatePartsRequest) returns (google.protobuf.Empty);
+  rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);
 
-  rpc CreateQuestions(CreateQuestionsRequest) returns (QuestionsResponse);
-  rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionResponse);
-  rpc GetAllQuestionsForPart(GetAllQuestionsForPartRequest) returns(GetAllQuestionsForPartResponse);
-  rpc UpdateQuestion(UpdateQuestionRequest) returns (QuestionResponse);
-  rpc SwapQuestionsPosition(SwapQuestionsPositionRequest) returns (common.ActionResponse);
+  rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionDetailResponse);
 }

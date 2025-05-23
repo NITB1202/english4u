@@ -14,9 +14,11 @@ import java.util.UUID;
 
 public interface TestRepository extends JpaRepository<Test, UUID> {
     boolean existsByNameAndIsDeletedFalse(String name);
+    boolean existsByNameAndVersion(String name, int version);
     Page<Test> findByIsDeletedFalse(Pageable pageable);
     Page<Test> findByIsDeletedTrue(Pageable pageable);
     Page<Test> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);
+    Page<Test> findByNameContainingIgnoreCaseAndIsDeletedTrue(String name, Pageable pageable);
     @Query(value = """
     SELECT TO_CHAR(create_at, 'IYYY-IW') AS time,
            COUNT(*) AS testCount,
@@ -65,4 +67,7 @@ public interface TestRepository extends JpaRepository<Test, UUID> {
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to
     );
+    @Query("SELECT MAX(t.version) FROM Test t WHERE t.name = :name")
+    Integer findMaxVersion(@Param("name") String name);
+    Test findByNameAndIsDeletedFalse(String name);
 }

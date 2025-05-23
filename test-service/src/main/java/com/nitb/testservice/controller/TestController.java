@@ -1,6 +1,6 @@
 package com.nitb.testservice.controller;
 
-import com.nitb.common.grpc.ActionResponse;
+import com.google.protobuf.Empty;
 import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     public void getTestById(GetTestByIdRequest request, StreamObserver<TestDetailResponse> streamObserver) {
         Test test = testService.getTestById(request);
 
-        int questionCount = partService.getTotalQuestion(test.getId());
+        int questionCount = partService.getTotalQuestionCount(test.getId());
         TestDetailResponse response = TestMapper.toTestDetailResponse(test, questionCount);
 
         streamObserver.onNext(response);
@@ -67,6 +68,29 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     public void searchTestByName(SearchTestByNameRequest request, StreamObserver<TestsPaginationResponse> streamObserver) {
         Page<Test> tests = testService.searchTestByName(request);
         TestsPaginationResponse response = paginateTest(tests);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void searchDeletedTestByName(SearchDeletedTestByNameRequest request, StreamObserver<TestsPaginationResponse> streamObserver) {
+        Page<Test> tests = testService.searchDeletedTestByName(request);
+        TestsPaginationResponse response = paginateTest(tests);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void validateUpdateTest(ValidateUpdateTestRequest request, StreamObserver<Empty> streamObserver) {
+        testService.validateUpdateTest(request);
+        streamObserver.onNext(Empty.getDefaultInstance());
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void updateTestNameAndTopic(UpdateTestNameAndTopicRequest request, StreamObserver<UpdateTestResponse> streamObserver) {
+        Test test = testService.updateTestNameAndTopic(request);
+        UpdateTestResponse response = TestMapper.toUpdateTestResponse(test);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
@@ -106,7 +130,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     private TestsPaginationResponse paginateTest(Page<Test> tests) {
         List<TestSummaryResponse> summaryResponses = new ArrayList<>();
         for (Test test : tests.getContent()) {
-            int questionCount = partService.getTotalQuestion(test.getId());
+            int questionCount = partService.getTotalQuestionCount(test.getId());
             TestSummaryResponse response = TestMapper.toTestSummaryResponse(test, questionCount);
             summaryResponses.add(response);
         }
@@ -114,97 +138,54 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         return TestMapper.toTestsPaginationResponse(tests, summaryResponses);
     }
 
-
     //Parts
     @Override
-    public void createPart(CreatePartRequest request, StreamObserver<PartResponse> streamObserver) {
-        Part part = partService.createPart(request);
-        PartResponse response = PartMapper.toPartResponse(part);
-        streamObserver.onNext(response);
+    public void createParts(CreatePartsRequest request, StreamObserver<Empty> streamObserver) {
+        UUID testId = UUID.fromString(request.getTestId());
+        int partCount = partService.getPartCount(testId);
+
+        for(int i = partCount; i < request.getPartsCount(); i++) {
+            CreatePartRequest partRequest = request.getParts(i);
+
+            Part part = partService.createPart(testId, i + 1, partRequest);
+            List<CreateQuestionRequest> questions = partRequest.getQuestionsList();
+
+            questionService.createQuestions(part.getId(), questions);
+            partService.updateQuestionCount(part.getId(), questions.size());
+        }
+
+        testService.updatePartCount(testId, request.getPartsCount());
+
+        streamObserver.onNext(Empty.getDefaultInstance());
         streamObserver.onCompleted();
     }
 
     @Override
-    public void getPartContentById(GetPartContentByIdRequest request, StreamObserver<GetPartContentByIdResponse> streamObserver) {
-        String content = partService.getPartContentById(request);
-        GetPartContentByIdResponse response = GetPartContentByIdResponse.newBuilder()
-                .setContent(content)
-                .build();
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void getAllPartsForTest(GetAllPartsForTestRequest request, StreamObserver<GetAllPartsForTestResponse> streamObserver) {
+    public void getAllPartsForTest(GetAllPartsForTestRequest request, StreamObserver<PartsResponse> streamObserver) {
         List<Part> parts = partService.getAllPartsForTest(request);
-        GetAllPartsForTestResponse response = PartMapper.toGetAllPartsForTestResponse(parts);
+
+        List<PartResponse> partsResponse = new ArrayList<>();
+        for(Part part : parts) {
+            List<Question> questions = questionService.getAllQuestionsForPart(part.getId());
+            PartResponse partResponse = PartMapper.toPartResponse(part, questions);
+
+            partsResponse.add(partResponse);
+        }
+
+        PartsResponse response = PartMapper.toPartsResponse(partsResponse);
+
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
+    //Question
     @Override
-    public void updatePart(UpdatePartRequest request, StreamObserver<ActionResponse> streamObserver) {
-        partService.updatePart(request);
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Update successfully.")
-                .build();
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void swapPartsPosition(SwapPartsPositionRequest request, StreamObserver<ActionResponse> streamObserver) {
-        partService.swapPartsPosition(request);
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Swap successfully.")
-                .build();
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-
-    //Questions
-    @Override
-    public void createQuestions(CreateQuestionsRequest request, StreamObserver<QuestionsResponse> streamObserver) {
-        List<Question> questions = questionService.createQuestions(request);
-        QuestionsResponse response = QuestionMapper.toQuestionsResponse(questions);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void getQuestionById(GetQuestionByIdRequest request, StreamObserver<QuestionResponse> streamObserver) {
+    public void getQuestionById(GetQuestionByIdRequest request, StreamObserver<QuestionDetailResponse> streamObserver) {
         Question question = questionService.getQuestionById(request);
-        QuestionResponse response = QuestionMapper.toQuestionResponse(question);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
+        String partContent = partService.getPartContent(question.getPartId());
 
-    @Override
-    public void getAllQuestionsForPart(GetAllQuestionsForPartRequest request, StreamObserver<GetAllQuestionsForPartResponse> streamObserver) {
-        List<Question> questions = questionService.getAllQuestionsForPart(request);
-        GetAllQuestionsForPartResponse response = QuestionMapper.toGetAllQuestionsForPartResponse(questions);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
+        QuestionDetailResponse response = QuestionMapper.toQuestionDetailResponse(partContent, question);
 
-    @Override
-    public void updateQuestion(UpdateQuestionRequest request, StreamObserver<QuestionResponse> streamObserver) {
-        Question question = questionService.updateQuestion(request);
-        QuestionResponse response = QuestionMapper.toQuestionResponse(question);
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
-    }
-
-    @Override
-    public void swapQuestionsPosition(SwapQuestionsPositionRequest request, StreamObserver<ActionResponse> streamObserver) {
-        questionService.swapQuestionsPosition(request);
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Swap successfully.")
-                .build();
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

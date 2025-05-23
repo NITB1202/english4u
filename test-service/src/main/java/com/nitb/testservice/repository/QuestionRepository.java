@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface QuestionRepository extends JpaRepository<Question, UUID> {
-    int countByPartId(UUID partId);
     List<Question> findByPartId(UUID partId);
 }
