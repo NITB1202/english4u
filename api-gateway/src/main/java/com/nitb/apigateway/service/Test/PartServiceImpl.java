@@ -21,7 +21,7 @@ public class PartServiceImpl implements PartService {
     public Mono<List<PartDetailResponseDto>> getAllPartsForTest(UUID testId) {
         return Mono.fromCallable(()->{
             PartsResponse response = testGrpc.getAllPartsForTest(testId);
-            return response.getPartsList().stream().map(PartMapper::toPartSummaryResponseDto).toList();
+            return response.getPartsList().stream().map(PartMapper::toPartDetailResponseDto).toList();
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

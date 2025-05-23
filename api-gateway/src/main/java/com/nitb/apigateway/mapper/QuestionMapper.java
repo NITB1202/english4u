@@ -4,8 +4,8 @@ import com.nitb.apigateway.dto.Test.Question.request.CreateQuestionRequestDto;
 import com.nitb.apigateway.dto.Test.Question.response.QuestionDetailResponseDto;
 import com.nitb.apigateway.dto.Test.Question.response.QuestionSummaryResponseDto;
 import com.nitb.testservice.grpc.CreateQuestionRequest;
+import com.nitb.testservice.grpc.QuestionDetailResponse;
 import com.nitb.testservice.grpc.QuestionResponse;
-import com.nitb.testservice.grpc.QuestionSummaryResponse;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +26,7 @@ public class QuestionMapper {
 
     }
 
-    public static QuestionSummaryResponseDto toQuestionSummaryResponseDto(QuestionSummaryResponse question) {
+    public static QuestionSummaryResponseDto toQuestionSummaryResponseDto(QuestionResponse question) {
         List<String> answers = Arrays.asList(question.getAnswers().split(","));
 
         return QuestionSummaryResponseDto.builder()
@@ -37,7 +37,7 @@ public class QuestionMapper {
                 .build();
     }
 
-    public static QuestionDetailResponseDto toQuestionResponseDto(QuestionResponse question) {
+    public static QuestionDetailResponseDto toQuestionResponseDto(QuestionDetailResponse question) {
         List<String> answers = Arrays.asList(question.getAnswers().split(","));
         char correctAnswer = question.getCorrectAnswer().charAt(0);
 
@@ -48,6 +48,7 @@ public class QuestionMapper {
                 .answers(answers)
                 .correctAnswer(correctAnswer)
                 .explanation(question.getExplanation())
+                .partContent(question.getPartContent())
                 .build();
     }
 }
