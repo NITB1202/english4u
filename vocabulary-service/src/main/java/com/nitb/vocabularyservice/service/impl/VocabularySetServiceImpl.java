@@ -102,13 +102,23 @@ public class VocabularySetServiceImpl implements VocabularySetService {
 
     @Override
     public void updateVocabularySet(UpdateVocabularySetRequest request) {
-        UUID id = UUID.fromString(request.getId());
-
-        VocabularySet set = vocabularySetRepository.findById(id).orElseThrow(
-                () -> new BusinessException("No vocabulary set found with id: " + id)
+        UUID oldId = UUID.fromString(request.getOldId());
+        VocabularySet oldSet = vocabularySetRepository.findById(oldId).orElseThrow(
+                () -> new BusinessException("No vocabulary set found with id: " + oldId)
         );
 
-        set.setVersion(request.getVersion());
+        UUID newId = UUID.fromString(request.getNewId());
+        VocabularySet set = vocabularySetRepository.findById(newId).orElseThrow(
+                () -> new BusinessException("No vocabulary set found with id: " + newId)
+        );
+
+        if(!oldSet.getName().equals(set.getName())) {
+            throw new BusinessException("These are not 2 different versions of the same vocabulary set.");
+        }
+
+        int latestVersion = vocabularySetRepository.getLatestVersion(oldSet.getName());
+
+        set.setVersion(latestVersion + 1);
         set.setCreatedBy(UUID.fromString(request.getCreatedBy()));
         set.setCreatedAt(LocalDateTime.parse(request.getCreateAt()));
 

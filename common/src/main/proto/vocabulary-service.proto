@@ -67,8 +67,8 @@ message ValidateUpdateVocabularySetRequest {
 }
 
 message UpdateVocabularySetRequest{
-  string id = 1;
-  int32 version = 2;
+  string oldId = 1;
+  string newId = 2;
   string created_by = 3;
   string create_at = 4;
 }

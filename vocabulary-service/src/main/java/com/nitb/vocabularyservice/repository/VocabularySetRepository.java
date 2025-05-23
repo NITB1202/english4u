@@ -65,4 +65,10 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to
     );
+    @Query(value = """
+        SELECT MAX(version)
+        FROM vocabulary_sets
+        WHERE name = :name
+    """, nativeQuery = true)
+    int getLatestVersion(@Param("name") String name);
 }
