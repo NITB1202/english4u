@@ -1,16 +1,20 @@
-package com.nitb.apigateway.dto.Test.request.Question;
-
+package com.nitb.apigateway.dto.Test.Question.response;
 
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UpdateQuestionRequestDto {
+public class QuestionDetailResponseDto {
+    private UUID id;
+
+    private Integer position;
+
     private String content;
 
     private List<String> answers;
@@ -18,4 +22,6 @@ public class UpdateQuestionRequestDto {
     private Character correctAnswer;
 
     private String explanation;
+
+    private String partContent;
 }

@@ -1,7 +1,10 @@
-package com.nitb.apigateway.dto.Test.request.Test;
+package com.nitb.apigateway.dto.Test.Test.request;
 
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -9,10 +12,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class UpdateTestRequestDto {
-    private String name;
-
     @Positive(message = "Minutes must be positive.")
     private Integer minutes;
 
-    private String topic;
+    List<CreatePartRequestDto> parts;
 }

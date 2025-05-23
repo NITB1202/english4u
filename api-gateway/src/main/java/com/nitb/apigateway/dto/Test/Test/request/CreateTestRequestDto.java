@@ -1,6 +1,6 @@
-package com.nitb.apigateway.dto.Test.request.Test;
+package com.nitb.apigateway.dto.Test.Test.request;
 
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

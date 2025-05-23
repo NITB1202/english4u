@@ -1,8 +1,8 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Test.request.Question.CreateQuestionRequestDto;
-import com.nitb.apigateway.dto.Test.response.Question.QuestionResponseDto;
-import com.nitb.apigateway.dto.Test.response.Question.QuestionSummaryResponseDto;
+import com.nitb.apigateway.dto.Test.Question.request.CreateQuestionRequestDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionDetailResponseDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionSummaryResponseDto;
 import com.nitb.testservice.grpc.CreateQuestionRequest;
 import com.nitb.testservice.grpc.QuestionResponse;
 import com.nitb.testservice.grpc.QuestionSummaryResponse;
@@ -37,11 +37,11 @@ public class QuestionMapper {
                 .build();
     }
 
-    public static QuestionResponseDto toQuestionResponseDto(QuestionResponse question) {
+    public static QuestionDetailResponseDto toQuestionResponseDto(QuestionResponse question) {
         List<String> answers = Arrays.asList(question.getAnswers().split(","));
         char correctAnswer = question.getCorrectAnswer().charAt(0);
 
-        return QuestionResponseDto.builder()
+        return QuestionDetailResponseDto.builder()
                 .id(UUID.fromString(question.getId()))
                 .position(question.getPosition())
                 .content(question.getContent())

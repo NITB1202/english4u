@@ -1,9 +1,9 @@
 package com.nitb.apigateway.grpc;
 
 import com.google.protobuf.Empty;
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
 import com.nitb.apigateway.mapper.PartMapper;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.common.mappers.GroupByMapper;

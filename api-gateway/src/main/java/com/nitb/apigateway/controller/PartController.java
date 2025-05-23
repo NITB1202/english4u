@@ -1,6 +1,6 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Test.response.Part.PartSummaryResponseDto;
+import com.nitb.apigateway.dto.Test.Part.response.PartDetailResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Test.PartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ public class PartController {
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<List<PartSummaryResponseDto>>> getAllPartsForTest(@RequestParam UUID testId) {
+    public Mono<ResponseEntity<List<PartDetailResponseDto>>> getAllPartsForTest(@RequestParam UUID testId) {
         return partService.getAllPartsForTest(testId).map(ResponseEntity::ok);
     }
 }

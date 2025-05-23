@@ -1,10 +1,9 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.response.Part.PartDetailResponseDto;
-import com.nitb.apigateway.dto.Test.response.Part.PartResponseDto;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Part.response.PartDetailResponseDto;
 import com.nitb.apigateway.dto.Test.response.Part.PartSummaryResponseDto;
-import com.nitb.apigateway.dto.Test.response.Question.QuestionSummaryResponseDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionSummaryResponseDto;
 import com.nitb.testservice.grpc.CreatePartRequest;
 import com.nitb.testservice.grpc.CreateQuestionRequest;
 import com.nitb.testservice.grpc.PartResponse;

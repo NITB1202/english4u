@@ -1,6 +1,6 @@
 package com.nitb.apigateway.service.Test;
 
-import com.nitb.apigateway.dto.Test.response.Part.PartDetailResponseDto;
+import com.nitb.apigateway.dto.Test.Part.response.PartDetailResponseDto;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

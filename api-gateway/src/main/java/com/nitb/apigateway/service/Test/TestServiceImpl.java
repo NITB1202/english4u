@@ -1,9 +1,9 @@
 package com.nitb.apigateway.service.Test;
 
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.response.*;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
 import com.nitb.common.enums.GroupBy;

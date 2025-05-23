@@ -1,6 +1,6 @@
 package com.nitb.apigateway.service.Test;
 
-import com.nitb.apigateway.dto.Test.response.Question.QuestionResponseDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionDetailResponseDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.mapper.QuestionMapper;
 import com.nitb.testservice.grpc.QuestionDetailResponse;
@@ -18,7 +18,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public Mono<QuestionResponseDto> getQuestionById(UUID id) {
+    public Mono<QuestionDetailResponseDto> getQuestionById(UUID id) {
         return Mono.fromCallable(()->{
             QuestionDetailResponse response = testGrpc.getQuestionById(id);
             return QuestionMapper.toQuestionResponseDto(response);

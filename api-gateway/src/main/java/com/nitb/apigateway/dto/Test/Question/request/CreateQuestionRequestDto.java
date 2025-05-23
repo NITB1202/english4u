@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.Test.request.Question;
+package com.nitb.apigateway.dto.Test.Question.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

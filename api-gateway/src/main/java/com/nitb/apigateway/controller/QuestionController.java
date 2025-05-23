@@ -1,6 +1,6 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Test.response.Question.QuestionResponseDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionDetailResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Test.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,7 +25,7 @@ public class QuestionController {
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<QuestionResponseDto>> getQuestionById(@PathVariable UUID id) {
+    public Mono<ResponseEntity<QuestionDetailResponseDto>> getQuestionById(@PathVariable UUID id) {
         return questionService.getQuestionById(id).map(ResponseEntity::ok);
     }
 }

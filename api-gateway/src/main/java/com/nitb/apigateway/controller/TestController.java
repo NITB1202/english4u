@@ -1,9 +1,9 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestInfoRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Test.TestService;
 import com.nitb.common.enums.GroupBy;

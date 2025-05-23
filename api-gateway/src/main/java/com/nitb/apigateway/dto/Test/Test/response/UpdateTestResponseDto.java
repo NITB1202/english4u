@@ -1,5 +1,6 @@
-package com.nitb.apigateway.dto.Test.response.Test;
+package com.nitb.apigateway.dto.Test.Test.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,9 +16,12 @@ public class UpdateTestResponseDto {
 
     private UUID updatedBy;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime updatedAt;
 
     private String name;
+
+    private Integer version;
 
     private Integer minutes;
 

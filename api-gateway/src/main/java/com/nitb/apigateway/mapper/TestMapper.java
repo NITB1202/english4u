@@ -1,6 +1,6 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.testservice.grpc.*;
 
 import java.time.LocalDateTime;
