@@ -1,14 +1,11 @@
 package com.nitb.apigateway.grpc;
 
+import com.google.protobuf.Empty;
 import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Part.UpdatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Question.CreateQuestionRequestDto;
-import com.nitb.apigateway.dto.Test.request.Question.UpdateQuestionRequestDto;
 import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
-import com.nitb.apigateway.mapper.QuestionMapper;
+import com.nitb.apigateway.dto.Test.request.Test.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.mapper.PartMapper;
 import com.nitb.common.enums.GroupBy;
-import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.testservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -73,17 +70,34 @@ public class TestServiceGrpcClient {
         return blockingStub.searchTestByName(request);
     }
 
-    public UpdateTestResponse updateTest(UUID id, UUID userId, UpdateTestRequestDto dto) {
+    public TestsPaginationResponse searchDeletedTestByName(String keyword, int page, int size) {
+        SearchDeletedTestByNameRequest request = SearchDeletedTestByNameRequest.newBuilder()
+                .setKeyword(keyword)
+                .setPage(page)
+                .setSize(size)
+                .build();
+
+        return blockingStub.searchDeletedTestByName(request);
+    }
+
+    public UpdateTestResponse updateTestNameAndTopic(UUID id, UUID userId, UpdateTestInfoRequestDto dto) {
         String name = dto.getName() != null ? dto.getName().trim() : "";
-        int minutes = dto.getMinutes() != null ? dto.getMinutes() : 0;
         String topic = dto.getTopic() != null ? dto.getTopic().trim() : "";
 
-        UpdateTestRequest request = UpdateTestRequest.newBuilder()
+        UpdateTestNameAndTopicRequest request = UpdateTestNameAndTopicRequest.newBuilder()
                 .setId(id.toString())
                 .setUserId(userId.toString())
                 .setName(name)
-                .setMinutes(minutes)
                 .setTopic(topic)
+                .build();
+
+        return blockingStub.updateTestNameAndTopic(request);
+    }
+
+    public UpdateTestResponse updateTest(UUID oldId, UUID newId) {
+        UpdateTestRequest request = UpdateTestRequest.newBuilder()
+                .setOldId(oldId.toString())
+                .setNewId(newId.toString())
                 .build();
 
         return blockingStub.updateTest(request);
@@ -119,27 +133,19 @@ public class TestServiceGrpcClient {
     }
 
     //Parts
-    public PartResponse createPart(UUID userId, UUID testId, CreatePartRequestDto dto) {
-        String content = dto.getContent() != null ? dto.getContent().trim() : "";
+    public Empty createParts(UUID userId, UUID testId, List<CreatePartRequestDto> dto) {
+        List<CreatePartRequest> parts =  dto.stream().map(PartMapper::toCreatePartRequest).toList();
 
-        CreatePartRequest request = CreatePartRequest.newBuilder()
+        CreatePartsRequest request = CreatePartsRequest.newBuilder()
                 .setTestId(testId.toString())
                 .setUserId(userId.toString())
-                .setContent(content)
+                .addAllParts(parts)
                 .build();
 
-        return blockingStub.createPart(request);
+        return blockingStub.createParts(request);
     }
 
-    public GetPartContentByIdResponse getPartContentById(UUID id) {
-        GetPartContentByIdRequest request = GetPartContentByIdRequest.newBuilder()
-                .setId(id.toString())
-                .build();
-
-        return blockingStub.getPartContentById(request);
-    }
-
-    public GetAllPartsForTestResponse getAllPartsForTest(UUID testId) {
+    public PartsResponse getAllPartsForTest(UUID testId) {
         GetAllPartsForTestRequest request = GetAllPartsForTestRequest.newBuilder()
                 .setTestId(testId.toString())
                 .build();
@@ -147,83 +153,12 @@ public class TestServiceGrpcClient {
         return blockingStub.getAllPartsForTest(request);
     }
 
-    public ActionResponse updatePart(UUID id, UUID userId, UpdatePartRequestDto dto) {
-        UpdatePartRequest request = UpdatePartRequest.newBuilder()
-                .setId(id.toString())
-                .setUserId(userId.toString())
-                .setContent(dto.getContent())
-                .build();
-
-        return blockingStub.updatePart(request);
-    }
-
-    public ActionResponse swapPartsPosition(UUID userId, UUID part1Id, UUID part2Id) {
-        SwapPartsPositionRequest request = SwapPartsPositionRequest.newBuilder()
-                .setUserId(userId.toString())
-                .setPart1Id(part1Id.toString())
-                .setPart2Id(part2Id.toString())
-                .build();
-
-        return blockingStub.swapPartsPosition(request);
-    }
-
-    //Questions
-    public QuestionsResponse createQuestions(UUID userId, UUID partId, List<CreateQuestionRequestDto> dto) {
-        List<CreateQuestionRequest> questions = dto.stream()
-                .map(QuestionMapper::toCreateQuestionRequest)
-                .toList();
-
-        CreateQuestionsRequest request = CreateQuestionsRequest.newBuilder()
-                .setUserId(userId.toString())
-                .setPartId(partId.toString())
-                .addAllRequests(questions)
-                .build();
-
-        return blockingStub.createQuestions(request);
-    }
-
-    public QuestionResponse getQuestionById(UUID id) {
+    //Question
+    public QuestionDetailResponse getQuestionById(UUID id) {
         GetQuestionByIdRequest request = GetQuestionByIdRequest.newBuilder()
                 .setId(id.toString())
                 .build();
 
         return blockingStub.getQuestionById(request);
-    }
-
-    public GetAllQuestionsForPartResponse getAllQuestionsForPart(UUID partId) {
-        GetAllQuestionsForPartRequest request = GetAllQuestionsForPartRequest.newBuilder()
-                .setPartId(partId.toString())
-                .build();
-
-        return blockingStub.getAllQuestionsForPart(request);
-    }
-
-    public QuestionResponse updateQuestion(UUID id, UUID userId, UpdateQuestionRequestDto dto) {
-        String content = dto.getContent() != null ? dto.getContent() : "";
-        String answers = dto.getAnswers() != null && !dto.getAnswers().isEmpty() ?
-                dto.getAnswers().toString() : "";
-        String correctAnswer = dto.getCorrectAnswer() != null ? dto.getCorrectAnswer().toString() : "";
-        String explanation = dto.getExplanation() != null ? dto.getExplanation() : "";
-
-        UpdateQuestionRequest request = UpdateQuestionRequest.newBuilder()
-                .setId(id.toString())
-                .setUserId(userId.toString())
-                .setContent(content)
-                .setAnswers(answers)
-                .setCorrectAnswer(correctAnswer)
-                .setExplanation(explanation)
-                .build();
-
-        return blockingStub.updateQuestion(request);
-    }
-
-    public ActionResponse swapQuestionsPosition(UUID userId, UUID question1Id, UUID question2Id) {
-        SwapQuestionsPositionRequest request = SwapQuestionsPositionRequest.newBuilder()
-                .setUserId(userId.toString())
-                .setQuestion1Id(question1Id.toString())
-                .setQuestion2Id(question2Id.toString())
-                .build();
-
-        return blockingStub.swapQuestionsPosition(request);
     }
 }

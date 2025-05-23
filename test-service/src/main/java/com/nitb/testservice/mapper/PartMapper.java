@@ -1,40 +1,31 @@
 package com.nitb.testservice.mapper;
 
 import com.nitb.testservice.entity.Part;
-import com.nitb.testservice.grpc.GetAllPartsForTestResponse;
+import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.grpc.PartResponse;
-import com.nitb.testservice.grpc.PartSummaryResponse;
+import com.nitb.testservice.grpc.PartsResponse;
+import com.nitb.testservice.grpc.QuestionResponse;
 
 import java.util.List;
 
 public class PartMapper {
     private PartMapper() {}
 
-    public static PartResponse toPartResponse(Part part) {
+    public static PartResponse toPartResponse(Part part, List<Question> questions) {
+        List<QuestionResponse> questionResponses = questions.stream().map(QuestionMapper::toQuestionResponse).toList();
+
         return PartResponse.newBuilder()
                 .setId(part.getId().toString())
                 .setPosition(part.getPosition())
                 .setContent(part.getContent())
                 .setQuestionCount(part.getQuestionCount())
+                .addAllQuestions(questionResponses)
                 .build();
     }
 
-    public static PartSummaryResponse toPartSummaryResponse(Part part) {
-        return PartSummaryResponse.newBuilder()
-                .setId(part.getId().toString())
-                .setPosition(part.getPosition())
-                .setQuestionCount(part.getQuestionCount())
+    public static PartsResponse toPartsResponse(List<PartResponse> parts) {
+        return PartsResponse.newBuilder()
+                .addAllParts(parts)
                 .build();
     }
-
-    public static GetAllPartsForTestResponse toGetAllPartsForTestResponse(List<Part> parts) {
-        List<PartSummaryResponse> responses = parts.stream()
-                .map(PartMapper::toPartSummaryResponse)
-                .toList();
-
-        return GetAllPartsForTestResponse.newBuilder()
-                .addAllParts(responses)
-                .build();
-    }
-
 }

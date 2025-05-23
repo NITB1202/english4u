@@ -27,6 +27,7 @@ public class TestMapper {
                 .setCreatedBy(test.getCreatedBy().toString())
                 .setCreateAt(test.getCreatedAt().toString())
                 .setName(test.getName())
+                .setVersion(test.getVersion())
                 .setMinutes(test.getMinutes())
                 .setTopic(test.getTopic())
                 .setPartCount(test.getPartCount())
@@ -42,6 +43,7 @@ public class TestMapper {
         return TestSummaryResponse.newBuilder()
                 .setId(test.getId().toString())
                 .setName(test.getName())
+                .setVersion(test.getVersion())
                 .setMinutes(test.getMinutes())
                 .setTopic(test.getTopic())
                 .setQuestionCount(questionCount)
@@ -62,6 +64,7 @@ public class TestMapper {
                 .setUpdatedBy(test.getUpdatedBy().toString())
                 .setUpdateAt(test.getUpdatedAt().toString())
                 .setName(test.getName())
+                .setVersion(test.getVersion())
                 .setMinutes(test.getMinutes())
                 .setTopic(test.getTopic())
                 .build();

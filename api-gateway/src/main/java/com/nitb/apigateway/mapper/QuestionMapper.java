@@ -15,7 +15,7 @@ public class QuestionMapper {
     private QuestionMapper() {}
 
     public static CreateQuestionRequest toCreateQuestionRequest(CreateQuestionRequestDto dto) {
-        String explanation = dto.getExplanation() != null ? dto.getExplanation() : "";
+        String explanation = dto.getExplanation() != null ? dto.getExplanation().trim() : "";
 
         return CreateQuestionRequest.newBuilder()
                 .setContent(dto.getContent())
