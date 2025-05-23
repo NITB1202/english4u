@@ -134,4 +134,9 @@ public class TestServiceImpl implements TestService {
             return TestMapper.toGetPublishedTestStatisticsResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
+
+    @Override
+    public Mono<TestTemplateResponse> generateTestTemplate() {
+        return Mono.fromCallable(testGrpc::generateTestTemplate).subscribeOn(Schedulers.boundedElastic());
+    }
 }

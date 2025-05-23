@@ -15,9 +15,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -135,5 +138,18 @@ public class TestController {
                                                                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                                                                                   @RequestParam GroupBy groupBy) {
         return testService.getPublishedTestStatistics(userId, from, to, groupBy).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/template")
+    @Operation(summary = "Download test template as an Excel file")
+    @ApiResponse(responseCode = "200", description = "Get successfully.")
+    public Mono<ResponseEntity<byte[]>> downloadTestTemplate() {
+        return testService.generateTestTemplate()
+                .map(response -> ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.getFileName())
+                        .body(response.getFileContent().toByteArray())
+                )
+                .subscribeOn(Schedulers.boundedElastic());
     }
 }

@@ -5,6 +5,7 @@ import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.common.enums.GroupBy;
+import com.nitb.testservice.grpc.TestTemplateResponse;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -22,4 +23,6 @@ public interface TestService {
     Mono<DeleteTestResponseDto> deleteTest(UUID userId, UUID id);
     Mono<DeleteTestResponseDto> restoreTest(UUID userId, UUID id);
     Mono<GetPublishedTestStatisticsResponseDto> getPublishedTestStatistics(UUID userId, LocalDate from, LocalDate to, GroupBy groupBy);
+
+    Mono<TestTemplateResponse> generateTestTemplate();
 }

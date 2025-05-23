@@ -8,7 +8,7 @@ public class FileMapper {
 
     public static TestTemplateResponse toTestTemplateResponse(byte[] data) {
         return TestTemplateResponse.newBuilder()
-                .setFileName("test_template.xlsx")
+                .setFileName("testTemplate.xlsx")
                 .setFileContent(ByteString.copyFrom(data))
                 .build();
     }

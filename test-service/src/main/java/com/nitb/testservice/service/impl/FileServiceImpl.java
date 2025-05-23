@@ -30,30 +30,26 @@ public class FileServiceImpl implements FileService {
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerStyle.setAlignment(HorizontalAlignment.CENTER);
         headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        headerStyle.setBorderBottom(BorderStyle.THIN);
-        headerStyle.setBorderTop(BorderStyle.THIN);
-        headerStyle.setBorderLeft(BorderStyle.THIN);
-        headerStyle.setBorderRight(BorderStyle.THIN);
 
         // Sheet 1: Test
         XSSFSheet sheet1 = workbook.createSheet("Test");
         Row row1 = sheet1.createRow(0);
-        createStyledCell(row1, 0, "name", headerStyle);
-        createStyledCell(row1, 1, "topic", headerStyle);
-        createStyledCell(row1, 2, "minutes", headerStyle);
+        createStyledCell(row1, 0, "Name", headerStyle);
+        createStyledCell(row1, 1, "Topic", headerStyle);
+        createStyledCell(row1, 2, "Minutes", headerStyle);
 
         // Sheet 2: Parts
         XSSFSheet sheet2 = workbook.createSheet("Parts");
         Row row2 = sheet2.createRow(0);
-        createStyledCell(row2, 0, "content", headerStyle);
+        createStyledCell(row2, 0, "Content", headerStyle);
 
         // Sheet 3: Questions
         XSSFSheet sheet3 = workbook.createSheet("Questions");
         Row row3 = sheet3.createRow(0);
         String[] headers = {
-                "part_order", "content",
-                "answer_A", "answer_B", "answer_C", "answer_D",
-                "correct_answer", "explanation"
+                "Part order", "Content",
+                "Answer A", "Answer B", "Answer C", "Answer D",
+                "Correct answer", "Explanation"
         };
         for (int i = 0; i < headers.length; i++) {
             createStyledCell(row3, i, headers[i], headerStyle);
