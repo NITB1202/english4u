@@ -1,6 +1,6 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.testservice.grpc.*;
 
 import java.time.LocalDateTime;
@@ -25,6 +25,7 @@ public class TestMapper {
         return TestDetailResponseDto.builder()
                 .id(UUID.fromString(test.getId()))
                 .name(test.getName())
+                .version(test.getVersion())
                 .minutes(test.getMinutes())
                 .topic(test.getTopic())
                 .createdBy(UUID.fromString(test.getCreatedBy()))
@@ -42,6 +43,7 @@ public class TestMapper {
         return TestSummaryResponseDto.builder()
                 .id(UUID.fromString(test.getId()))
                 .name(test.getName())
+                .version(test.getVersion())
                 .minutes(test.getMinutes())
                 .topic(test.getTopic())
                 .questionCount(test.getQuestionCount())
@@ -64,6 +66,7 @@ public class TestMapper {
         return UpdateTestResponseDto.builder()
                 .id(UUID.fromString(test.getId()))
                 .name(test.getName())
+                .version(test.getVersion())
                 .minutes(test.getMinutes())
                 .topic(test.getTopic())
                 .updatedBy(UUID.fromString(test.getUpdatedBy()))

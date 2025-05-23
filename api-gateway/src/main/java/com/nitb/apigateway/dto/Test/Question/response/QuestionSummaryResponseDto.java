@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.Test.response.Question;
+package com.nitb.apigateway.dto.Test.Question.response;
 
 import lombok.*;
 

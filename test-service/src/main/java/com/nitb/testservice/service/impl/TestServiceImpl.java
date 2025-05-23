@@ -102,7 +102,7 @@ public class TestServiceImpl implements TestService {
                 () -> new NotFoundException("Test not found.")
         );
 
-        if(testRepository.existsByNameAndVersion(test.getName(), MAX_VERSION)){
+        if(testRepository.countByName(test.getName()) >= MAX_VERSION){
             throw new BusinessException("This test has already reached its maximum version.");
         }
     }
@@ -115,7 +115,7 @@ public class TestServiceImpl implements TestService {
                 ()-> new NotFoundException("Test not found.")
         );
 
-        if(!request.getName().isEmpty() && testRepository.existsByNameAndIsDeletedFalse(request.getName())){
+        if(!request.getName().isEmpty() && !testRepository.existsByNameAndIsDeletedFalse(request.getName())){
             test.setName(request.getName());
             test.setVersion(1);
         }

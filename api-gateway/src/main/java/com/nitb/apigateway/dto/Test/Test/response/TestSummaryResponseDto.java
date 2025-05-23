@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.Test.response.Test;
+package com.nitb.apigateway.dto.Test.Test.response;
 
 import lombok.*;
 
@@ -13,6 +13,8 @@ public class TestSummaryResponseDto {
     private UUID id;
 
     private String name;
+
+    private Integer version;
 
     private Integer questionCount;
 

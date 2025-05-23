@@ -1,9 +1,9 @@
 package com.nitb.apigateway.grpc;
 
 import com.google.protobuf.Empty;
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
 import com.nitb.apigateway.mapper.PartMapper;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.common.mappers.GroupByMapper;
@@ -20,7 +20,7 @@ public class TestServiceGrpcClient {
     @GrpcClient("test-service")
     private TestServiceGrpc.TestServiceBlockingStub blockingStub;
 
-    //Tests
+    //Test
     public CreateTestResponse createTest(UUID userId, CreateTestRequestDto dto) {
         String topic = dto.getTopic() != null ? dto.getTopic().trim() : "";
 
@@ -80,6 +80,14 @@ public class TestServiceGrpcClient {
         return blockingStub.searchDeletedTestByName(request);
     }
 
+    public Empty validateUpdateTest(UUID id) {
+        ValidateUpdateTestRequest request = ValidateUpdateTestRequest.newBuilder()
+                .setId(id.toString())
+                .build();
+
+        return blockingStub.validateUpdateTest(request);
+    }
+
     public UpdateTestResponse updateTestNameAndTopic(UUID id, UUID userId, UpdateTestInfoRequestDto dto) {
         String name = dto.getName() != null ? dto.getName().trim() : "";
         String topic = dto.getTopic() != null ? dto.getTopic().trim() : "";
@@ -132,7 +140,7 @@ public class TestServiceGrpcClient {
         return blockingStub.getPublishedTestStatistics(request);
     }
 
-    //Parts
+    //Part
     public Empty createParts(UUID userId, UUID testId, List<CreatePartRequestDto> dto) {
         List<CreatePartRequest> parts =  dto.stream().map(PartMapper::toCreatePartRequest).toList();
 

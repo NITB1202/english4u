@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface VocabularySetRepository extends JpaRepository<VocabularySet, UUID> {
     boolean existsByNameAndIsDeletedFalse(String name);
-    boolean existsByNameAndVersion(String name, int version);
+    int countByName(String name);
     Page<VocabularySet> findAllByIsDeletedFalse(Pageable pageable);
     Page<VocabularySet> findAllByIsDeletedTrue(Pageable pageable);
     Page<VocabularySet> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);

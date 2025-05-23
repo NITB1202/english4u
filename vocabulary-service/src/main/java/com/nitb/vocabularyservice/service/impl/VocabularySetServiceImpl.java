@@ -95,7 +95,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
                 () -> new BusinessException("No vocabulary set found with id: " + id)
         );
 
-        if(vocabularySetRepository.existsByNameAndVersion(set.getName(), MAX_VERSION)) {
+        if(vocabularySetRepository.countByName(set.getName()) >= MAX_VERSION) {
             throw new BusinessException("Version limit reached for this vocabulary set. Please create a new set to continue editing.");
         }
     }

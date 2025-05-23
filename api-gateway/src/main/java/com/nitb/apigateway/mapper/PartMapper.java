@@ -1,10 +1,8 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.response.Part.PartDetailResponseDto;
-import com.nitb.apigateway.dto.Test.response.Part.PartResponseDto;
-import com.nitb.apigateway.dto.Test.response.Part.PartSummaryResponseDto;
-import com.nitb.apigateway.dto.Test.response.Question.QuestionSummaryResponseDto;
+import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import com.nitb.apigateway.dto.Test.Part.response.PartDetailResponseDto;
+import com.nitb.apigateway.dto.Test.Question.response.QuestionSummaryResponseDto;
 import com.nitb.testservice.grpc.CreatePartRequest;
 import com.nitb.testservice.grpc.CreateQuestionRequest;
 import com.nitb.testservice.grpc.PartResponse;
@@ -25,32 +23,17 @@ public class PartMapper {
                 .build();
     }
 
-    public static PartResponseDto toPartResponseDto(PartResponse part) {
-        return PartResponseDto.builder()
-                .id(UUID.fromString(part.getId()))
-                .position(part.getPosition())
-                .content(part.getContent())
-                .questionCount(part.getQuestionCount())
-                .build();
-    }
-
-    public static PartDetailResponseDto toPartDetailResponseDto(UUID id, String content, List<QuestionSummaryResponse> questions) {
-        List<QuestionSummaryResponseDto> dto = questions.stream()
+    public static PartDetailResponseDto toPartDetailResponseDto(PartResponse part) {
+        List<QuestionSummaryResponseDto> questions = part.getQuestionsList().stream()
                 .map(QuestionMapper::toQuestionSummaryResponseDto)
                 .toList();
 
         return PartDetailResponseDto.builder()
-                .id(id)
-                .content(content)
-                .questions(dto)
-                .build();
-    }
-
-    public static PartSummaryResponseDto toPartSummaryResponseDto(PartSummaryResponse part) {
-        return PartSummaryResponseDto.builder()
                 .id(UUID.fromString(part.getId()))
                 .position(part.getPosition())
+                .content(part.getContent())
                 .questionCount(part.getQuestionCount())
+                .questions(questions)
                 .build();
     }
 }

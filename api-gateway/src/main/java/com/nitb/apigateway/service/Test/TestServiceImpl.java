@@ -1,9 +1,9 @@
 package com.nitb.apigateway.service.Test;
 
-import com.nitb.apigateway.dto.Test.request.Part.CreatePartRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.dto.Test.Test.response.*;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
 import com.nitb.common.enums.GroupBy;
@@ -29,13 +29,7 @@ public class TestServiceImpl implements TestService {
             UUID testId = UUID.fromString(test.getId());
 
             //Create parts
-            for(CreatePartRequestDto part : request.getParts() ) {
-                PartResponse savedPart = testGrpc.createPart(userId, testId, part);
-                UUID savedPartId = UUID.fromString(savedPart.getId());
-
-                //Create questions
-                testGrpc.createQuestions(userId, savedPartId, part.getQuestions());
-            }
+            testGrpc.createParts(userId, testId, request.getParts());
 
             return TestMapper.toCreateTestResponseDto(test);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -74,9 +68,45 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public Mono<TestsPaginationResponseDto> searchDeletedTestByName(String keyword, int page, int size) {
+        return Mono.fromCallable(()->{
+            TestsPaginationResponse response = testGrpc.searchDeletedTestByName(keyword, page, size);
+            return TestMapper.toTestsPaginationResponseDto(response);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<UpdateTestResponseDto> updateTestNameAndTopic(UUID userId, UUID id, UpdateTestInfoRequestDto request) {
+        return Mono.fromCallable(()->{
+            UpdateTestResponse response = testGrpc.updateTestNameAndTopic(id, userId, request);
+            return TestMapper.toUpdateTestResponseDto(response);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
     public Mono<UpdateTestResponseDto> updateTest(UUID userId, UUID id, UpdateTestRequestDto request) {
         return Mono.fromCallable(()->{
-            UpdateTestResponse response = testGrpc.updateTest(userId, id, request);
+            //Validate update request
+            testGrpc.validateUpdateTest(id);
+
+            //Soft-delete the current version
+            TestDetailResponse oldTest = testGrpc.getTestById(id);
+            testGrpc.deleteTest(id, userId);
+
+            //Create a new version
+            int minute = request.getMinutes() != null ? request.getMinutes() : oldTest.getMinutes();
+            CreateTestRequestDto testDto = CreateTestRequestDto.builder()
+                    .name(oldTest.getName())
+                    .topic(oldTest.getTopic())
+                    .minutes(minute)
+                    .parts(request.getParts())
+                    .build();
+
+            CreateTestResponse newTest = testGrpc.createTest(userId, testDto);
+            UUID newId = UUID.fromString(newTest.getId());
+            testGrpc.createParts(userId, newId, request.getParts());
+
+            UpdateTestResponse response = testGrpc.updateTest(id, newId);
             return TestMapper.toUpdateTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }

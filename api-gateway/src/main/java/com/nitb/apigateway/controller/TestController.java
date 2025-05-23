@@ -1,8 +1,9 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.Test.request.Test.CreateTestRequestDto;
-import com.nitb.apigateway.dto.Test.request.Test.UpdateTestRequestDto;
-import com.nitb.apigateway.dto.Test.response.Test.*;
+import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
+import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
+import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.Test.TestService;
 import com.nitb.common.enums.GroupBy;
@@ -69,6 +70,28 @@ public class TestController {
                                                                              @Positive(message = "Page must be positive") @RequestParam int page,
                                                                              @RequestParam(defaultValue = "10") int size) {
         return testService.searchTestByName(keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/search/deleted")
+    @Operation(summary = "Search for a deleted test by name.")
+    @ApiResponse(responseCode = "200", description = "Search successfully.")
+    public Mono<ResponseEntity<TestsPaginationResponseDto>> searchDeletedTestByName(@RequestParam String keyword,
+                                                                                    @Positive(message = "Page must be positive") @RequestParam int page,
+                                                                                    @RequestParam(defaultValue = "10") int size) {
+        return testService.searchDeletedTestByName(keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @PatchMapping("/{id}/general")
+    @Operation(summary = "Update the name and topic of a test.")
+    @ApiResponse(responseCode = "200", description = "Update successfully.")
+    @ApiResponse(responseCode = "400", description = "Invalid request body.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    public Mono<ResponseEntity<UpdateTestResponseDto>> updateTestNameAndTopic(@PathVariable UUID id,
+                                                                              @RequestParam UUID userId,
+                                                                              @Valid @RequestBody UpdateTestInfoRequestDto request) {
+        return testService.updateTestNameAndTopic(userId, id, request).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/{id}")
