@@ -11,7 +11,6 @@ services:
   vocabulary-db:
     image: postgres:15
     container_name: e4u-vocabulary-db
-    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -27,7 +26,6 @@ services:
     build:
       context: ./vocabulary-service
     container_name: e4u-vocabulary-service
-    restart: always
     ports:
       - "8081:8081"
     depends_on:
@@ -46,7 +44,6 @@ services:
   user-vocabulary-db:
     image: postgres:15
     container_name: e4u-user-vocabulary-db
-    restart: always
     ports:
       - "5433:5432"
     environment:
@@ -62,7 +59,6 @@ services:
     build:
       context: ./user-vocabulary-service
     container_name: e4u-user-vocabulary-service
-    restart: always
     ports:
       - "8082:8082"
     depends_on:
@@ -79,15 +75,49 @@ services:
     networks:
       - backend
 
+  test-db:
+    image: postgres:15
+    container_name: e4u-test-db
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: ${TEST_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - test-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  test-service:
+    build:
+      context: ./test-service
+    container_name: e4u-test-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - test-db
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      TEST_SERVICE_DB_HOST: ${TEST_SERVICE_DB_HOST}
+      TEST_SERVICE_DB_PORT: ${TEST_SERVICE_DB_PORT}
+      TEST_SERVICE_DB_NAME: ${TEST_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
+
   api-gateway:
     build:
       context: ./api-gateway
     container_name: e4u-api-gateway
-    restart: always
     ports:
       - "8080:8080"
     depends_on:
       - vocabulary-service
+      - user-vocabulary-service
+      - test-service
       - eureka-server
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
@@ -97,6 +127,7 @@ services:
 volumes:
   vocabulary-db-data:
   user-vocabulary-db-data:
+  test-db-data:
 
 networks:
   backend:
