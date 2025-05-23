@@ -1,10 +1,9 @@
 package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
-import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordDetailResponseDto;
+import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.vocabularyservice.grpc.CreateVocabularyWordRequest;
-import com.nitb.vocabularyservice.grpc.VocabularyWordDetailResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsPaginationResponse;
 
@@ -23,8 +22,8 @@ public class VocabularyWordMapper {
                 .build();
     }
 
-    public static VocabularyWordDetailResponseDto toVocabularyWordDetailResponseDto(VocabularyWordDetailResponse word) {
-        return VocabularyWordDetailResponseDto.builder()
+    public static VocabularyWordResponseDto toVocabularyWordResponseDto(VocabularyWordResponse word) {
+        return VocabularyWordResponseDto.builder()
                 .id(UUID.fromString(word.getId()))
                 .position(word.getPosition())
                 .word(word.getWord())
@@ -36,8 +35,8 @@ public class VocabularyWordMapper {
     }
 
     public static VocabularyWordsPaginationResponseDto vocabularyWordsPaginationResponseDto(VocabularyWordsPaginationResponse pagination) {
-        List<VocabularyWordDetailResponseDto> words = pagination.getWordsList().stream()
-                .map(VocabularyWordMapper::toVocabularyWordDetailResponseDto)
+        List<VocabularyWordResponseDto> words = pagination.getWordsList().stream()
+                .map(VocabularyWordMapper::toVocabularyWordResponseDto)
                 .toList();
 
         return VocabularyWordsPaginationResponseDto.builder()

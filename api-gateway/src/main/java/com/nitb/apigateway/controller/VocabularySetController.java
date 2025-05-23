@@ -73,14 +73,36 @@ public class VocabularySetController {
         return vocabularySetService.searchVocabularySetByName(keyword, page, size).map(ResponseEntity::ok);
     }
 
-    @PatchMapping
-    @Operation(summary = "Update a vocabulary set.")
+    @GetMapping("/search/deleted")
+    @Operation(summary = "Search for a deleted vocabulary set by name.")
+    @ApiResponse(responseCode = "200", description = "Search successfully.")
+    public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> searchDeletedVocabularySetsByName(@RequestParam String keyword,
+                                                                                                       @Positive(message = "Page must be positive") @RequestParam int page,
+                                                                                                       @RequestParam(defaultValue = "10") int size) {
+        return vocabularySetService.searchDeletedVocabularySetByName(keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @PatchMapping("/{id}/name")
+    @Operation(summary = "Update a vocabulary set's name.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UpdateVocabularySetResponseDto>> updateVocabularySet(@RequestParam UUID id,
+    public Mono<ResponseEntity<UpdateVocabularySetResponseDto>> updateVocabularySetName(@PathVariable UUID id,
+                                                                                        @RequestParam UUID userId,
+                                                                                        @RequestParam String name) {
+        return vocabularySetService.updateVocabularySetName(id, userId, name).map(ResponseEntity::ok);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update a vocabulary set by versioning it.")
+    @ApiResponse(responseCode = "200", description = "Update successfully.")
+    @ApiResponse(responseCode = "400", description = "Invalid request body.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Not found",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    public Mono<ResponseEntity<UpdateVocabularySetResponseDto>> updateVocabularySet(@PathVariable UUID id,
                                                                                     @RequestParam UUID userId,
                                                                                     @Valid @RequestBody UpdateVocabularySetRequestDto request) {
         return vocabularySetService.updateVocabularySet(id, userId, request).map(ResponseEntity::ok);
