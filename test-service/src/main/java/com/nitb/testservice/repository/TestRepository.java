@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public interface TestRepository extends JpaRepository<Test, UUID> {
     boolean existsByNameAndIsDeletedFalse(String name);
-    boolean existsByNameAndVersion(String name, int version);
+    int countByName(String name);
     Page<Test> findByIsDeletedFalse(Pageable pageable);
     Page<Test> findByIsDeletedTrue(Pageable pageable);
     Page<Test> findByNameContainingIgnoreCaseAndIsDeletedFalse(String name, Pageable pageable);

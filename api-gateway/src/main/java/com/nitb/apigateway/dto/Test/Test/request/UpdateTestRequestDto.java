@@ -1,6 +1,7 @@
 package com.nitb.apigateway.dto.Test.Test.request;
 
 import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -19,5 +20,5 @@ public class UpdateTestRequestDto {
 
     @NotNull(message = "Parts are required.")
     @Size(min = 1, message = "The test must have at least 1 part.")
-    List<CreatePartRequestDto> parts;
+    List<@Valid CreatePartRequestDto> parts;
 }

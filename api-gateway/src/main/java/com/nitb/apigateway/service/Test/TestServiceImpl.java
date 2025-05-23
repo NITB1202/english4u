@@ -78,7 +78,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<UpdateTestResponseDto> updateTestNameAndTopic(UUID userId, UUID id, UpdateTestInfoRequestDto request) {
         return Mono.fromCallable(()->{
-            UpdateTestResponse response = testGrpc.updateTestNameAndTopic(userId, id, request);
+            UpdateTestResponse response = testGrpc.updateTestNameAndTopic(id, userId, request);
             return TestMapper.toUpdateTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
