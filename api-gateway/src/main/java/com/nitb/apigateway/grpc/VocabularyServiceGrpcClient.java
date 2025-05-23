@@ -84,17 +84,6 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.validateUpdateVocabularySet(request);
     }
 
-    public Empty updateVocabularySet(UUID oldId, UUID newId, UUID createdBy, LocalDateTime createAt) {
-        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
-                .setOldId(oldId.toString())
-                .setNewId(newId.toString())
-                .setCreatedBy(createdBy.toString())
-                .setCreateAt(createAt.toString())
-                .build();
-
-        return blockingStub.updateVocabularySet(request);
-    }
-
     public UpdateVocabularySetResponse updateVocabularySetName(UUID id, UUID userId, String name) {
         UpdateVocabularySetNameRequest request = UpdateVocabularySetNameRequest.newBuilder()
                 .setId(id.toString())
@@ -103,6 +92,17 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.updateVocabularySetName(request);
+    }
+
+    public UpdateVocabularySetResponse updateVocabularySet(UUID oldId, UUID newId, UUID createdBy, LocalDateTime createAt) {
+        UpdateVocabularySetRequest request = UpdateVocabularySetRequest.newBuilder()
+                .setOldId(oldId.toString())
+                .setNewId(newId.toString())
+                .setCreatedBy(createdBy.toString())
+                .setCreateAt(createAt.toString())
+                .build();
+
+        return blockingStub.updateVocabularySet(request);
     }
 
     public DeleteVocabularySetResponse deleteVocabularySet(UUID id, UUID userId) {

@@ -16,8 +16,8 @@ public interface VocabularySetService {
     Page<VocabularySet> searchVocabularySetByName(SearchVocabularySetByNameRequest request);
     Page<VocabularySet> searchDeletedVocabularySetByName(SearchVocabularySetByNameRequest request);
     void validateUpdateVocabularySet(ValidateUpdateVocabularySetRequest request);
-    void updateVocabularySet(UpdateVocabularySetRequest request);
     VocabularySet updateVocabularySetName(UpdateVocabularySetNameRequest request);
+    VocabularySet updateVocabularySet(UpdateVocabularySetRequest request);
     VocabularySet deleteVocabularySet(DeleteVocabularySetRequest request);
     VocabularySet restoreVocabularySet(RestoreVocabularySetRequest request);
     List<VocabularySetStatisticDto> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request);

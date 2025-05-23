@@ -81,9 +81,10 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
     }
 
     @Override
-    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<Empty> streamObserver){
-        vocabularySetService.updateVocabularySet(request);
-        streamObserver.onNext(Empty.getDefaultInstance());
+    public void updateVocabularySet(UpdateVocabularySetRequest request, StreamObserver<UpdateVocabularySetResponse> streamObserver){
+        VocabularySet set = vocabularySetService.updateVocabularySet(request);
+        UpdateVocabularySetResponse response = VocabularySetMapper.toUpdateVocabularySetResponse(set);
+        streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
