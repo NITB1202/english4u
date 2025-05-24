@@ -14,6 +14,7 @@
         <module>vocabulary-service</module>
         <module>user-vocabulary-service</module>
         <module>test-service</module>
+        <module>user-test-service</module>
         <module>api-gateway</module>
     </modules>
 
@@ -68,6 +69,11 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <basedir/>
+                    <mainOutputDirectory/>
+                    <mojoStatusPath/>
+                    <outputDirectory/>
+                    <projectArtifact/>
                 </configuration>
             </plugin>
         </plugins>
