@@ -1,17 +1,20 @@
 package com.nitb.testservice.controller;
 
 import com.google.protobuf.Empty;
+import com.nitb.common.grpc.ActionResponse;
 import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
+import com.nitb.testservice.mapper.FileMapper;
 import com.nitb.testservice.mapper.PartMapper;
 import com.nitb.testservice.mapper.QuestionMapper;
 import com.nitb.testservice.mapper.TestMapper;
 import com.nitb.testservice.service.PartService;
 import com.nitb.testservice.service.QuestionService;
 import com.nitb.testservice.service.TestService;
+import com.nitb.testservice.service.FileService;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -27,6 +30,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     private final TestService testService;
     private final PartService partService;
     private final QuestionService questionService;
+    private final FileService fileService;
 
     //Tests
     @Override
@@ -127,6 +131,27 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         streamObserver.onCompleted();
     }
 
+    @Override
+    public void generateTestTemplate(Empty request, StreamObserver<TestTemplateResponse> streamObserver) {
+        byte[] data = fileService.generateTestTemplate();
+        TestTemplateResponse response = FileMapper.toTestTemplateResponse(data);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void uploadTestTemplate(UploadTestTemplateRequest request, StreamObserver<ActionResponse> streamObserver) {
+        fileService.uploadTestTemplate(request);
+
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Upload successfully.")
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
     private TestsPaginationResponse paginateTest(Page<Test> tests) {
         List<TestSummaryResponse> summaryResponses = new ArrayList<>();
         for (Test test : tests.getContent()) {
@@ -147,7 +172,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         for(int i = partCount; i < request.getPartsCount(); i++) {
             CreatePartRequest partRequest = request.getParts(i);
 
-            Part part = partService.createPart(testId, i + 1, partRequest);
+            Part part = partService.createPart(testId, i + 1, partRequest.getContent());
             List<CreateQuestionRequest> questions = partRequest.getQuestionsList();
 
             questionService.createQuestions(part.getId(), questions);

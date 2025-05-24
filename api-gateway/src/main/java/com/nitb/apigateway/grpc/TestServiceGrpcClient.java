@@ -1,11 +1,13 @@
 package com.nitb.apigateway.grpc;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
 import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
 import com.nitb.apigateway.mapper.PartMapper;
 import com.nitb.common.enums.GroupBy;
+import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.testservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -138,6 +140,21 @@ public class TestServiceGrpcClient {
                 .build();
 
         return blockingStub.getPublishedTestStatistics(request);
+    }
+
+    public TestTemplateResponse generateTestTemplate() {
+        return blockingStub.generateTestTemplate(Empty.getDefaultInstance());
+    }
+
+    public ActionResponse uploadTestTemplate(UUID userId, byte[] fileContent) {
+        ByteString byteString = ByteString.copyFrom(fileContent);
+
+        UploadTestTemplateRequest request = UploadTestTemplateRequest.newBuilder()
+                .setUserId(userId.toString())
+                .setFileContent(byteString)
+                .build();
+
+        return blockingStub.uploadTestTemplate(request);
     }
 
     //Part

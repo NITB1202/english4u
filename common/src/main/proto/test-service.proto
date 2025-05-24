@@ -143,6 +143,16 @@ message GetPublishedTestStatisticsResponse {
   repeated TestStatistic statistics = 1;
 }
 
+message TestTemplateResponse {
+  string file_name = 1;
+  bytes file_content = 2;
+}
+
+message UploadTestTemplateRequest {
+  string user_id = 1;
+  bytes file_content = 2;
+}
+
 //Parts
 message CreateQuestionRequest {
   string content = 1;
@@ -213,6 +223,9 @@ service TestService {
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
   rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
+
+  rpc GenerateTestTemplate(google.protobuf.Empty) returns (TestTemplateResponse);
+  rpc UploadTestTemplate(UploadTestTemplateRequest) returns (common.ActionResponse);
 
   rpc CreateParts(CreatePartsRequest) returns (google.protobuf.Empty);
   rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);
