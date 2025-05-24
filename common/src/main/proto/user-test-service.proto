@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package user_test;
+
+import "common.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.usertestservice.grpc";
+option java_outer_classname =  "UserTestProto";
+
+enum AnswerState {
+  EMPTY = 0;
+  INCORRECT = 1;
+  CORRECT = 2;
+}
+
+message CreateResultDetailRequest {
+  string question_id = 1;
+  string user_answer = 2;
+  AnswerState state = 3;
+}
+
+message CreateResultRequest {
+  string user_id = 1;
+  string test_id = 2;
+  string time_spent = 3;
+  int32 score = 4;
+  float accuracy = 5;
+  repeated CreateResultDetailRequest details = 6;
+}
+
+message GetResultByIdRequest {
+  string id = 1;
+}
+
+message ResultDetailResponse {
+  string id = 1;
+  string question_id = 2;
+  string user_answer = 3;
+  AnswerState state = 4;
+}
+
+message ResultDetailsResponse {
+  string id = 1;
+  string test_id = 2;
+  string submit_date = 3;
+  string time_spent = 4;
+  int32 score = 5;
+  float accuracy = 6;
+  repeated ResultDetailResponse details = 7;
+}
+
+message GetResultsRequest {
+  string user_id = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message ResultSummaryResponse {
+  string id = 1;
+  string test_id = 2;
+  string submit_date = 3;
+  int32 score = 4;
+  string time_spent = 5;
+}
+
+message ResultsResponse {
+  repeated ResultSummaryResponse results = 1;
+  int64 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message GetResultStatisticsRequest {
+  string user_id = 1;
+  string from = 2;
+  string to = 3;
+  common.GroupBy group_by = 4;
+}
+
+message ResultStatistic {
+  string time = 1;
+  int32 result_count = 2;
+  string time_spent = 3;
+  float accuracy = 4;
+}
+
+message GetResultStatisticsResponse {
+  repeated ResultStatistic statistics = 1;
+}
+
+service UserTestService {
+  rpc CreateResult(CreateResultRequest) returns (google.protobuf.Empty);
+  rpc GetResultById(GetResultByIdRequest) returns (ResultDetailsResponse);
+  rpc GetResults(GetResultsRequest) returns (ResultsResponse);
+  rpc GetResultStatistics(GetResultStatisticsRequest) returns (GetResultStatisticsResponse);
+}
