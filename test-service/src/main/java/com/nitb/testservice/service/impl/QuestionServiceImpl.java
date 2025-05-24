@@ -37,6 +37,10 @@ public class QuestionServiceImpl implements QuestionService {
                 throw new BusinessException("Correct answer is empty.");
             }
 
+            if(request.getCorrectAnswer().length() != 1){
+                throw new BusinessException("Correct answer must be a letter.");
+            }
+
             Question question = Question.builder()
                     .partId(partId)
                     .position(i + 1)

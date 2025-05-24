@@ -17,11 +17,11 @@ public class PartServiceImpl implements PartService {
     private final PartRepository partRepository;
 
     @Override
-    public Part createPart(UUID testId, int position, CreatePartRequest request) {
+    public Part createPart(UUID testId, int position, String content) {
         Part part = Part.builder()
                 .testId(testId)
                 .position(position)
-                .content(request.getContent())
+                .content(content)
                 .questionCount(0)
                 .build();
 

@@ -1,6 +1,7 @@
 package com.nitb.testservice.controller;
 
 import com.google.protobuf.Empty;
+import com.nitb.common.grpc.ActionResponse;
 import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
@@ -138,6 +139,19 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         streamObserver.onCompleted();
     }
 
+    @Override
+    public void uploadTestTemplate(UploadTestTemplateRequest request, StreamObserver<ActionResponse> streamObserver) {
+        fileService.uploadTestTemplate(request);
+
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Upload successfully.")
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
     private TestsPaginationResponse paginateTest(Page<Test> tests) {
         List<TestSummaryResponse> summaryResponses = new ArrayList<>();
         for (Test test : tests.getContent()) {
@@ -158,7 +172,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         for(int i = partCount; i < request.getPartsCount(); i++) {
             CreatePartRequest partRequest = request.getParts(i);
 
-            Part part = partService.createPart(testId, i + 1, partRequest);
+            Part part = partService.createPart(testId, i + 1, partRequest.getContent());
             List<CreateQuestionRequest> questions = partRequest.getQuestionsList();
 
             questionService.createQuestions(part.getId(), questions);
