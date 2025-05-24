@@ -3,8 +3,8 @@ package com.nitb.usertestservice.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -30,7 +30,7 @@ public class Result {
     private LocalDate submitDate;
 
     @Column(name = "time_spent", nullable = false)
-    private LocalTime timeSpent;
+    private Duration timeSpent;
 
     @Column(name = "score", nullable = false)
     private Integer score;
