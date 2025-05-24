@@ -5,6 +5,7 @@ import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.grpc.*;
 import com.nitb.testservice.repository.PartRepository;
 import com.nitb.testservice.service.PartService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class PartServiceImpl implements PartService {
     private final PartRepository partRepository;
 
     @Override
+    @Transactional
     public Part createPart(UUID testId, int position, String content) {
         Part part = Part.builder()
                 .testId(testId)

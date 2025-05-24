@@ -18,6 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -152,4 +153,14 @@ public class TestController {
                 )
                 .subscribeOn(Schedulers.boundedElastic());
     }
+
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload test Excel file and create test")
+    @ApiResponse(responseCode = "200", description = "Upload successfully.")
+    public Mono<ResponseEntity<CreateTestResponseDto>> uploadTestTemplate(@RequestParam UUID userId,
+                                                                          @RequestPart("file") FilePart filePart) {
+        return testService.uploadTestTemplate(userId, filePart).map(ResponseEntity::ok);
+    }
+
+
 }

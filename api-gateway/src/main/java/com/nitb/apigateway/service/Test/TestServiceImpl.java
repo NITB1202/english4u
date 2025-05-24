@@ -7,13 +7,18 @@ import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
 import com.nitb.common.enums.GroupBy;
+import com.nitb.common.exceptions.BusinessException;
 import com.nitb.testservice.grpc.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -139,4 +144,28 @@ public class TestServiceImpl implements TestService {
     public Mono<TestTemplateResponse> generateTestTemplate() {
         return Mono.fromCallable(testGrpc::generateTestTemplate).subscribeOn(Schedulers.boundedElastic());
     }
+
+    @Override
+    public Mono<CreateTestResponseDto> uploadTestTemplate(UUID userId, FilePart file) {
+        // Check file extension or MIME type
+        String filename = file.filename().toLowerCase();
+        if (!filename.endsWith(".xlsx") &&
+                !Objects.equals(file.headers().getContentType(), MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))) {
+            throw new BusinessException("Invalid file format. Only .xlsx files are supported.");
+        }
+
+        return DataBufferUtils.join(file.content())
+                .flatMap(buffer -> {
+                    byte[] bytes = new byte[buffer.readableByteCount()];
+                    buffer.read(bytes);
+                    DataBufferUtils.release(buffer);
+
+                    return Mono.fromCallable(() -> {
+                                CreateTestResponse response = testGrpc.uploadTestTemplate(userId, bytes);
+                                return TestMapper.toCreateTestResponseDto(response);
+                            })
+                            .subscribeOn(Schedulers.boundedElastic());
+                });
+    }
+
 }

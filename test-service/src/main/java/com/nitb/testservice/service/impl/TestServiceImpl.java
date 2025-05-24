@@ -8,6 +8,7 @@ import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
 import com.nitb.testservice.repository.TestRepository;
 import com.nitb.testservice.service.TestService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ public class TestServiceImpl implements TestService {
     private final int MAX_VERSION = 5;
 
     @Override
+    @Transactional
     public Test createTest(CreateTestRequest request){
         if(testRepository.existsByNameAndIsDeletedFalse(request.getName())){
             throw new BusinessException("Test already exists.");

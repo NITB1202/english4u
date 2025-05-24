@@ -6,6 +6,7 @@ import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.testservice.grpc.TestTemplateResponse;
+import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -25,4 +26,5 @@ public interface TestService {
     Mono<GetPublishedTestStatisticsResponseDto> getPublishedTestStatistics(UUID userId, LocalDate from, LocalDate to, GroupBy groupBy);
 
     Mono<TestTemplateResponse> generateTestTemplate();
+    Mono<CreateTestResponseDto> uploadTestTemplate(UUID userId, FilePart file);
 }

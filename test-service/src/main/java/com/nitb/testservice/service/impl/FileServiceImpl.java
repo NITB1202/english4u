@@ -10,6 +10,7 @@ import com.nitb.testservice.service.FileService;
 import com.nitb.testservice.service.PartService;
 import com.nitb.testservice.service.QuestionService;
 import com.nitb.testservice.service.TestService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -89,7 +90,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void uploadTestTemplate(UploadTestTemplateRequest request) {
+    @Transactional
+    public Test uploadTestTemplate(UploadTestTemplateRequest request) {
         InputStream is = new ByteArrayInputStream(request.getFileContent().toByteArray());
 
         try {
@@ -199,6 +201,8 @@ public class FileServiceImpl implements FileService {
             }
 
             workbook.close();
+
+            return test;
 
         } catch (IOException e) {
             throw new BusinessException("Failed to process Excel template: " + e.getMessage());
