@@ -7,7 +7,6 @@ import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
 import com.nitb.apigateway.mapper.PartMapper;
 import com.nitb.common.enums.GroupBy;
-import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.testservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -146,7 +145,7 @@ public class TestServiceGrpcClient {
         return blockingStub.generateTestTemplate(Empty.getDefaultInstance());
     }
 
-    public ActionResponse uploadTestTemplate(UUID userId, byte[] fileContent) {
+    public CreateTestResponse uploadTestTemplate(UUID userId, byte[] fileContent) {
         ByteString byteString = ByteString.copyFrom(fileContent);
 
         UploadTestTemplateRequest request = UploadTestTemplateRequest.newBuilder()

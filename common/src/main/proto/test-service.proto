@@ -225,7 +225,7 @@ service TestService {
   rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
 
   rpc GenerateTestTemplate(google.protobuf.Empty) returns (TestTemplateResponse);
-  rpc UploadTestTemplate(UploadTestTemplateRequest) returns (common.ActionResponse);
+  rpc UploadTestTemplate(UploadTestTemplateRequest) returns (CreateTestResponse);
 
   rpc CreateParts(CreatePartsRequest) returns (google.protobuf.Empty);
   rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);

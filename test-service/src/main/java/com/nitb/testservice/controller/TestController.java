@@ -1,7 +1,6 @@
 package com.nitb.testservice.controller;
 
 import com.google.protobuf.Empty;
-import com.nitb.common.grpc.ActionResponse;
 import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
@@ -140,14 +139,9 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
-    public void uploadTestTemplate(UploadTestTemplateRequest request, StreamObserver<ActionResponse> streamObserver) {
-        fileService.uploadTestTemplate(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Upload successfully.")
-                .build();
-
+    public void uploadTestTemplate(UploadTestTemplateRequest request, StreamObserver<CreateTestResponse> streamObserver) {
+        Test test = fileService.uploadTestTemplate(request);
+        CreateTestResponse response = TestMapper.toCreateTestResponse(test);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

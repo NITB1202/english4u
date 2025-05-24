@@ -6,6 +6,7 @@ import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.grpc.*;
 import com.nitb.testservice.repository.QuestionRepository;
 import com.nitb.testservice.service.QuestionService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     @Override
+    @Transactional
     public void createQuestions(UUID partId, List<CreateQuestionRequest> requests) {
         List<Question> savedQuestions = new ArrayList<>();
 
