@@ -2,8 +2,6 @@ package com.nitb.usertestservice.dto;
 
 import lombok.*;
 
-import java.time.Duration;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,9 +10,9 @@ import java.time.Duration;
 public class ResultStatisticDto {
     private String time;
 
-    private Integer resultCount;
+    private Long resultCount;
 
-    private Duration timeSpent;
+    private Long timeSpentSeconds;
 
-    private Float accuracy;
+    private Double accuracy;
 }

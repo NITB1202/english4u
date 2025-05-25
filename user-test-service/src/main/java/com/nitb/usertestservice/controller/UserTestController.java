@@ -2,6 +2,8 @@ package com.nitb.usertestservice.controller;
 
 import com.google.protobuf.Empty;
 import com.nitb.usertestservice.grpc.*;
+import com.nitb.usertestservice.service.ResultDetailService;
+import com.nitb.usertestservice.service.ResultService;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -9,6 +11,8 @@ import net.devh.boot.grpc.server.service.GrpcService;
 @GrpcService
 @RequiredArgsConstructor
 public class UserTestController extends UserTestServiceGrpc.UserTestServiceImplBase {
+    private final ResultService resultService;
+    private final ResultDetailService resultDetailService;
 
     @Override
     public void createResult(CreateResultRequest request, StreamObserver<Empty> responseObserver) {
