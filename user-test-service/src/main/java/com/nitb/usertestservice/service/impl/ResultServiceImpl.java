@@ -11,13 +11,11 @@ import com.nitb.usertestservice.grpc.GetResultStatisticsRequest;
 import com.nitb.usertestservice.grpc.GetResultsRequest;
 import com.nitb.usertestservice.repository.ResultRepository;
 import com.nitb.usertestservice.service.ResultService;
-import com.nitb.usertestservice.util.DurationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +30,15 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public Result createResult(CreateResultRequest request) {
-        Duration timeSpent = DurationUtils.parseToDuration(request.getTimeSpent());
-
-        if(request.getScore() < 0) {
-            throw new BusinessException("Score must be greater than or equal to zero.");
-        }
-
-        if(request.getAccuracy() < 0) {
-            throw new BusinessException("Accuracy must be greater than or equal to zero.");
+        if(request.getSecondsSpent() < 0) {
+            throw new BusinessException("Seconds spent must be greater than or equal to zero.");
         }
 
         Result result = Result.builder()
                 .testId(UUID.fromString(request.getTestId()))
                 .userId(UUID.fromString(request.getUserId()))
                 .submitDate(LocalDate.now())
-                .timeSpent(timeSpent)
+                .secondsSpent(request.getSecondsSpent())
                 .score(request.getScore())
                 .accuracy(request.getAccuracy())
                 .build();
@@ -86,7 +78,7 @@ public class ResultServiceImpl implements ResultService {
 
         return statistics.stream()
                 .map(r -> new ResultStatisticDto(r.getTime(), r.getResultCount(),
-                        r.getTimeSpentSeconds(), r.getAccuracy()))
+                        r.getAvgSecondsSpent(), r.getAvgAccuracy()))
                 .toList();
     }
 }

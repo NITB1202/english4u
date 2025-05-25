@@ -4,7 +4,6 @@ import com.nitb.usertestservice.dto.ResultStatisticDto;
 import com.nitb.usertestservice.entity.Result;
 import com.nitb.usertestservice.entity.ResultDetail;
 import com.nitb.usertestservice.grpc.*;
-import com.nitb.usertestservice.util.DurationUtils;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,7 +12,6 @@ public class ResultMapper {
     private ResultMapper() {}
 
     public static ResultDetailsResponse toResultDetailsResponse(Result result, List<ResultDetail> details) {
-        String timeSpent = DurationUtils.parseToString(result.getTimeSpent());
         List<ResultDetailResponse> detailResponses = details.stream()
                 .map(ResultDetailMapper::toResultDetailResponse)
                 .toList();
@@ -22,7 +20,7 @@ public class ResultMapper {
                 .setId(result.getId().toString())
                 .setTestId(result.getTestId().toString())
                 .setSubmitDate(result.getSubmitDate().toString())
-                .setTimeSpent(timeSpent)
+                .setSecondsSpent(result.getSecondsSpent())
                 .setScore(result.getScore())
                 .setAccuracy(result.getAccuracy())
                 .addAllDetails(detailResponses)
@@ -34,7 +32,7 @@ public class ResultMapper {
                 .setId(result.getId().toString())
                 .setTestId(result.getTestId().toString())
                 .setSubmitDate(result.getSubmitDate().toString())
-                .setTimeSpent(DurationUtils.parseToString(result.getTimeSpent()))
+                .setSecondsSpent(result.getSecondsSpent())
                 .setScore(result.getScore())
                 .build();
     }
@@ -55,8 +53,8 @@ public class ResultMapper {
         return ResultStatisticResponse.newBuilder()
                 .setTime(statistic.getTime())
                 .setResultCount(statistic.getResultCount())
-                .setTimeSpentSeconds(statistic.getTimeSpentSeconds())
-                .setAccuracy(statistic.getAccuracy())
+                .setAvgSecondsSpent(statistic.getAvgSecondsSpent())
+                .setAvgAccuracy(statistic.getAvgAccuracy())
                 .build();
     }
 

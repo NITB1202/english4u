@@ -24,7 +24,7 @@ message CreateResultDetailRequest {
 message CreateResultRequest {
   string user_id = 1;
   string test_id = 2;
-  string time_spent = 3;
+  int64 seconds_spent = 3;
   int32 score = 4;
   float accuracy = 5;
   repeated CreateResultDetailRequest details = 6;
@@ -45,7 +45,7 @@ message ResultDetailsResponse {
   string id = 1;
   string test_id = 2;
   string submit_date = 3;
-  string time_spent = 4;
+  int64 seconds_spent = 4;
   int32 score = 5;
   float accuracy = 6;
   repeated ResultDetailResponse details = 7;
@@ -62,7 +62,7 @@ message ResultSummaryResponse {
   string test_id = 2;
   string submit_date = 3;
   int32 score = 4;
-  string time_spent = 5;
+  int64 seconds_spent = 5;
 }
 
 message ResultsResponse {
@@ -81,8 +81,8 @@ message GetResultStatisticsRequest {
 message ResultStatisticResponse {
   string time = 1;
   int64 result_count = 2;
-  int64 time_spent_seconds = 3;
-  double accuracy = 4;
+  int64 avg_seconds_spent = 3;
+  double avg_accuracy = 4;
 }
 
 message GetResultStatisticsResponse {

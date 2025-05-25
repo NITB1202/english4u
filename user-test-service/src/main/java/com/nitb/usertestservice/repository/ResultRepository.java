@@ -17,8 +17,8 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'IYYY-IW') AS time,
            COUNT(*) AS resultCount,
-           SUM(EXTRACT(EPOCH FROM time_spent)) AS totalTimeSpentSeconds,
-           AVG(accuracy) AS averageAccuracy
+           AVG(seconds_spent) AS avgSecondsSpent,
+           AVG(accuracy) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to
@@ -33,8 +33,8 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'YYYY-MM') AS time,
            COUNT(*) AS resultCount,
-           SUM(EXTRACT(EPOCH FROM time_spent)) AS totalTimeSpentSeconds,
-           AVG(accuracy) AS averageAccuracy
+           AVG(seconds_spent) AS avgSecondsSpent,
+           AVG(accuracy) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to
@@ -49,8 +49,8 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'YYYY') AS time,
            COUNT(*) AS resultCount,
-           SUM(EXTRACT(EPOCH FROM time_spent)) AS totalTimeSpentSeconds,
-           AVG(accuracy) AS averageAccuracy
+           AVG(seconds_spent) AS avgSecondsSpent,
+           AVG(accuracy) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to

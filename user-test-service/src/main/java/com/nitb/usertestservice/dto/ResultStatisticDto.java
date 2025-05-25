@@ -12,7 +12,7 @@ public class ResultStatisticDto {
 
     private Long resultCount;
 
-    private Long timeSpentSeconds;
+    private Long avgSecondsSpent;
 
-    private Double accuracy;
+    private Double avgAccuracy;
 }
