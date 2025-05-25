@@ -78,15 +78,15 @@ message GetResultStatisticsRequest {
   common.GroupBy group_by = 4;
 }
 
-message ResultStatistic {
+message ResultStatisticResponse {
   string time = 1;
-  int32 result_count = 2;
-  string time_spent = 3;
-  float accuracy = 4;
+  int64 result_count = 2;
+  int64 time_spent_seconds = 3;
+  double accuracy = 4;
 }
 
 message GetResultStatisticsResponse {
-  repeated ResultStatistic statistics = 1;
+  repeated ResultStatisticResponse statistics = 1;
 }
 
 service UserTestService {

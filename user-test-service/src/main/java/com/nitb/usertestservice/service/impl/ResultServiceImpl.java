@@ -11,6 +11,7 @@ import com.nitb.usertestservice.grpc.GetResultStatisticsRequest;
 import com.nitb.usertestservice.grpc.GetResultsRequest;
 import com.nitb.usertestservice.repository.ResultRepository;
 import com.nitb.usertestservice.service.ResultService;
+import com.nitb.usertestservice.util.DurationUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 @Service
 @RequiredArgsConstructor
 public class ResultServiceImpl implements ResultService {
@@ -30,7 +32,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public Result createResult(CreateResultRequest request) {
-        Duration timeSpent = parseToDuration(request.getTimeSpent());
+        Duration timeSpent = DurationUtils.parseToDuration(request.getTimeSpent());
 
         if(request.getScore() < 0) {
             throw new BusinessException("Score must be greater than or equal to zero.");
@@ -86,15 +88,5 @@ public class ResultServiceImpl implements ResultService {
                 .map(r -> new ResultStatisticDto(r.getTime(), r.getResultCount(),
                         r.getTimeSpentSeconds(), r.getAccuracy()))
                 .toList();
-    }
-
-    public static Duration parseToDuration(String time) {
-        String[] parts = time.split(":");
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        int seconds = Integer.parseInt(parts[2]);
-        return Duration.ofHours(hours)
-                .plusMinutes(minutes)
-                .plusSeconds(seconds);
     }
 }

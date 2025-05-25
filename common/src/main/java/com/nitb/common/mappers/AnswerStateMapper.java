@@ -12,4 +12,12 @@ public class AnswerStateMapper {
             default -> AnswerState.EMPTY;
         };
     }
+
+    public static com.nitb.usertestservice.grpc.AnswerState toEnum(AnswerState state) {
+        return switch (state) {
+            case CORRECT -> com.nitb.usertestservice.grpc.AnswerState.CORRECT;
+            case INCORRECT -> com.nitb.usertestservice.grpc.AnswerState.INCORRECT;
+            default -> com.nitb.usertestservice.grpc.AnswerState.EMPTY;
+        };
+    }
 }
