@@ -1,6 +1,5 @@
 package com.nitb.usertestservice.controller;
 
-import com.google.protobuf.Empty;
 import com.nitb.usertestservice.dto.ResultStatisticDto;
 import com.nitb.usertestservice.entity.Result;
 import com.nitb.usertestservice.entity.ResultDetail;
@@ -22,10 +21,15 @@ public class UserTestController extends UserTestServiceGrpc.UserTestServiceImplB
     private final ResultDetailService resultDetailService;
 
     @Override
-    public void createResult(CreateResultRequest request, StreamObserver<Empty> responseObserver) {
+    public void createResult(CreateResultRequest request, StreamObserver<CreateResultResponse> responseObserver) {
         Result result = resultService.createResult(request);
         resultDetailService.createResultDetails(result.getId(), request.getDetailsList());
-        responseObserver.onNext(Empty.getDefaultInstance());
+
+        CreateResultResponse response = CreateResultResponse.newBuilder()
+                .setId(result.getId().toString())
+                .build();
+
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 

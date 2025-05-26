@@ -1,6 +1,5 @@
 package com.nitb.apigateway.grpc;
 
-import com.google.protobuf.Empty;
 import com.nitb.apigateway.dto.UserTest.request.CreateResultDetailRequestDto;
 import com.nitb.apigateway.dto.UserTest.request.CreateResultRequestDto;
 import com.nitb.apigateway.mapper.ResultDetailMapper;
@@ -19,7 +18,7 @@ public class UserTestGrpcClient {
     @GrpcClient("user-test-service")
     private UserTestServiceGrpc.UserTestServiceBlockingStub blockingStub;
 
-    public Empty createResult(CreateResultRequestDto result, List<CreateResultDetailRequestDto> details) {
+    public CreateResultResponse createResult(CreateResultRequestDto result, List<CreateResultDetailRequestDto> details) {
         List<CreateResultDetailRequest> detailRequests = details.stream().map(ResultDetailMapper::toCreateResultDetailRequest).toList();
 
         CreateResultRequest request = CreateResultRequest.newBuilder()
