@@ -256,4 +256,21 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
 
         return questions;
     }
+
+
+    //Comments
+    @Override
+    public void postComment(PostCommentRequest request, StreamObserver<CommentResponse> streamObserver) {
+
+    }
+
+    @Override
+    public void replyComment(ReplyCommentRequest request, StreamObserver<CommentResponse> streamObserver) {
+
+    }
+
+    @Override
+    public void getComments(GetCommentsRequest request, StreamObserver<CommentsResponse> streamObserver) {
+
+    }
 }
