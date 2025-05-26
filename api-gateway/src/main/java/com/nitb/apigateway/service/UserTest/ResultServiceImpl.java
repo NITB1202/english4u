@@ -32,7 +32,7 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public Mono<SavedResultResponseDto> saveResult(UUID userId, SaveResultRequestDto request) {
         return Mono.fromCallable(()-> {
-            QuestionAnswersResponse testAnswers = testGrpc.getTestAnswers(request.getTestId());
+            QuestionAnswersResponse testAnswers = testGrpc.getQuestionAnswers(request.getTestId());
 
             int correctAnswer = 0;
             List<CreateResultDetailRequestDto> details = new ArrayList<>();

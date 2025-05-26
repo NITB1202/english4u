@@ -194,7 +194,7 @@ public class TestServiceGrpcClient {
         return blockingStub.getQuestionById(request);
     }
 
-    public QuestionAnswersResponse getTestAnswers(UUID testId) {
+    public QuestionAnswersResponse getQuestionAnswers(UUID testId) {
         GetQuestionAnswersRequest request = GetQuestionAnswersRequest.newBuilder()
                 .setTestId(testId.toString())
                 .build();
