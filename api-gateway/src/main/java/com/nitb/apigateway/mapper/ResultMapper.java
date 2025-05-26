@@ -3,7 +3,7 @@ package com.nitb.apigateway.mapper;
 import com.nitb.apigateway.dto.UserTest.response.*;
 import com.nitb.usertestservice.grpc.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class ResultMapper {
         return ResultSummaryResponseDto.builder()
                 .id(UUID.fromString(result.getId()))
                 .testName(testName)
-                .submitDate(LocalDate.parse(result.getSubmitDate()))
+                .submitTime(LocalDateTime.parse(result.getSubmitTime()))
                 .score(result.getScore())
                 .secondsSpent(result.getSecondsSpent())
                 .build();

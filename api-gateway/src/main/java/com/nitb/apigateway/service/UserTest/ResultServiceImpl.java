@@ -64,14 +64,14 @@ public class ResultServiceImpl implements ResultService {
                 details.add(detail);
             }
 
-            float accuracy = (float)(correctAnswer / details.size());
+            float accuracy = (float) correctAnswer / details.size();
 
             CreateResultRequestDto result = CreateResultRequestDto.builder()
                     .userId(userId)
                     .testId(request.getTestId())
                     .secondsSpent(request.getSecondsSpent())
                     .score(correctAnswer)
-                    .accuracy(accuracy)
+                    .accuracy(Math.round(accuracy * 100) / 100f)
                     .build();
 
             CreateResultResponse response = userTestGrpc.createResult(result, details);

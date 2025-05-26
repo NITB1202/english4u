@@ -47,7 +47,7 @@ message ResultDetailResponse {
 message ResultDetailsResponse {
   string id = 1;
   string test_id = 2;
-  string submit_date = 3;
+  string submit_time = 3;
   int64 seconds_spent = 4;
   int32 score = 5;
   float accuracy = 6;
@@ -63,7 +63,7 @@ message GetResultsRequest {
 message ResultSummaryResponse {
   string id = 1;
   string test_id = 2;
-  string submit_date = 3;
+  string submit_time = 3;
   int32 score = 4;
   int64 seconds_spent = 5;
 }
