@@ -25,7 +25,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UserTestServiceImpl implements UserTestService {
+public class ResultServiceImpl implements ResultService {
     private final UserTestGrpcClient userTestGrpc;
     private final TestServiceGrpcClient testGrpc;
 
@@ -44,7 +44,9 @@ public class UserTestServiceImpl implements UserTestService {
                 AnswerState state = AnswerState.EMPTY;
 
                 if(userAnswer != null && !userAnswer.isEmpty()) {
-                    if(userAnswer.equals(questionAnswer.getValue())){
+                    String handledAnswer = userAnswer.trim().toLowerCase();
+
+                    if(handledAnswer.equals(questionAnswer.getValue().toLowerCase())) {
                         state = AnswerState.CORRECT;
                         correctAnswer++;
                     }

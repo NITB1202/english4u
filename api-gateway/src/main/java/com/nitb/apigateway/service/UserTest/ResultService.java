@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-public interface UserTestService {
+public interface ResultService {
     Mono<SavedResultResponseDto> saveResult(UUID userId, SaveResultRequestDto request);
     Mono<ResultDetailsResponseDto> getResultById(UUID id);
     Mono<ResultsResponseDto> getResults(UUID userId, int page, int size);

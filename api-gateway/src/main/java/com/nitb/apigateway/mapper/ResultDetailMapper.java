@@ -24,6 +24,7 @@ public class ResultDetailMapper {
     public static ResultDetailResponseDto toResultDetailResponseDto(int position, ResultDetailResponse detail) {
         return ResultDetailResponseDto.builder()
                 .id(UUID.fromString(detail.getId()))
+                .questionId(UUID.fromString(detail.getQuestionId()))
                 .position(position)
                 .userAnswer(detail.getUserAnswer())
                 .state(AnswerStateMapper.toEnum(detail.getState()))
