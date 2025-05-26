@@ -46,6 +46,10 @@ message TestDetailResponse {
   bool is_deleted = 13;
 }
 
+message TestNameResponse {
+  string name = 1;
+}
+
 message GetTestsRequest {
   int32 page = 1;
   int32 size = 2;
@@ -227,6 +231,7 @@ message AnswersResponse {
 service TestService {
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
+  rpc GetTestNameById(GetTestByIdRequest) returns(TestNameResponse);
   rpc GetTests(GetTestsRequest) returns (TestsPaginationResponse);
   rpc GetDeletedTests(GetDeletedTestsRequest) returns (TestsPaginationResponse);
   rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);

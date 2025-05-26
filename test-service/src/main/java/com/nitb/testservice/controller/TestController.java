@@ -52,6 +52,18 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
+    public void getTestNameById(GetTestByIdRequest request, StreamObserver<TestNameResponse> streamObserver) {
+        String name = testService.getTestNameById(request);
+
+        TestNameResponse response = TestNameResponse.newBuilder()
+                .setName(name)
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
     public void getTests(GetTestsRequest request, StreamObserver<TestsPaginationResponse> streamObserver) {
         Page<Test> tests = testService.getTests(request);
         TestsPaginationResponse response = paginateTest(tests);

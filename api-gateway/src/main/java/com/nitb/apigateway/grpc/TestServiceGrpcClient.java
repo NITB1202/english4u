@@ -43,6 +43,14 @@ public class TestServiceGrpcClient {
         return blockingStub.getTestById(request);
     }
 
+    public String getTestNameById(UUID id) {
+        GetTestByIdRequest request = GetTestByIdRequest.newBuilder()
+                .setId(id.toString())
+                .build();
+
+        return blockingStub.getTestNameById(request).getName();
+    }
+
     public TestsPaginationResponse getTests(int page, int size) {
         GetTestsRequest request = GetTestsRequest.newBuilder()
                 .setPage(page)

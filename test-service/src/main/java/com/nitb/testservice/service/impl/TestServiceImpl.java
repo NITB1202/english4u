@@ -66,6 +66,15 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public String getTestNameById(GetTestByIdRequest request) {
+        Test test = testRepository.findById(UUID.fromString(request.getId())).orElseThrow(
+                () -> new NotFoundException("Test not found.")
+        );
+
+        return test.getName();
+    }
+
+    @Override
     public Page<Test> getTests(GetTestsRequest request){
         int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
         int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
