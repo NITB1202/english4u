@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class ResultServiceImpl implements ResultService {
         Result result = Result.builder()
                 .testId(UUID.fromString(request.getTestId()))
                 .userId(UUID.fromString(request.getUserId()))
-                .submitDate(LocalDate.now())
+                .submitTime(LocalDateTime.now())
                 .secondsSpent(request.getSecondsSpent())
                 .score(request.getScore())
                 .accuracy(request.getAccuracy())
@@ -65,8 +66,8 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public List<ResultStatisticDto> getResultStatistics(GetResultStatisticsRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
-        LocalDate from = LocalDate.parse(request.getFrom());
-        LocalDate to = LocalDate.parse(request.getTo());
+        LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
+        LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
 
         List<ResultStatisticProjection> statistics = new ArrayList<>();
 

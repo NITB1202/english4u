@@ -223,16 +223,22 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
 
     @Override
     public void getQuestionAnswers(GetQuestionAnswersRequest request, StreamObserver<QuestionAnswersResponse> streamObserver) {
+        testService.validateTestId(request.getTestId());
+
         List<Question> questions = getAllQuestionsInTest(request.getTestId());
         QuestionAnswersResponse response = QuestionMapper.toQuestionAnswersResponse(questions);
+
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
     @Override
     public void getQuestionPositions(GetQuestionPositionsRequest request, StreamObserver<QuestionPositionsResponse> streamObserver) {
+        testService.validateTestId(request.getTestId());
+
         List<Question> questions = getAllQuestionsInTest(request.getTestId());
         QuestionPositionsResponse response = QuestionMapper.toQuestionPositionsResponse(questions);
+
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

@@ -19,7 +19,7 @@ public class ResultMapper {
         return ResultDetailsResponse.newBuilder()
                 .setId(result.getId().toString())
                 .setTestId(result.getTestId().toString())
-                .setSubmitDate(result.getSubmitDate().toString())
+                .setSubmitTime(result.getSubmitTime().toString())
                 .setSecondsSpent(result.getSecondsSpent())
                 .setScore(result.getScore())
                 .setAccuracy(result.getAccuracy())
@@ -31,7 +31,7 @@ public class ResultMapper {
         return ResultSummaryResponse.newBuilder()
                 .setId(result.getId().toString())
                 .setTestId(result.getTestId().toString())
-                .setSubmitDate(result.getSubmitDate().toString())
+                .setSubmitTime(result.getSubmitTime().toString())
                 .setSecondsSpent(result.getSecondsSpent())
                 .setScore(result.getScore())
                 .build();

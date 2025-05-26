@@ -229,4 +229,13 @@ public class TestServiceImpl implements TestService {
         test.setPartCount(count);
         testRepository.save(test);
     }
+
+    @Override
+    public void validateTestId(String testIdStr) {
+        UUID testId = UUID.fromString(testIdStr);
+
+        if(!testRepository.existsById(testId)) {
+            throw new NotFoundException("Test not found.");
+        }
+    }
 }

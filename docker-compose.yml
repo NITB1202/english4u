@@ -64,7 +64,6 @@ services:
     depends_on:
       - user-vocabulary-db
       - eureka-server
-      - vocabulary-service
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       USER_VOCABULARY_SERVICE_DB_HOST: ${USER_VOCABULARY_SERVICE_DB_HOST}
@@ -108,6 +107,39 @@ services:
     networks:
       - backend
 
+  user-test-db:
+    image: postgres:15
+    container_name: e4u-user-test-db
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: ${USER_TEST_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - user-test-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  user-test-service:
+    build:
+      context: ./user-test-service
+    container_name: e4u-user-test-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - user-test-db
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      USER_TEST_SERVICE_DB_HOST: ${USER_TEST_SERVICE_DB_HOST}
+      USER_TEST_SERVICE_DB_PORT: ${USER_TEST_SERVICE_DB_PORT}
+      USER_TEST_SERVICE_DB_NAME: ${USER_TEST_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -128,6 +160,7 @@ volumes:
   vocabulary-db-data:
   user-vocabulary-db-data:
   test-db-data:
+  user-test-db-data:
 
 networks:
   backend:

@@ -1,7 +1,7 @@
-INSERT INTO results (id, test_id, user_id, submit_date, seconds_spent, score, accuracy)
+INSERT INTO results (id, test_id, user_id, submit_time, seconds_spent, score, accuracy)
 VALUES
-    ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'cccccccc-cccc-cccc-cccc-cccccccccccc', DATE '2025-05-20', 1530, 2, 0.2), -- 25m30s
-    ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc', DATE '2025-05-21', 1800, 0, 0); -- 30m
+    ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'cccccccc-cccc-cccc-cccc-cccccccccccc', TIMESTAMP '2025-05-20 08:00:00', 1530, 2, 0.2), -- 25m30s
+    ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'cccccccc-cccc-cccc-cccc-cccccccccccc', TIMESTAMP '2025-05-21 09:15:00', 1800, 0, 0);   -- 30m
 
 INSERT INTO result_details (id, result_id, question_id, user_answer, state)
 VALUES

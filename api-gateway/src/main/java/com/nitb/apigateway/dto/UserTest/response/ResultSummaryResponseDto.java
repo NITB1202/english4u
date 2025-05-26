@@ -3,7 +3,7 @@ package com.nitb.apigateway.dto.UserTest.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -16,8 +16,8 @@ public class ResultSummaryResponseDto {
 
     private String testName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate submitDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime submitTime;
 
     private int score;
 

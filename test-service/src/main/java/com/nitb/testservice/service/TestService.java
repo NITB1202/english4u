@@ -24,4 +24,5 @@ public interface TestService {
     List<TestStatisticDto> getPublishedTestStatistics(GetPublishedTestStatisticsRequest request);
 
     void updatePartCount(UUID testId, int count);
+    void validateTestId(String testIdStr);
 }

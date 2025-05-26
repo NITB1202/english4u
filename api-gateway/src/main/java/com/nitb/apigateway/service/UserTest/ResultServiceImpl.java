@@ -32,7 +32,7 @@ public class ResultServiceImpl implements ResultService {
     @Override
     public Mono<SavedResultResponseDto> saveResult(UUID userId, SaveResultRequestDto request) {
         return Mono.fromCallable(()-> {
-            QuestionAnswersResponse testAnswers = testGrpc.getTestAnswers(request.getTestId());
+            QuestionAnswersResponse testAnswers = testGrpc.getQuestionAnswers(request.getTestId());
 
             int correctAnswer = 0;
             List<CreateResultDetailRequestDto> details = new ArrayList<>();
@@ -64,14 +64,14 @@ public class ResultServiceImpl implements ResultService {
                 details.add(detail);
             }
 
-            float accuracy = (float)(correctAnswer / details.size());
+            float accuracy = (float) correctAnswer / details.size();
 
             CreateResultRequestDto result = CreateResultRequestDto.builder()
                     .userId(userId)
                     .testId(request.getTestId())
                     .secondsSpent(request.getSecondsSpent())
                     .score(correctAnswer)
-                    .accuracy(accuracy)
+                    .accuracy(Math.round(accuracy * 100) / 100f)
                     .build();
 
             CreateResultResponse response = userTestGrpc.createResult(result, details);
