@@ -10,6 +10,7 @@ import com.nitb.testservice.grpc.*;
 import com.nitb.testservice.mapper.*;
 import com.nitb.testservice.service.*;
 import io.grpc.stub.StreamObserver;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.Page;
@@ -271,6 +272,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
+    @Transactional
     public void getComments(GetCommentsRequest request, StreamObserver<CommentsResponse> streamObserver) {
         Page<Comment> rootComments = commentService.getRootComments(request);
         CommentsResponse response = CommentMapper.toCommentsResponse(rootComments);

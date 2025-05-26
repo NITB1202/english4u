@@ -15,3 +15,10 @@ VALUES
     ('77777777-7777-7777-7777-777777777777', '33333333-3333-3333-3333-333333333333', 2, 'Choose the correct article: ___ apple.', 'a,an,the,none', 'B', 'Use "an" before vowels.'),
     ('88888888-8888-8888-8888-888888888888', '44444444-4444-4444-4444-444444444444', 1, 'Synonym of "big"?', 'small,tiny,huge,thin', 'C', 'Huge means very big.'),
     ('99999999-9999-9999-9999-999999999999', '55555555-5555-5555-5555-555555555555', 1, 'Opposite of "happy"?', 'sad,joyful,glad,smile', 'A', 'Sad is the opposite of happy.');
+
+INSERT INTO comments (id, parent_id, user_id, test_id, create_at, content)
+VALUES
+    ('10000000-0000-0000-0000-000000000001', NULL, 'cccccccc-cccc-cccc-cccc-cccccccccccc', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:00:00', 'This test is very helpful!'),
+    ('10000000-0000-0000-0000-000000000002', NULL, 'dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:05:00', 'I found question 3 a bit tricky.'),
+    ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:10:00', 'Agree! The examples are great.'),
+    ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', 'cccccccc-cccc-cccc-cccc-cccccccccccc', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:15:00', 'I think it was about grammar structure.');
