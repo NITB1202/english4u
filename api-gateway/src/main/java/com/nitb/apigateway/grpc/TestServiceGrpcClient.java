@@ -2,6 +2,8 @@ package com.nitb.apigateway.grpc;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Empty;
+import com.nitb.apigateway.dto.Test.Comment.request.PostCommentRequestDto;
+import com.nitb.apigateway.dto.Test.Comment.request.ReplyCommentRequestDto;
 import com.nitb.apigateway.dto.Test.Part.request.CreatePartRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestInfoRequestDto;
@@ -208,5 +210,36 @@ public class TestServiceGrpcClient {
                 .build();
 
         return blockingStub.getQuestionPositions(request);
+    }
+
+    //Comment
+    public CommentResponse postComment(UUID userId, PostCommentRequestDto dto) {
+        PostCommentRequest request = PostCommentRequest.newBuilder()
+                .setUserId(userId.toString())
+                .setTestId(dto.getTestId().toString())
+                .setContent(dto.getContent())
+                .build();
+
+        return blockingStub.postComment(request);
+    }
+
+    public CommentResponse replyComment(UUID userId, ReplyCommentRequestDto dto) {
+        ReplyCommentRequest request = ReplyCommentRequest.newBuilder()
+                .setUserId(userId.toString())
+                .setParentId(dto.getParentId().toString())
+                .setContent(dto.getContent())
+                .build();
+
+        return blockingStub.replyComment(request);
+    }
+
+    public CommentsResponse getComments(UUID testId, int page, int size) {
+        GetCommentsRequest request = GetCommentsRequest.newBuilder()
+                .setTestId(testId.toString())
+                .setPage(page)
+                .setSize(size)
+                .build();
+
+        return blockingStub.getComments(request);
     }
 }
