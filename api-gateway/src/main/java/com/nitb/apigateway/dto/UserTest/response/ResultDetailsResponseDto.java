@@ -25,7 +25,7 @@ public class ResultDetailsResponseDto {
 
     private float accuracy;
 
-    private int secondsSpent;
+    private long secondsSpent;
 
     private List<ResultDetailResponseDto> details;
 }

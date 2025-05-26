@@ -194,11 +194,19 @@ public class TestServiceGrpcClient {
         return blockingStub.getQuestionById(request);
     }
 
-    public AnswersResponse getTestAnswers(UUID testId) {
-        GetTestAnswersRequest request = GetTestAnswersRequest.newBuilder()
+    public QuestionAnswersResponse getTestAnswers(UUID testId) {
+        GetQuestionAnswersRequest request = GetQuestionAnswersRequest.newBuilder()
                 .setTestId(testId.toString())
                 .build();
 
-        return blockingStub.getTestAnswers(request);
+        return blockingStub.getQuestionAnswers(request);
+    }
+
+    public QuestionPositionsResponse getQuestionPositions(UUID testId) {
+        GetQuestionPositionsRequest request = GetQuestionPositionsRequest.newBuilder()
+                .setTestId(testId.toString())
+                .build();
+
+        return blockingStub.getQuestionPositions(request);
     }
 }

@@ -13,7 +13,7 @@ import java.util.UUID;
 public class CreateResultDetailRequestDto {
     private UUID questionId;
 
-    private char userAnswer;
+    private String userAnswer;
 
     private AnswerState state;
 }

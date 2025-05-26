@@ -9,7 +9,7 @@ public class ResultDetailMapper {
     private ResultDetailMapper() {}
 
     public static ResultDetailResponse toResultDetailResponse(ResultDetail resultDetail) {
-        AnswerState state = AnswerStateMapper.toEnum(resultDetail.getState());
+        AnswerState state = AnswerStateMapper.toGrpcEnum(resultDetail.getState());
 
         return ResultDetailResponse.newBuilder()
                 .setId(resultDetail.getId().toString())

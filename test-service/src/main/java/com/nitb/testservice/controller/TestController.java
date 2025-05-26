@@ -222,8 +222,23 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
-    public void getTestAnswers(GetTestAnswersRequest request, StreamObserver<AnswersResponse> streamObserver) {
-        UUID testId = UUID.fromString(request.getTestId());
+    public void getQuestionAnswers(GetQuestionAnswersRequest request, StreamObserver<QuestionAnswersResponse> streamObserver) {
+        List<Question> questions = getAllQuestionsInTest(request.getTestId());
+        QuestionAnswersResponse response = QuestionMapper.toQuestionAnswersResponse(questions);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void getQuestionPositions(GetQuestionPositionsRequest request, StreamObserver<QuestionPositionsResponse> streamObserver) {
+        List<Question> questions = getAllQuestionsInTest(request.getTestId());
+        QuestionPositionsResponse response = QuestionMapper.toQuestionPositionsResponse(questions);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    private List<Question> getAllQuestionsInTest(String testIdStr) {
+        UUID testId = UUID.fromString(testIdStr);
         List<UUID> partIds = partService.getAllPartIdsForTest(testId);
 
         List<Question> questions = new ArrayList<>();
@@ -233,9 +248,6 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
             questions.addAll(partQuestions);
         }
 
-        AnswersResponse response = QuestionMapper.toAnswersResponse(questions);
-
-        streamObserver.onNext(response);
-        streamObserver.onCompleted();
+        return questions;
     }
 }

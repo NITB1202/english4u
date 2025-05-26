@@ -24,7 +24,7 @@ public class ResultDetailServiceImpl implements ResultDetailService {
 
         for(CreateResultDetailRequest request : requests) {
             UUID questionId = UUID.fromString(request.getQuestionId());
-            AnswerState state = AnswerStateMapper.toGrpcEnum(request.getState());
+            AnswerState state = AnswerStateMapper.toEnum(request.getState());
 
             ResultDetail detail = ResultDetail.builder()
                     .resultId(resultId)

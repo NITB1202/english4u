@@ -1,6 +1,6 @@
 package com.nitb.apigateway.dto.UserTest.response;
 
-import com.nitb.usertestservice.grpc.AnswerState;
+import com.nitb.common.enums.AnswerState;
 import lombok.*;
 
 import java.util.UUID;
@@ -17,7 +17,7 @@ public class ResultDetailResponseDto {
 
     private Integer position;
 
-    private Character userAnswer;
+    private String userAnswer;
 
     private AnswerState state;
 }
