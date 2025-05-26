@@ -21,5 +21,5 @@ public class ResultSummaryResponseDto {
 
     private int score;
 
-    private int secondsSpent;
+    private long secondsSpent;
 }
