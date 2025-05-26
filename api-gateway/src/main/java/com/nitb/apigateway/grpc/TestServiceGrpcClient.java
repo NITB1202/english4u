@@ -185,4 +185,12 @@ public class TestServiceGrpcClient {
 
         return blockingStub.getQuestionById(request);
     }
+
+    public AnswersResponse getTestAnswers(UUID testId) {
+        GetTestAnswersRequest request = GetTestAnswersRequest.newBuilder()
+                .setTestId(testId.toString())
+                .build();
+
+        return blockingStub.getTestAnswers(request);
+    }
 }

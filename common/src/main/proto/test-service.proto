@@ -210,6 +210,20 @@ message QuestionDetailResponse {
   string part_content = 7;
 }
 
+message GetTestAnswersRequest {
+  string test_id = 1;
+}
+
+message AnswerResponse {
+  string questionId = 1;
+  int32 position = 2;
+  string correctAnswer = 3;
+}
+
+message AnswersResponse {
+  repeated AnswerResponse answers = 1;
+}
+
 service TestService {
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
@@ -231,4 +245,5 @@ service TestService {
   rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);
 
   rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionDetailResponse);
+  rpc GetTestAnswers(GetTestAnswersRequest) returns (AnswersResponse);
 }
