@@ -11,6 +11,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class ResultDetailResponseDto {
+    private UUID id;
+
     private UUID questionId;
 
     private Integer position;
