@@ -17,8 +17,8 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'IYYY-IW') AS time,
            COUNT(*) AS resultCount,
-           AVG(seconds_spent) AS avgSecondsSpent,
-           AVG(accuracy) AS avgAccuracy
+           ROUND(AVG(seconds_spent), 2) AS avgSecondsSpent,
+           ROUND(AVG(accuracy), 2) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to
@@ -33,13 +33,13 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'YYYY-MM') AS time,
            COUNT(*) AS resultCount,
-           AVG(seconds_spent) AS avgSecondsSpent,
-           AVG(accuracy) AS avgAccuracy
+           ROUND(AVG(seconds_spent), 2) AS avgSecondsSpent,
+           ROUND(AVG(accuracy), 2) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to
-    GROUP BY TO_CHAR(submit_date, 'IYYY-IW')
-    ORDER BY TO_CHAR(submit_date, 'IYYY-IW')
+    GROUP BY TO_CHAR(submit_date, 'YYYY-MM')
+    ORDER BY TO_CHAR(submit_date, 'YYYY-MM')
     """, nativeQuery = true)
     List<ResultStatisticProjection> getStatsByMonth(
             @Param("userId") UUID userId,
@@ -49,13 +49,13 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
     @Query(value = """
     SELECT TO_CHAR(submit_date, 'YYYY') AS time,
            COUNT(*) AS resultCount,
-           AVG(seconds_spent) AS avgSecondsSpent,
-           AVG(accuracy) AS avgAccuracy
+           ROUND(AVG(seconds_spent), 2) AS avgSecondsSpent,
+           ROUND(AVG(accuracy), 2) AS avgAccuracy
     FROM results
     WHERE user_id = :userId
       AND submit_date BETWEEN :from AND :to
-    GROUP BY TO_CHAR(submit_date, 'IYYY-IW')
-    ORDER BY TO_CHAR(submit_date, 'IYYY-IW')
+    GROUP BY TO_CHAR(submit_date, 'YYYY')
+    ORDER BY TO_CHAR(submit_date, 'YYYY')
     """, nativeQuery = true)
     List<ResultStatisticProjection> getStatsByYear(
             @Param("userId") UUID userId,
