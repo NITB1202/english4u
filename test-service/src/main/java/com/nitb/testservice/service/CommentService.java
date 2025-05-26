@@ -9,5 +9,5 @@ import org.springframework.data.domain.Page;
 public interface CommentService {
     Comment postComment(PostCommentRequest request);
     Comment replyComment(ReplyCommentRequest request);
-    Page<Comment> getComments(GetCommentsRequest request);
+    Page<Comment> getRootComments(GetCommentsRequest request);
 }

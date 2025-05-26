@@ -244,13 +244,12 @@ message PostCommentRequest {
 
 message CommentResponse {
   string id = 1;
-  string user_id = 2;
-  string create_at = 3;
-  string content = 4;
+  string create_at = 2;
+  string content = 3;
 }
 
 message ReplyCommentRequest {
-  string root_id = 1;
+  string parent_id = 1;
   string user_id = 2;
   string content = 3;
 }
@@ -261,8 +260,16 @@ message GetCommentsRequest {
   int32 size = 3;
 }
 
+message CommentThreadResponse {
+  string id = 1;
+  string user_id = 2;
+  string create_at = 3;
+  string content = 4;
+  repeated CommentThreadResponse replies = 5;
+}
+
 message CommentsResponse {
-  repeated CommentResponse comments = 1;
+  repeated CommentThreadResponse comments = 1;
   int64 totalItems = 2;
   int32 totalPages = 3;
 }
