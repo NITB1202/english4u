@@ -235,7 +235,47 @@ message QuestionPositionsResponse {
   map<string, int32> positions = 1;
 }
 
+//Comments
+message PostCommentRequest {
+  string user_id = 1;
+  string test_id = 2;
+  string content = 3;
+}
+
+message CommentResponse {
+  string id = 1;
+  string create_at = 2;
+  string content = 3;
+}
+
+message ReplyCommentRequest {
+  string parent_id = 1;
+  string user_id = 2;
+  string content = 3;
+}
+
+message GetCommentsRequest {
+  string test_id = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+message CommentThreadResponse {
+  string id = 1;
+  string user_id = 2;
+  string create_at = 3;
+  string content = 4;
+  repeated CommentThreadResponse replies = 5;
+}
+
+message CommentsResponse {
+  repeated CommentThreadResponse comments = 1;
+  int64 totalItems = 2;
+  int32 totalPages = 3;
+}
+
 service TestService {
+  //Tests
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
   rpc GetTestNameById(GetTestByIdRequest) returns(TestNameResponse);
@@ -250,13 +290,21 @@ service TestService {
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
   rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
 
+  //Test file
   rpc GenerateTestTemplate(google.protobuf.Empty) returns (TestTemplateResponse);
   rpc UploadTestTemplate(UploadTestTemplateRequest) returns (CreateTestResponse);
 
+  //Parts
   rpc CreateParts(CreatePartsRequest) returns (google.protobuf.Empty);
   rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);
 
+  //Questions
   rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionDetailResponse);
   rpc GetQuestionAnswers(GetQuestionAnswersRequest) returns (QuestionAnswersResponse);
   rpc GetQuestionPositions(GetQuestionPositionsRequest) returns (QuestionPositionsResponse);
+
+  //Comments
+  rpc PostComment(PostCommentRequest) returns (CommentResponse);
+  rpc ReplyComment(ReplyCommentRequest) returns (CommentResponse);
+  rpc GetComments(GetCommentsRequest) returns (CommentsResponse);
 }

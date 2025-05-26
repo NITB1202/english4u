@@ -2,19 +2,15 @@ package com.nitb.testservice.controller;
 
 import com.google.protobuf.Empty;
 import com.nitb.testservice.dto.TestStatisticDto;
+import com.nitb.testservice.entity.Comment;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
-import com.nitb.testservice.mapper.FileMapper;
-import com.nitb.testservice.mapper.PartMapper;
-import com.nitb.testservice.mapper.QuestionMapper;
-import com.nitb.testservice.mapper.TestMapper;
-import com.nitb.testservice.service.PartService;
-import com.nitb.testservice.service.QuestionService;
-import com.nitb.testservice.service.TestService;
-import com.nitb.testservice.service.FileService;
+import com.nitb.testservice.mapper.*;
+import com.nitb.testservice.service.*;
 import io.grpc.stub.StreamObserver;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.Page;
@@ -30,6 +26,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     private final PartService partService;
     private final QuestionService questionService;
     private final FileService fileService;
+    private final CommentService commentService;
 
     //Tests
     @Override
@@ -255,5 +252,31 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         }
 
         return questions;
+    }
+
+    //Comments
+    @Override
+    public void postComment(PostCommentRequest request, StreamObserver<CommentResponse> streamObserver) {
+        Comment comment = commentService.postComment(request);
+        CommentResponse response = CommentMapper.toCommentResponse(comment);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void replyComment(ReplyCommentRequest request, StreamObserver<CommentResponse> streamObserver) {
+        Comment comment = commentService.replyComment(request);
+        CommentResponse response = CommentMapper.toCommentResponse(comment);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    @Transactional
+    public void getComments(GetCommentsRequest request, StreamObserver<CommentsResponse> streamObserver) {
+        Page<Comment> rootComments = commentService.getRootComments(request);
+        CommentsResponse response = CommentMapper.toCommentsResponse(rootComments);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
     }
 }

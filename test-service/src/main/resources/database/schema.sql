@@ -33,3 +33,11 @@ CREATE TABLE questions (
     CONSTRAINT fk_questions_part FOREIGN KEY (part_id) REFERENCES parts(id)
 );
 
+CREATE TABLE comments (
+    id UUID PRIMARY KEY,
+    parent_id UUID REFERENCES comments(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL,
+    test_id UUID NOT NULL REFERENCES tests(id) ON DELETE CASCADE,
+    create_at TIMESTAMP NOT NULL,
+    content TEXT NOT NULL
+);
