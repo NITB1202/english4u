@@ -11,6 +11,7 @@ import java.util.UUID;
 public interface TestService {
     Test createTest(CreateTestRequest request);
     Test getTestById(GetTestByIdRequest request);
+    String getTestNameById(GetTestByIdRequest request);
     Page<Test> getTests(GetTestsRequest request);
     Page<Test> getDeletedTests(GetDeletedTestsRequest request);
     Page<Test> searchTestByName(SearchTestByNameRequest request);

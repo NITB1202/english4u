@@ -5,7 +5,7 @@ import com.nitb.common.enums.AnswerState;
 public class AnswerStateMapper {
     private AnswerStateMapper() {}
 
-    public static AnswerState toGrpcEnum(com.nitb.usertestservice.grpc.AnswerState state) {
+    public static AnswerState toEnum(com.nitb.usertestservice.grpc.AnswerState state) {
         return switch (state) {
             case CORRECT -> AnswerState.CORRECT;
             case INCORRECT -> AnswerState.INCORRECT;
@@ -13,7 +13,7 @@ public class AnswerStateMapper {
         };
     }
 
-    public static com.nitb.usertestservice.grpc.AnswerState toEnum(AnswerState state) {
+    public static com.nitb.usertestservice.grpc.AnswerState toGrpcEnum(AnswerState state) {
         return switch (state) {
             case CORRECT -> com.nitb.usertestservice.grpc.AnswerState.CORRECT;
             case INCORRECT -> com.nitb.usertestservice.grpc.AnswerState.INCORRECT;

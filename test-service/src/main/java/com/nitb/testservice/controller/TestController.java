@@ -52,6 +52,18 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
     }
 
     @Override
+    public void getTestNameById(GetTestByIdRequest request, StreamObserver<TestNameResponse> streamObserver) {
+        String name = testService.getTestNameById(request);
+
+        TestNameResponse response = TestNameResponse.newBuilder()
+                .setName(name)
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
     public void getTests(GetTestsRequest request, StreamObserver<TestsPaginationResponse> streamObserver) {
         Page<Test> tests = testService.getTests(request);
         TestsPaginationResponse response = paginateTest(tests);
@@ -207,5 +219,35 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
 
         streamObserver.onNext(response);
         streamObserver.onCompleted();
+    }
+
+    @Override
+    public void getQuestionAnswers(GetQuestionAnswersRequest request, StreamObserver<QuestionAnswersResponse> streamObserver) {
+        List<Question> questions = getAllQuestionsInTest(request.getTestId());
+        QuestionAnswersResponse response = QuestionMapper.toQuestionAnswersResponse(questions);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void getQuestionPositions(GetQuestionPositionsRequest request, StreamObserver<QuestionPositionsResponse> streamObserver) {
+        List<Question> questions = getAllQuestionsInTest(request.getTestId());
+        QuestionPositionsResponse response = QuestionMapper.toQuestionPositionsResponse(questions);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    private List<Question> getAllQuestionsInTest(String testIdStr) {
+        UUID testId = UUID.fromString(testIdStr);
+        List<UUID> partIds = partService.getAllPartIdsForTest(testId);
+
+        List<Question> questions = new ArrayList<>();
+
+        for(UUID partId : partIds) {
+            List<Question> partQuestions = questionService.getAllQuestionsForPart(partId);
+            questions.addAll(partQuestions);
+        }
+
+        return questions;
     }
 }

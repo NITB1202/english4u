@@ -3,7 +3,6 @@ syntax = "proto3";
 package user_test;
 
 import "common.proto";
-import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
 option java_package = "com.nitb.usertestservice.grpc";
@@ -28,6 +27,10 @@ message CreateResultRequest {
   int32 score = 4;
   float accuracy = 5;
   repeated CreateResultDetailRequest details = 6;
+}
+
+message CreateResultResponse {
+  string id = 1;
 }
 
 message GetResultByIdRequest {
@@ -90,7 +93,7 @@ message GetResultStatisticsResponse {
 }
 
 service UserTestService {
-  rpc CreateResult(CreateResultRequest) returns (google.protobuf.Empty);
+  rpc CreateResult(CreateResultRequest) returns (CreateResultResponse);
   rpc GetResultById(GetResultByIdRequest) returns (ResultDetailsResponse);
   rpc GetResults(GetResultsRequest) returns (ResultsResponse);
   rpc GetResultStatistics(GetResultStatisticsRequest) returns (GetResultStatisticsResponse);

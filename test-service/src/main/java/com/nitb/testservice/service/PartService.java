@@ -13,4 +13,5 @@ public interface PartService {
     int getTotalQuestionCount(UUID testId);
     String getPartContent(UUID partId);
     int getPartCount(UUID testId);
+    List<UUID> getAllPartIdsForTest(UUID testId);
 }

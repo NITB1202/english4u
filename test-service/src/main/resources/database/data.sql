@@ -11,7 +11,7 @@ VALUES
 
 INSERT INTO questions (id, part_id, position, content, answers, correct_answer, explanation)
 VALUES
-    ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333', 1, 'What is the past tense of "go"?', 'goes,went,goed,going', 'went', 'Past tense of go is went.'),
-    ('77777777-7777-7777-7777-777777777777', '33333333-3333-3333-3333-333333333333', 2, 'Choose the correct article: ___ apple.', 'a,an,the,none', 'an', 'Use "an" before vowels.'),
-    ('88888888-8888-8888-8888-888888888888', '44444444-4444-4444-4444-444444444444', 1, 'Synonym of "big"?', 'small,tiny,huge,thin', 'huge', 'Huge means very big.'),
-    ('99999999-9999-9999-9999-999999999999', '55555555-5555-5555-5555-555555555555', 1, 'Opposite of "happy"?', 'sad,joyful,glad,smile', 'sad', 'Sad is the opposite of happy.');
+    ('66666666-6666-6666-6666-666666666666', '33333333-3333-3333-3333-333333333333', 1, 'What is the past tense of "go"?', 'goes,went,goed,going', 'B', 'Past tense of go is went.'),
+    ('77777777-7777-7777-7777-777777777777', '33333333-3333-3333-3333-333333333333', 2, 'Choose the correct article: ___ apple.', 'a,an,the,none', 'B', 'Use "an" before vowels.'),
+    ('88888888-8888-8888-8888-888888888888', '44444444-4444-4444-4444-444444444444', 1, 'Synonym of "big"?', 'small,tiny,huge,thin', 'C', 'Huge means very big.'),
+    ('99999999-9999-9999-9999-999999999999', '55555555-5555-5555-5555-555555555555', 1, 'Opposite of "happy"?', 'sad,joyful,glad,smile', 'A', 'Sad is the opposite of happy.');

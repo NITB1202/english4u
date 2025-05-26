@@ -43,6 +43,14 @@ public class TestServiceGrpcClient {
         return blockingStub.getTestById(request);
     }
 
+    public String getTestNameById(UUID id) {
+        GetTestByIdRequest request = GetTestByIdRequest.newBuilder()
+                .setId(id.toString())
+                .build();
+
+        return blockingStub.getTestNameById(request).getName();
+    }
+
     public TestsPaginationResponse getTests(int page, int size) {
         GetTestsRequest request = GetTestsRequest.newBuilder()
                 .setPage(page)
@@ -184,5 +192,21 @@ public class TestServiceGrpcClient {
                 .build();
 
         return blockingStub.getQuestionById(request);
+    }
+
+    public QuestionAnswersResponse getTestAnswers(UUID testId) {
+        GetQuestionAnswersRequest request = GetQuestionAnswersRequest.newBuilder()
+                .setTestId(testId.toString())
+                .build();
+
+        return blockingStub.getQuestionAnswers(request);
+    }
+
+    public QuestionPositionsResponse getQuestionPositions(UUID testId) {
+        GetQuestionPositionsRequest request = GetQuestionPositionsRequest.newBuilder()
+                .setTestId(testId.toString())
+                .build();
+
+        return blockingStub.getQuestionPositions(request);
     }
 }

@@ -63,6 +63,12 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
+    public List<UUID> getAllPartIdsForTest(UUID testId) {
+        List<Part> parts = partRepository.getAllByTestId(testId);
+        return parts.stream().map(Part::getId).toList();
+    }
+
+    @Override
     public void updateQuestionCount(UUID partId, int count) {
         Part part = partRepository.findById(partId).orElseThrow(
                 () -> new NotFoundException("Part not found.")

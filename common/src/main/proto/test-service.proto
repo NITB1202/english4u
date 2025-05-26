@@ -46,6 +46,10 @@ message TestDetailResponse {
   bool is_deleted = 13;
 }
 
+message TestNameResponse {
+  string name = 1;
+}
+
 message GetTestsRequest {
   int32 page = 1;
   int32 size = 2;
@@ -210,9 +214,31 @@ message QuestionDetailResponse {
   string part_content = 7;
 }
 
+message GetQuestionAnswersRequest {
+  string test_id = 1;
+}
+
+message AnswerResponse {
+  string questionId = 1;
+  string correctAnswer = 2;
+}
+
+message QuestionAnswersResponse {
+  map<string, string> answers = 1;
+}
+
+message GetQuestionPositionsRequest {
+  string test_id = 1;
+}
+
+message QuestionPositionsResponse {
+  map<string, int32> positions = 1;
+}
+
 service TestService {
   rpc CreateTest(CreateTestRequest) returns (CreateTestResponse);
   rpc GetTestById(GetTestByIdRequest) returns (TestDetailResponse);
+  rpc GetTestNameById(GetTestByIdRequest) returns(TestNameResponse);
   rpc GetTests(GetTestsRequest) returns (TestsPaginationResponse);
   rpc GetDeletedTests(GetDeletedTestsRequest) returns (TestsPaginationResponse);
   rpc SearchTestByName(SearchTestByNameRequest) returns (TestsPaginationResponse);
@@ -231,4 +257,6 @@ service TestService {
   rpc GetAllPartsForTest(GetAllPartsForTestRequest) returns (PartsResponse);
 
   rpc GetQuestionById(GetQuestionByIdRequest) returns (QuestionDetailResponse);
+  rpc GetQuestionAnswers(GetQuestionAnswersRequest) returns (QuestionAnswersResponse);
+  rpc GetQuestionPositions(GetQuestionPositionsRequest) returns (QuestionPositionsResponse);
 }
