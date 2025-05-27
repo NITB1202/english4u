@@ -1,7 +1,8 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.User.request.UpdateUserRequestDto;
+import com.nitb.apigateway.dto.User.response.UpdateUserResponseDto;
+import com.nitb.apigateway.dto.User.response.UserLockedResponseDto;
 import com.nitb.apigateway.dto.User.response.UserResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
 import com.nitb.apigateway.service.User.UserService;
@@ -39,8 +40,8 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<ActionResponseDto>> updateUser(@PathVariable UUID id,
-                                                              @Valid @RequestBody UpdateUserRequestDto request) {
+    public Mono<ResponseEntity<UpdateUserResponseDto>> updateUser(@PathVariable UUID id,
+                                                                      @Valid @RequestBody UpdateUserRequestDto request) {
         return userService.updateUser(id, request).map(ResponseEntity::ok);
     }
 
@@ -49,8 +50,8 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Lock/unlock successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<ActionResponseDto>> setUserLocked(@RequestParam UUID id,
-                                                                 @RequestParam boolean isLocked) {
+    public Mono<ResponseEntity<UserLockedResponseDto>> setUserLocked(@RequestParam UUID id,
+                                                                     @RequestParam boolean isLocked) {
         return userService.setUserLocked(id, isLocked).map(ResponseEntity::ok);
     }
 }

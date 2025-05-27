@@ -1,6 +1,7 @@
 package com.nitb.apigateway.grpc;
 
 import com.google.protobuf.Empty;
+import com.nitb.apigateway.dto.User.request.UpdateUserRequestDto;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.userservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -22,7 +23,7 @@ public class UserGrpcClient {
         return blockingStub.checkCanPerformAction(request);
     }
 
-    public ActionResponse createUser(String name) {
+    public Empty createUser(String name) {
         CreateUserRequest request = CreateUserRequest.newBuilder()
                 .setName(name)
                 .build();
@@ -50,13 +51,13 @@ public class UserGrpcClient {
         return blockingStub.getUsersByListOfIds(request);
     }
 
-    public ActionResponse updateName(UUID id, String name) {
-        UpdateNameRequest request = UpdateNameRequest.newBuilder()
+    public UpdateUserResponse updateUser(UUID id, UpdateUserRequestDto dto) {
+        UpdateUserRequest request = UpdateUserRequest.newBuilder()
                 .setId(id.toString())
-                .setName(name)
+                .setName(dto.getName())
                 .build();
 
-        return blockingStub.updateName(request);
+        return blockingStub.updateUser(request);
     }
 
     public ActionResponse updateAvatar(UUID id, String avatarUrl) {
@@ -68,7 +69,7 @@ public class UserGrpcClient {
         return blockingStub.updateAvatar(request);
     }
 
-    public ActionResponse setUserLocked(UUID id, boolean isLocked) {
+    public UserLockedResponse setUserLocked(UUID id, boolean isLocked) {
         SetUserLockedRequest request = SetUserLockedRequest.newBuilder()
                 .setId(id.toString())
                 .setIsLocked(isLocked)

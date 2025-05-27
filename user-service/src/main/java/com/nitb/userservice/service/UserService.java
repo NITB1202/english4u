@@ -10,7 +10,7 @@ public interface UserService {
     void createUser(CreateUserRequest request);
     User getUserById(GetUserByIdRequest request);
     List<User> getUsersByListOfIds(GetUsersByListOfIdsRequest request);
-    void updateName(UpdateNameRequest request);
+    User updateUser(UpdateUserRequest request);
     void updateAvatar(UpdateAvatarRequest request);
-    void setUserLocked(SetUserLockedRequest request);
+    User setUserLocked(SetUserLockedRequest request);
 }

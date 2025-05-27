@@ -1,12 +1,13 @@
 package com.nitb.apigateway.service.User;
 
-import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.User.request.UpdateUserRequestDto;
+import com.nitb.apigateway.dto.User.response.UpdateUserResponseDto;
+import com.nitb.apigateway.dto.User.response.UserLockedResponseDto;
 import com.nitb.apigateway.dto.User.response.UserResponseDto;
 import com.nitb.apigateway.grpc.UserGrpcClient;
-import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.UserMapper;
-import com.nitb.common.grpc.ActionResponse;
+import com.nitb.userservice.grpc.UpdateUserResponse;
+import com.nitb.userservice.grpc.UserLockedResponse;
 import com.nitb.userservice.grpc.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,18 +30,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<ActionResponseDto> updateUser(UUID id, UpdateUserRequestDto request) {
-        return Mono.fromCallable(()->{
-            ActionResponse response = userGrpc.updateName(id, request.getName());
-            return ActionMapper.toResponseDto(response);
+    public Mono<UpdateUserResponseDto> updateUser(UUID id, UpdateUserRequestDto request) {
+        return Mono.fromCallable(()-> {
+            UpdateUserResponse response = userGrpc.updateUser(id, request);
+            return UserMapper.toUpdateUserResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
     @Override
-    public Mono<ActionResponseDto> setUserLocked(UUID id, boolean isLocked) {
+    public Mono<UserLockedResponseDto> setUserLocked(UUID id, boolean isLocked) {
         return Mono.fromCallable(()->{
-            ActionResponse response = userGrpc.setUserLocked(id, isLocked);
-            return ActionMapper.toResponseDto(response);
+            UserLockedResponse response = userGrpc.setUserLocked(id, isLocked);
+            return UserMapper.toUserLockedResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }
