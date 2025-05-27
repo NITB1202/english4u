@@ -1,7 +1,7 @@
 INSERT INTO tests (id, created_by, create_at, name, version, minutes, topic, part_count, completed_users, updated_by, update_at, is_deleted)
 VALUES
-    ('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), 'Test 1', 1, 60, 'English Grammar', 2, 100, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', NOW(), false),
-    ('22222222-2222-2222-2222-222222222222', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), 'Test 2',1, 45, 'Vocabulary', 1, 50, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', NOW(), false);
+    ('11111111-1111-1111-1111-111111111111', '44444444-4444-4444-4444-444444444444', NOW(), 'Test 1', 1, 60, 'English Grammar', 2, 100, '55555555-5555-5555-5555-555555555555', NOW(), false),
+    ('22222222-2222-2222-2222-222222222222', '55555555-5555-5555-5555-555555555555', NOW(), 'Test 2',1, 45, 'Vocabulary', 1, 50, '44444444-4444-4444-4444-444444444444', NOW(), false);
 
 INSERT INTO parts (id, test_id, position, content, question_count)
 VALUES
@@ -18,7 +18,7 @@ VALUES
 
 INSERT INTO comments (id, parent_id, user_id, test_id, create_at, content)
 VALUES
-    ('10000000-0000-0000-0000-000000000001', NULL, 'cccccccc-cccc-cccc-cccc-cccccccccccc', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:00:00', 'This test is very helpful!'),
-    ('10000000-0000-0000-0000-000000000002', NULL, 'dddddddd-dddd-dddd-dddd-dddddddddddd', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:05:00', 'I found question 3 a bit tricky.'),
-    ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:10:00', 'Agree! The examples are great.'),
-    ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', 'cccccccc-cccc-cccc-cccc-cccccccccccc', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:15:00', 'I think it was about grammar structure.');
+    ('10000000-0000-0000-0000-000000000001', NULL, '11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:00:00', 'This test is very helpful!'),
+    ('10000000-0000-0000-0000-000000000002', NULL, '22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:05:00', 'I found question 3 a bit tricky.'),
+    ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:10:00', 'Agree! The examples are great.'),
+    ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', '33333333-3333-3333-3333-333333333333', '11111111-1111-1111-1111-111111111111', '2025-05-25 10:15:00', 'I think it was about grammar structure.');
