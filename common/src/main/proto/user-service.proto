@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package user;
+
+import "common.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.userservice.grpc";
+option java_outer_classname = "UserProto";
+
+message CheckCanPerformActionRequest {
+  string user_id = 1;
+}
+
+message CreateUserRequest {
+  string name = 1;
+}
+
+message GetUserByIdRequest {
+  string id = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string name = 2;
+  string avatar_url = 3;
+}
+
+message GetUsersByListOfIdsRequest {
+  repeated string ids = 1;
+}
+
+message UserDetailResponse {
+  string id = 1;
+  string name = 2;
+  string join_at = 3;
+  bool is_locked = 4;
+}
+
+message UsersResponse {
+  repeated UserDetailResponse users = 1;
+  int64 totalItems = 2;
+  int32 totalPages = 3;
+}
+
+message UpdateNameRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message UpdateAvatarRequest {
+  string id = 1;
+  string avatar_url = 2;
+}
+
+message SetUserLockedRequest {
+  string id = 1;
+  bool is_locked = 2;
+}
+
+service UserService {
+  rpc CheckCanPerformAction(CheckCanPerformActionRequest) returns (google.protobuf.Empty);
+  rpc CreateUser(CreateUserRequest) returns (common.ActionResponse);
+  rpc GetUserById(GetUserByIdRequest) returns (UserResponse);
+  rpc GetUsersByListOfIds(GetUsersByListOfIdsRequest) returns (UsersResponse);
+  rpc UpdateName(UpdateNameRequest) returns (common.ActionResponse);
+  rpc UpdateAvatar(UpdateAvatarRequest) returns (common.ActionResponse);
+  rpc SetUserLocked(SetUserLockedRequest) returns (common.ActionResponse);
+}
