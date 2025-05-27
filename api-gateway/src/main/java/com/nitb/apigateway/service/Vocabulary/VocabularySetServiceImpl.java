@@ -3,9 +3,11 @@ package com.nitb.apigateway.service.Vocabulary;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
+import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.VocabularySetMapper;
 import com.nitb.common.enums.GroupBy;
+import com.nitb.userservice.grpc.UserResponse;
 import com.nitb.vocabularyservice.grpc.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +21,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VocabularySetServiceImpl implements VocabularySetService {
     private final VocabularyServiceGrpcClient grpcClient;
+    private final UserGrpcClient userClient;
 
     @Override
     public Mono<CreateVocabularySetResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check user permission
+            userClient.checkCanPerformAction(userId);
+
             CreateVocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
 
             UUID setId = UUID.fromString(set.getId());
@@ -36,7 +42,14 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     public Mono<VocabularySetDetailResponseDto> getVocabularySetById(UUID id) {
         return Mono.fromCallable(()->{
             VocabularySetDetailResponse set = grpcClient.getVocabularySetById(id);
-            return VocabularySetMapper.toVocabularySetDetailResponseDto(set);
+
+            UUID createdById = UUID.fromString(set.getCreatedBy());
+            UUID updatedById = UUID.fromString(set.getUpdatedBy());
+
+            UserResponse createdBy = userClient.getUserById(createdById);
+            UserResponse updatedBy = userClient.getUserById(updatedById);
+
+            return VocabularySetMapper.toVocabularySetDetailResponseDto(set, createdBy, updatedBy);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -75,6 +88,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     @Override
     public Mono<UpdateVocabularySetResponseDto> updateVocabularySetName(UUID id, UUID userId, String name) {
         return Mono.fromCallable(()->{
+            userClient.checkCanPerformAction(userId);
             UpdateVocabularySetResponse response = grpcClient.updateVocabularySetName(id, userId, name);
             return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -83,6 +97,9 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     @Override
     public Mono<UpdateVocabularySetResponseDto> updateVocabularySet(UUID id, UUID userId, UpdateVocabularySetRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check user permission
+            userClient.checkCanPerformAction(userId);
+
             //Check if the vocabulary set has reached the max version.
             grpcClient.validateUpdateVocabularySet(id);
 
@@ -104,6 +121,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     @Override
     public Mono<DeleteVocabularySetResponseDto> deleteVocabularySet(UUID id, UUID userId) {
         return Mono.fromCallable(()->{
+            userClient.checkCanPerformAction(userId);
             DeleteVocabularySetResponse set = grpcClient.deleteVocabularySet(id, userId);
             return VocabularySetMapper.toDeleteVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -112,6 +130,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     @Override
     public Mono<DeleteVocabularySetResponseDto> restoreVocabularySet(UUID id, UUID userId) {
         return Mono.fromCallable(()->{
+            userClient.checkCanPerformAction(userId);
             DeleteVocabularySetResponse set = grpcClient.restoreVocabularySet(id, userId);
             return VocabularySetMapper.toDeleteVocabularySetResponseDto(set);
         }).subscribeOn(Schedulers.boundedElastic());
