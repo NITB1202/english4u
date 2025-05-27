@@ -15,6 +15,7 @@
         <module>user-vocabulary-service</module>
         <module>test-service</module>
         <module>user-test-service</module>
+        <module>user-service</module>
         <module>api-gateway</module>
     </modules>
 
