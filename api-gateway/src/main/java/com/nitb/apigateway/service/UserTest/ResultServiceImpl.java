@@ -5,6 +5,7 @@ import com.nitb.apigateway.dto.UserTest.request.CreateResultRequestDto;
 import com.nitb.apigateway.dto.UserTest.request.SaveResultRequestDto;
 import com.nitb.apigateway.dto.UserTest.response.*;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
+import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.grpc.UserTestGrpcClient;
 import com.nitb.apigateway.mapper.ResultMapper;
 import com.nitb.common.enums.AnswerState;
@@ -28,10 +29,15 @@ import java.util.UUID;
 public class ResultServiceImpl implements ResultService {
     private final UserTestGrpcClient userTestGrpc;
     private final TestServiceGrpcClient testGrpc;
+    private final UserGrpcClient userGrpc;
 
     @Override
     public Mono<SavedResultResponseDto> saveResult(UUID userId, SaveResultRequestDto request) {
         return Mono.fromCallable(()-> {
+            //Check user permission
+            userGrpc.checkCanPerformAction(userId);
+
+            //Create result
             QuestionAnswersResponse testAnswers = testGrpc.getQuestionAnswers(request.getTestId());
 
             int correctAnswer = 0;
