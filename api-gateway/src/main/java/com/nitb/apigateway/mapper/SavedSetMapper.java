@@ -29,6 +29,7 @@ public class SavedSetMapper {
                 .setName(set.getName())
                 .wordCount(set.getWordCount())
                 .learnedWords(savedSet.getLearnedWords())
+                .isDeleted(set.getIsDeleted())
                 .build();
     }
 
