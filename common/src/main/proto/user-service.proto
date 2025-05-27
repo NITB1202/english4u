@@ -25,6 +25,7 @@ message UserResponse {
   string id = 1;
   string name = 2;
   string avatar_url = 3;
+  bool is_locked = 4;
 }
 
 message GetUsersByListOfIdsRequest {

@@ -15,6 +15,7 @@ public class UserMapper {
                 .setId(user.getId().toString())
                 .setName(user.getName())
                 .setAvatarUrl(avatarUrl)
+                .setIsLocked(user.isLocked())
                 .build();
     }
 

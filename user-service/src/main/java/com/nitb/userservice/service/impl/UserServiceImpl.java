@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         );
 
         if(user.isLocked()) {
-            throw new BusinessException("This user is locked.");
+            throw new BusinessException("This user is restricted from performing this action.");
         }
     }
 

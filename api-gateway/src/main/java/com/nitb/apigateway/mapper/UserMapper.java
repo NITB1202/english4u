@@ -17,6 +17,7 @@ public class UserMapper {
                 .id(UUID.fromString(user.getId()))
                 .name(user.getName())
                 .avatarUrl(user.getAvatarUrl())
+                .isLocked(user.getIsLocked())
                 .build();
     }
 

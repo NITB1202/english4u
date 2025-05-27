@@ -15,4 +15,6 @@ public class UserResponseDto {
     private String name;
 
     private String avatarUrl;
+
+    private boolean isLocked;
 }

@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get details of a user by id.")
+    @Operation(summary = "Get user's basic information.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    @Operation(summary = "Update a user profile.")
+    @Operation(summary = "Update user's profile.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
