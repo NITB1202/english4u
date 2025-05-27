@@ -5,10 +5,12 @@ import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
+import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.testservice.grpc.*;
+import com.nitb.userservice.grpc.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
@@ -25,10 +27,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestServiceGrpcClient testGrpc;
+    private final UserGrpcClient userGrpc;
 
     @Override
     public Mono<CreateTestResponseDto> createTest(UUID userId, CreateTestRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check user permission
+            userGrpc.checkCanPerformAction(userId);
+
             //Create test
             CreateTestResponse test = testGrpc.createTest(userId, request);
             UUID testId = UUID.fromString(test.getId());
@@ -44,7 +50,14 @@ public class TestServiceImpl implements TestService {
     public Mono<TestDetailResponseDto> getTestById(UUID id) {
         return Mono.fromCallable(()->{
             TestDetailResponse response = testGrpc.getTestById(id);
-            return TestMapper.toTestDetailResponseDto(response);
+
+            UUID createdById = UUID.fromString(response.getCreatedBy());
+            UUID updatedById = UUID.fromString(response.getUpdatedBy());
+
+            UserResponse createdBy = userGrpc.getUserById(createdById);
+            UserResponse updatedBy = userGrpc.getUserById(updatedById);
+
+            return TestMapper.toTestDetailResponseDto(response, createdBy, updatedBy);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -83,6 +96,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<UpdateTestResponseDto> updateTestNameAndTopic(UUID userId, UUID id, UpdateTestInfoRequestDto request) {
         return Mono.fromCallable(()->{
+            userGrpc.checkCanPerformAction(userId);
             UpdateTestResponse response = testGrpc.updateTestNameAndTopic(id, userId, request);
             return TestMapper.toUpdateTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -91,6 +105,9 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<UpdateTestResponseDto> updateTest(UUID userId, UUID id, UpdateTestRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check user permission
+            userGrpc.checkCanPerformAction(userId);
+
             //Validate update request
             testGrpc.validateUpdateTest(id);
 
@@ -119,6 +136,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<DeleteTestResponseDto> deleteTest(UUID userId, UUID id) {
         return Mono.fromCallable(()->{
+            userGrpc.checkCanPerformAction(userId);
             DeleteTestResponse response = testGrpc.deleteTest(userId, id);
             return TestMapper.toDeleteTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -127,6 +145,7 @@ public class TestServiceImpl implements TestService {
     @Override
     public Mono<DeleteTestResponseDto> restoreTest(UUID userId, UUID id) {
         return Mono.fromCallable(()->{
+            userGrpc.checkCanPerformAction(userId);
             DeleteTestResponse response = testGrpc.restoreTest(userId, id);
             return TestMapper.toDeleteTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -147,6 +166,9 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Mono<CreateTestResponseDto> uploadTestTemplate(UUID userId, FilePart file) {
+        //Check user permission
+        userGrpc.checkCanPerformAction(userId);
+
         // Check file extension or MIME type
         String filename = file.filename().toLowerCase();
         if (!filename.endsWith(".xlsx") &&

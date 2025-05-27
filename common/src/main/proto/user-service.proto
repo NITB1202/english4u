@@ -25,6 +25,7 @@ message UserResponse {
   string id = 1;
   string name = 2;
   string avatar_url = 3;
+  bool is_locked = 4;
 }
 
 message GetUsersByListOfIdsRequest {
@@ -44,7 +45,12 @@ message UsersResponse {
   int32 totalPages = 3;
 }
 
-message UpdateNameRequest {
+message UpdateUserRequest {
+  string id = 1;
+  string name = 2;
+}
+
+message UpdateUserResponse {
   string id = 1;
   string name = 2;
 }
@@ -59,12 +65,18 @@ message SetUserLockedRequest {
   bool is_locked = 2;
 }
 
+message UserLockedResponse {
+  string id = 1;
+  string name = 2;
+  bool is_locked = 3;
+}
+
 service UserService {
   rpc CheckCanPerformAction(CheckCanPerformActionRequest) returns (google.protobuf.Empty);
-  rpc CreateUser(CreateUserRequest) returns (common.ActionResponse);
+  rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
   rpc GetUserById(GetUserByIdRequest) returns (UserResponse);
   rpc GetUsersByListOfIds(GetUsersByListOfIdsRequest) returns (UsersResponse);
-  rpc UpdateName(UpdateNameRequest) returns (common.ActionResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
   rpc UpdateAvatar(UpdateAvatarRequest) returns (common.ActionResponse);
-  rpc SetUserLocked(SetUserLockedRequest) returns (common.ActionResponse);
+  rpc SetUserLocked(SetUserLockedRequest) returns (UserLockedResponse);
 }

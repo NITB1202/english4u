@@ -7,6 +7,7 @@ import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetSummaryResponseDt
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetStateStatisticResponseDto;
 import com.nitb.apigateway.dto.UserVocabulary.response.SavedSetsPaginationResponseDto;
+import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.grpc.UserVocabularyServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.ActionMapper;
@@ -32,10 +33,14 @@ import java.util.UUID;
 public class SavedSetServiceImpl implements SavedSetService{
     private final UserVocabularyServiceGrpcClient userVocabularyGrpc;
     private final VocabularyServiceGrpcClient vocabularyGrpc;
+    private final UserGrpcClient userGrpc;
 
     @Override
     public Mono<SavedSetResponseDto> createSavedSet(UUID userId, CreateSavedSetRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check user permission
+            userGrpc.checkCanPerformAction(userId);
+
             VocabularySetDetailResponse set = vocabularyGrpc.getVocabularySetById(request.getSetId());
 
             if(set == null) {

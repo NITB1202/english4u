@@ -19,4 +19,6 @@ public class CachedSetSummaryResponseDto {
     private Integer wordCount;
 
     private Integer learnedWords;
+
+    private Boolean isDeleted;
 }

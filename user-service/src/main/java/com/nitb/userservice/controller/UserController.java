@@ -8,14 +8,12 @@ import com.nitb.userservice.mapper.UserMapper;
 import com.nitb.userservice.service.UserService;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import net.devh.boot.grpc.server.service.GrpcService;
 
 import java.util.List;
 
-@RestController
+@GrpcService
 @RequiredArgsConstructor
-@RequestMapping("/users")
 public class UserController extends UserServiceGrpc.UserServiceImplBase {
     private final UserService userService;
 
@@ -27,15 +25,9 @@ public class UserController extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void createUser(CreateUserRequest request, StreamObserver<ActionResponse> responseObserver) {
+    public void createUser(CreateUserRequest request, StreamObserver<Empty> responseObserver) {
         userService.createUser(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Create successfully.")
-                .build();
-
-        responseObserver.onNext(response);
+        responseObserver.onNext(Empty.getDefaultInstance());
         responseObserver.onCompleted();
     }
 
@@ -56,14 +48,9 @@ public class UserController extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void updateName(UpdateNameRequest request, StreamObserver<ActionResponse> responseObserver) {
-        userService.updateName(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Update successfully.")
-                .build();
-
+    public void updateUser(UpdateUserRequest request, StreamObserver<UpdateUserResponse> responseObserver) {
+        User user = userService.updateUser(request);
+        UpdateUserResponse response = UserMapper.toUpdateUserResponse(user);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
@@ -82,14 +69,9 @@ public class UserController extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void setUserLocked(SetUserLockedRequest request, StreamObserver<ActionResponse> responseObserver) {
-        userService.setUserLocked(request);
-
-        ActionResponse response = ActionResponse.newBuilder()
-                .setSuccess(true)
-                .setMessage("Set successfully.")
-                .build();
-
+    public void setUserLocked(SetUserLockedRequest request, StreamObserver<UserLockedResponse> responseObserver) {
+        User user = userService.setUserLocked(request);
+        UserLockedResponse response = UserMapper.toUserLockedResponse(user);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

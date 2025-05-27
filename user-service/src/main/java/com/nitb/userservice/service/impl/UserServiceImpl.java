@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         );
 
         if(user.isLocked()) {
-            throw new BusinessException("This user is locked.");
+            throw new BusinessException("This user is restricted from performing this action.");
         }
     }
 
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateName(UpdateNameRequest request) {
+    public User updateUser(UpdateUserRequest request) {
         UUID userId = UUID.fromString(request.getId());
 
         User user = userRepository.findById(userId).orElseThrow(
@@ -80,7 +80,8 @@ public class UserServiceImpl implements UserService {
         );
 
         user.setName(request.getName());
-        userRepository.save(user);
+
+        return userRepository.save(user);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setUserLocked(SetUserLockedRequest request) {
+    public User setUserLocked(SetUserLockedRequest request) {
         UUID userId = UUID.fromString(request.getId());
 
         User user = userRepository.findById(userId).orElseThrow(
@@ -104,6 +105,7 @@ public class UserServiceImpl implements UserService {
         );
 
         user.setLocked(request.getIsLocked());
-        userRepository.save(user);
+
+        return userRepository.save(user);
     }
 }

@@ -16,7 +16,6 @@ import java.util.UUID;
 public class QuestionServiceImpl implements QuestionService {
     private final TestServiceGrpcClient testGrpc;
 
-
     @Override
     public Mono<QuestionDetailResponseDto> getQuestionById(UUID id) {
         return Mono.fromCallable(()->{

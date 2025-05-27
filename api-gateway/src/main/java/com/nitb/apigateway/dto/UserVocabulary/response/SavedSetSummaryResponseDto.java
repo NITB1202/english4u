@@ -21,4 +21,6 @@ public class SavedSetSummaryResponseDto {
     private Integer wordCount;
 
     private Integer learnedWords;
+
+    private Boolean isDeleted;
 }

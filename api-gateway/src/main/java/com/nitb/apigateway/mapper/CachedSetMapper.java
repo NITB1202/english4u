@@ -28,6 +28,7 @@ public class CachedSetMapper {
                 .setName(set.getName())
                 .wordCount(set.getWordCount())
                 .learnedWords(cachedSet.getLearnedWords())
+                .isDeleted(set.getIsDeleted())
                 .build();
     }
 }

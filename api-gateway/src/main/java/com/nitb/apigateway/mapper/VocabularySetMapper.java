@@ -1,6 +1,7 @@
 package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Vocabulary.response.*;
+import com.nitb.userservice.grpc.UserResponse;
 import com.nitb.vocabularyservice.grpc.*;
 
 import java.time.LocalDateTime;
@@ -28,15 +29,17 @@ public class VocabularySetMapper {
                 .build();
     }
 
-    public static VocabularySetDetailResponseDto toVocabularySetDetailResponseDto(VocabularySetDetailResponse set) {
+    public static VocabularySetDetailResponseDto toVocabularySetDetailResponseDto(VocabularySetDetailResponse set, UserResponse createdBy, UserResponse updatedBy) {
         return VocabularySetDetailResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
-                .createdBy(UUID.fromString(set.getCreatedBy()))
+                .createdByName(createdBy.getName())
+                .createdByAvatarUrl(createdBy.getAvatarUrl())
                 .createdAt(LocalDateTime.parse(set.getCreateAt()))
                 .name(set.getName())
                 .version(set.getVersion())
                 .wordCount(set.getWordCount())
-                .updatedBy(UUID.fromString(set.getUpdatedBy()))
+                .updatedByName(updatedBy.getName())
+                .updatedByAvatarUrl(updatedBy.getAvatarUrl())
                 .updatedAt(LocalDateTime.parse(set.getUpdateAt()))
                 .isDeleted(set.getIsDeleted())
                 .build();

@@ -16,7 +16,9 @@ import java.util.UUID;
 public class VocabularySetDetailResponseDto {
     private UUID id;
 
-    private UUID createdBy;
+    private String createdByName;
+
+    private String createdByAvatarUrl;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -27,7 +29,9 @@ public class VocabularySetDetailResponseDto {
 
     private Integer wordCount;
 
-    private UUID updatedBy;
+    private String updatedByName;
+
+    private String updatedByAvatarUrl;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
