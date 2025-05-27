@@ -14,7 +14,9 @@ import java.util.UUID;
 public class TestDetailResponseDto {
     private UUID id;
 
-    private UUID createdBy;
+    private String createdByName;
+
+    private String createByAvatarUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
@@ -33,7 +35,9 @@ public class TestDetailResponseDto {
 
     private Long completedUsers;
 
-    private UUID updatedBy;
+    private String updatedByName;
+
+    private String updatedByAvatarUrl;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime updatedAt;

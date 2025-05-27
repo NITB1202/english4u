@@ -5,6 +5,7 @@ import com.nitb.apigateway.dto.Test.Comment.request.ReplyCommentRequestDto;
 import com.nitb.apigateway.dto.Test.Comment.response.CommentResponseDto;
 import com.nitb.apigateway.dto.Test.Comment.response.CommentsResponseDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
+import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.mapper.CommentMapper;
 import com.nitb.testservice.grpc.CommentResponse;
 import com.nitb.testservice.grpc.CommentsResponse;
@@ -19,10 +20,15 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final TestServiceGrpcClient testGrpc;
+    private final UserGrpcClient userGrpc;
 
     @Override
     public Mono<CommentResponseDto> postComment(UUID userId, PostCommentRequestDto request) {
         return Mono.fromCallable(()-> {
+            //Check permission
+            userGrpc.checkCanPerformAction(userId);
+
+            //Post comment
             CommentResponse response = testGrpc.postComment(userId, request);
             return CommentMapper.toCommentResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
@@ -31,6 +37,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Mono<CommentResponseDto> replyComment(UUID userId, ReplyCommentRequestDto request) {
         return Mono.fromCallable(()->{
+            //Check permission
+            userGrpc.checkCanPerformAction(userId);
+
+            //Reply comment
             CommentResponse response = testGrpc.replyComment(userId, request);
             return CommentMapper.toCommentResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());

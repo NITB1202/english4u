@@ -2,6 +2,7 @@ package com.nitb.apigateway.mapper;
 
 import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.testservice.grpc.*;
+import com.nitb.userservice.grpc.UserResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,20 +22,22 @@ public class TestMapper {
                 .build();
     }
 
-    public static TestDetailResponseDto toTestDetailResponseDto(TestDetailResponse test) {
+    public static TestDetailResponseDto toTestDetailResponseDto(TestDetailResponse test, UserResponse createdBy, UserResponse updatedBy) {
         return TestDetailResponseDto.builder()
                 .id(UUID.fromString(test.getId()))
                 .name(test.getName())
                 .version(test.getVersion())
                 .minutes(test.getMinutes())
                 .topic(test.getTopic())
-                .createdBy(UUID.fromString(test.getCreatedBy()))
+                .createdByName(createdBy.getName())
+                .createByAvatarUrl(createdBy.getAvatarUrl())
                 .createdAt(LocalDateTime.parse(test.getCreateAt()))
                 .completedUsers(test.getCompletedUsers())
                 .partCount(test.getPartCount())
                 .questionCount(test.getQuestionCount())
+                .updatedByName(updatedBy.getName())
+                .updatedByAvatarUrl(updatedBy.getAvatarUrl())
                 .updatedAt(LocalDateTime.parse(test.getUpdateAt()))
-                .updatedBy(UUID.fromString(test.getUpdatedBy()))
                 .isDeleted(test.getIsDeleted())
                 .build();
     }
