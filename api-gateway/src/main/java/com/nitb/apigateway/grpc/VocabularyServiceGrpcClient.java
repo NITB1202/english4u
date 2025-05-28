@@ -4,7 +4,6 @@ import com.google.protobuf.Empty;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.common.enums.GroupBy;
-import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.vocabularyservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -165,15 +164,5 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.searchVocabularyWordByWord(request);
-    }
-
-    public ActionResponse uploadVocabularyWordImage(UUID id, UUID userId, String imageUrl){
-        UploadVocabularyWordImageRequest request = UploadVocabularyWordImageRequest.newBuilder()
-                .setId(id.toString())
-                .setUserId(userId.toString())
-                .setImageUrl(imageUrl)
-                .build();
-
-        return blockingStub.uploadVocabularyWordImage(request);
     }
 }

@@ -1,7 +1,6 @@
 package com.nitb.vocabularyservice.service.impl;
 
 import com.nitb.common.exceptions.BusinessException;
-import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.*;
 import com.nitb.vocabularyservice.repository.VocabularyWordRepository;
@@ -47,6 +46,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                     .pronunciation(wordRequest.getPronunciation())
                     .translation(wordRequest.getTranslation())
                     .example(wordRequest.getExample())
+                    .imageUrl(wordRequest.getImageUrl())
                     .build();
 
             result.add(word);
@@ -76,26 +76,5 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                 UUID.fromString(request.getSetId()),
                 PageRequest.of(page, size)
         );
-    }
-
-    @Override
-    public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
-        UUID wordId = UUID.fromString(request.getId());
-        UUID userId = UUID.fromString(request.getUserId());
-
-        //Update word
-        VocabularyWord word = vocabularyWordRepository.findById(wordId).orElseThrow(
-                () -> new NotFoundException("Vocabulary word not found.")
-        );
-
-        if(request.getImageUrl().isBlank()){
-            throw new BusinessException("Vocabulary word image url is empty.");
-        }
-
-        word.setImageUrl(request.getImageUrl());
-        vocabularyWordRepository.save(word);
-
-        //Update set
-        vocabularySetService.updateLastModified(word.getSetId(), userId);
     }
 }

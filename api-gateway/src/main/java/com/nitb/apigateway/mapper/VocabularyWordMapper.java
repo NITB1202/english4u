@@ -14,11 +14,14 @@ public class VocabularyWordMapper {
     private VocabularyWordMapper() {}
 
     public static CreateVocabularyWordRequest toCreateVocabularyWordRequest(CreateVocabularyWordRequestDto word) {
+        String imageUrl = word.getImageUrl() != null ? word.getImageUrl() : "";
+
         return CreateVocabularyWordRequest.newBuilder()
                 .setWord(word.getWord())
                 .setPronunciation(word.getPronunciation())
                 .setTranslation(word.getTranslation())
                 .setExample(word.getExample())
+                .setImageUrl(imageUrl)
                 .build();
     }
 
