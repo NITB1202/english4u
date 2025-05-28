@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package auth;
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.authservice.grpc";
+option java_outer_classname = "AuthProto";
+
+enum SupportedProvider {
+  UNSPECIFIED = 0;
+  GOOGLE = 1;
+  FACEBOOK = 2;
+}
+
+enum UserRole {
+  LEARNER = 0;
+  ADMIN = 1;
+}
+
+message LoginWithCredentialsRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LoginWithProviderRequest {
+  SupportedProvider provider = 1;
+  string access_token = 2;
+}
+
+message RegisterRequest {
+  string verification_code = 1;
+  string email = 2;
+  string password = 3;
+}
+
+message SendVerificationEmailRequest {
+  string email = 1;
+}
+
+message ResetPasswordRequest {
+  string verification_code = 1;
+  string email = 2;
+  string new_password = 3;
+}
+
+message CreateAdminAccountRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message UpdateRoleRequest {
+  string id = 1;
+  UserRole role = 2;
+}
+
+message GetAccountRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message AccountResponse {
+  string id = 1;
+  string user_id = 2;
+  string email = 3;
+}
+
+message AccountsResponse {
+  repeated AccountResponse accounts = 1;
+  int64 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message SearchAccountByEmailRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 size = 3;
+}
+
+service AuthService {
+  rpc LoginWithCredentials(LoginWithCredentialsRequest) returns (LoginResponse);
+  rpc LoginWithProvider(LoginWithProviderRequest) returns (LoginResponse);
+  rpc SendVerificationEmail(SendVerificationEmailRequest) returns (common.ActionResponse);
+  rpc Register(RegisterRequest) returns (common.ActionResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (common.ActionResponse);
+  rpc CreateAdminAccount(CreateAdminAccountRequest) returns (common.ActionResponse); //Send account info to email
+  rpc UpdateRole(UpdateRoleRequest) returns (common.ActionResponse); //Send notification mail
+  rpc GetLearners(GetAccountRequest) returns (AccountsResponse);
+  rpc GetAdmins(GetAccountRequest) returns (AccountsResponse);
+  rpc SearchLearnerByEmail(SearchAccountByEmailRequest) returns (AccountsResponse);
+  rpc SearchAdminByEmail(SearchAccountByEmailRequest) returns (AccountsResponse);
+}
