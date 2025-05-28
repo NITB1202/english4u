@@ -1,7 +1,6 @@
 package com.nitb.apigateway.controller;
 
 import com.nitb.apigateway.dto.General.ActionResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.request.RemoveVocabularyWordImageRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.service.Vocabulary.VocabularyWordService;
 import com.nitb.apigateway.exception.ErrorResponse;
@@ -9,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -52,14 +50,9 @@ public class VocabularyWordController {
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload vocabulary word's image.")
     @ApiResponse(responseCode = "200", description = "Upload successfully.")
-    public Mono<ResponseEntity<ActionResponseDto>> uploadVocabularyWordImage(@RequestPart("file") FilePart file) {
-        return vocabularyWordService.uploadVocabularyWordImage(file).map(ResponseEntity::ok);
-    }
-
-    @DeleteMapping("/image")
-    @Operation(summary = "Delete a wrong uploaded image.")
-    @ApiResponse(responseCode = "200", description = "Delete successfully.")
-    public Mono<ResponseEntity<ActionResponseDto>> removeVocabularyWordImage(@Valid @RequestBody RemoveVocabularyWordImageRequestDto request) {
-        return vocabularyWordService.removeVocabularyWordImage(request).map(ResponseEntity::ok);
+    public Mono<ResponseEntity<ActionResponseDto>> uploadVocabularyWordImage(@RequestParam UUID setId,
+                                                                             @RequestParam UUID wordId,
+                                                                             @RequestPart("file") FilePart file) {
+        return vocabularyWordService.uploadVocabularyWordImage(setId, wordId, file).map(ResponseEntity::ok);
     }
 }

@@ -4,6 +4,7 @@ import com.google.protobuf.Empty;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularyWordRequestDto;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.common.enums.GroupBy;
+import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.mappers.GroupByMapper;
 import com.nitb.vocabularyservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -131,7 +132,7 @@ public class VocabularyServiceGrpcClient {
     }
 
     //Word
-    public Empty createVocabularyWords(UUID setId, UUID userId, List<CreateVocabularyWordRequestDto> words) {
+    public VocabularyWordsResponse createVocabularyWords(UUID setId, UUID userId, List<CreateVocabularyWordRequestDto> words) {
         List<CreateVocabularyWordRequest> wordRequests = words.stream()
                 .map(VocabularyWordMapper::toCreateVocabularyWordRequest)
                 .toList();
@@ -164,5 +165,23 @@ public class VocabularyServiceGrpcClient {
                 .build();
 
         return blockingStub.searchVocabularyWordByWord(request);
+    }
+
+    public ActionResponse uploadVocabularyWordImage(UUID id, String imageUrl){
+        UploadVocabularyWordImageRequest request = UploadVocabularyWordImageRequest.newBuilder()
+                .setId(id.toString())
+                .setImageUrl(imageUrl)
+                .build();
+
+        return blockingStub.uploadVocabularyWordImage(request);
+    }
+
+    public Empty ensureWordInSet(UUID wordId, UUID setId) {
+        EnsureWordInSetRequest request = EnsureWordInSetRequest.newBuilder()
+                .setWordId(wordId.toString())
+                .setSetId(setId.toString())
+                .build();
+
+        return blockingStub.ensureWordInSet(request);
     }
 }

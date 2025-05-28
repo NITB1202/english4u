@@ -122,9 +122,10 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     //Word section
     @Override
-    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<Empty> streamObserver){
-        vocabularyWordService.createVocabularyWords(request);
-        streamObserver.onNext(Empty.getDefaultInstance());
+    public void createVocabularyWords(CreateVocabularyWordsRequest request, StreamObserver<VocabularyWordsResponse> streamObserver){
+        List<VocabularyWord> words = vocabularyWordService.createVocabularyWords(request);
+        VocabularyWordsResponse response = VocabularyWordMapper.toVocabularyWordsResponse(words);
+        streamObserver.onNext(response);
         streamObserver.onCompleted();
     }
 
@@ -141,6 +142,25 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
         Page<VocabularyWord> words = vocabularyWordService.searchVocabularyWordByWord(request);
         VocabularyWordsPaginationResponse response = VocabularyWordMapper.toVocabularyWordsPaginationResponse(words);
         streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request, StreamObserver<ActionResponse> streamObserver){
+        vocabularyWordService.uploadVocabularyWordImage(request);
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Upload successfully.")
+                .build();
+
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void ensureWordInSet(EnsureWordInSetRequest request, StreamObserver<Empty> streamObserver){
+        vocabularyWordService.ensureWordInSet(request);
+        streamObserver.onNext(Empty.getDefaultInstance());
         streamObserver.onCompleted();
     }
 }

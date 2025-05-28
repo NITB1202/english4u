@@ -1,15 +1,12 @@
 package com.nitb.apigateway.service.Vocabulary;
 
 import com.nitb.apigateway.dto.General.ActionResponseDto;
-import com.nitb.apigateway.dto.Vocabulary.request.RemoveVocabularyWordImageRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.grpc.FileServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
-import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.apigateway.util.FileUtils;
 import com.nitb.common.exceptions.BusinessException;
-import com.nitb.common.grpc.ActionResponse;
 import com.nitb.fileservice.grpc.FileResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsPaginationResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,7 @@ import java.util.UUID;
 public class VocabularyWordServiceImpl implements VocabularyWordService {
     private final VocabularyServiceGrpcClient grpcClient;
     private final FileServiceGrpcClient fileClient;
-    private final String WORD_TEMP_FOLDER = "words/temp";
+    private final String WORD_FOLDER = "words";
 
     @Override
     public Mono<VocabularyWordsPaginationResponseDto> getVocabularyWords(UUID setId, int page, int size) {
@@ -45,7 +42,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     }
 
     @Override
-    public Mono<ActionResponseDto> uploadVocabularyWordImage(FilePart file) {
+    public Mono<ActionResponseDto> uploadVocabularyWordImage(UUID setId, UUID wordId, FilePart file) {
         if(!FileUtils.isImage(file)) {
             throw new BusinessException("Invalid image file.");
         }
@@ -56,37 +53,17 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                     buffer.read(bytes);
                     DataBufferUtils.release(buffer);
 
-                    FileResponse tempFile = fileClient.uploadFile(WORD_TEMP_FOLDER, null, bytes);
+                    String folderPath = WORD_FOLDER + "/" + setId;
+                    FileResponse image = fileClient.uploadFile(folderPath, wordId.toString(), bytes);
+                    grpcClient.uploadVocabularyWordImage(wordId, image.getUrl());
+
                     ActionResponseDto response = ActionResponseDto.builder()
                             .success(true)
-                            .message(tempFile.getUrl())
+                            .message(image.getUrl())
                             .build();
 
                     return Mono.fromCallable(() -> response)
                             .subscribeOn(Schedulers.boundedElastic());
                 });
-    }
-
-    @Override
-    public Mono<ActionResponseDto> removeVocabularyWordImage(RemoveVocabularyWordImageRequestDto dto) {
-        return Mono.fromCallable(()->{
-            String publicId = FileUtils.extractPublicIdFromUrl(dto.getUrl());
-
-            if(isNotTempFile(publicId)) {
-                throw new BusinessException("Only temp file can be removed.");
-            }
-
-            ActionResponse response = fileClient.deleteFile(publicId);
-            return ActionMapper.toResponseDto(response);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    private boolean isNotTempFile(String publicId) {
-        try {
-            UUID.fromString(publicId);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
     }
 }

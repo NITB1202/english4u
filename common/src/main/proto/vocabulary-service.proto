@@ -124,13 +124,21 @@ message CreateVocabularyWordRequest{
   string pronunciation = 2;
   string example = 3;
   string translation = 4;
-  string image_url = 5;
 }
 
 message CreateVocabularyWordsRequest{
   repeated CreateVocabularyWordRequest words = 1;
   string user_id = 2;
   string set_id = 3;
+}
+
+message VocabularyWordSummaryResponse{
+  string id = 1;
+  string word = 2;
+}
+
+message VocabularyWordsResponse{
+  repeated VocabularyWordSummaryResponse words = 1;
 }
 
 message GetVocabularyWordsRequest{
@@ -146,7 +154,7 @@ message VocabularyWordResponse{
   string pronunciation = 4;
   string example = 5;
   string translation = 6;
-  string imageUrl = 7;
+  string image_url = 7;
 }
 
 message VocabularyWordsPaginationResponse{
@@ -160,6 +168,16 @@ message SearchVocabularyWordByWordRequest{
   string keyword = 2;
   int32 page = 3;
   int32 size = 4;
+}
+
+message UploadVocabularyWordImageRequest{
+  string id = 1;
+  string image_url = 2;
+}
+
+message EnsureWordInSetRequest{
+  string setId = 1;
+  string wordId = 2;
 }
 
 service VocabularyService {
@@ -178,7 +196,9 @@ service VocabularyService {
   rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);
 
   //Words
-  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (google.protobuf.Empty);
+  rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);
   rpc GetVocabularyWords(GetVocabularyWordsRequest) returns (VocabularyWordsPaginationResponse);
   rpc SearchVocabularyWordByWord(SearchVocabularyWordByWordRequest) returns (VocabularyWordsPaginationResponse);
+  rpc UploadVocabularyWordImage(UploadVocabularyWordImageRequest) returns (common.ActionResponse);
+  rpc EnsureWordInSet(EnsureWordInSetRequest) returns (google.protobuf.Empty);
 }

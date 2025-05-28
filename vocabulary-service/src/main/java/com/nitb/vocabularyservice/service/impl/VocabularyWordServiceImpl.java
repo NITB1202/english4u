@@ -1,6 +1,7 @@
 package com.nitb.vocabularyservice.service.impl;
 
 import com.nitb.common.exceptions.BusinessException;
+import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.*;
 import com.nitb.vocabularyservice.repository.VocabularyWordRepository;
@@ -23,7 +24,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     private final int DEFAULT_SIZE = 10;
 
     @Override
-    public void createVocabularyWords(CreateVocabularyWordsRequest request) {
+    public List<VocabularyWord> createVocabularyWords(CreateVocabularyWordsRequest request) {
         List<CreateVocabularyWordRequest> wordRequests = request.getWordsList();
         UUID setId = UUID.fromString(request.getSetId());
         UUID userId = UUID.fromString(request.getUserId());
@@ -46,7 +47,6 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                     .pronunciation(wordRequest.getPronunciation())
                     .translation(wordRequest.getTranslation())
                     .example(wordRequest.getExample())
-                    .imageUrl(wordRequest.getImageUrl())
                     .build();
 
             result.add(word);
@@ -55,7 +55,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
         //Update set
         vocabularySetService.updateWordCount(setId, position, userId);
 
-        vocabularyWordRepository.saveAll(result);
+        return vocabularyWordRepository.saveAll(result);
     }
 
     @Override
@@ -76,5 +76,28 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                 UUID.fromString(request.getSetId()),
                 PageRequest.of(page, size)
         );
+    }
+
+    @Override
+    public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
+        UUID wordId = UUID.fromString(request.getId());
+
+        //Update word
+        VocabularyWord word = vocabularyWordRepository.findById(wordId).orElseThrow(
+                () -> new NotFoundException("Vocabulary word not found.")
+        );
+
+        word.setImageUrl(request.getImageUrl());
+        vocabularyWordRepository.save(word);
+    }
+
+    @Override
+    public void ensureWordInSet(EnsureWordInSetRequest request) {
+        UUID wordId = UUID.fromString(request.getWordId());
+        UUID setId = UUID.fromString(request.getSetId());
+
+        if(!vocabularyWordRepository.existsByIdAndSetId(wordId, setId)){
+            throw new NotFoundException("Incorrect word id or set id.");
+        }
     }
 }

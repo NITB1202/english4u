@@ -22,6 +22,4 @@ public class CreateVocabularyWordRequestDto {
 
     @NotBlank(message = "Example is required.")
     private String example;
-
-    private String imageUrl;
 }

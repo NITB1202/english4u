@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public interface VocabularyWordRepository extends JpaRepository<VocabularyWord, UUID> {
     boolean existsByWordAndSetId(String word, UUID id);
+    boolean existsByIdAndSetId(UUID id, UUID setId);
     Page<VocabularyWord> findBySetId(UUID id, Pageable pageable);
     Page<VocabularyWord> findByWordContainingIgnoreCaseAndSetId(String word, UUID id, Pageable pageable);
     int countBySetId(UUID id);
