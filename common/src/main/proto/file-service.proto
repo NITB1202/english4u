@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package file;
+
+import "common.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.nitb.fileservice.grpc";
+option java_outer_classname = "FileProto";
+
+message UploadFileRequest {
+  string path = 1;
+  bytes file = 2;
+}
+
+message FileResponse {
+  string url = 1;
+}
+
+message MoveFileRequest {
+  string from = 1;
+  string to = 2;
+}
+
+message DeleteFileRequest {
+  string url = 1;
+}
+
+service FileService {
+  rpc UploadFile(UploadFileRequest) returns (FileResponse);
+  rpc MoveFile(MoveFileRequest) returns (google.protobuf.Empty);
+  rpc DeleteFile(DeleteFileRequest) returns (common.ActionResponse);
+}
