@@ -23,5 +23,4 @@ public interface VocabularySetService {
     List<VocabularySetStatisticDto> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request);
 
     void updateWordCount(UUID setId, int count, UUID userId);
-    void updateLastModified(UUID setId, UUID userId);
 }

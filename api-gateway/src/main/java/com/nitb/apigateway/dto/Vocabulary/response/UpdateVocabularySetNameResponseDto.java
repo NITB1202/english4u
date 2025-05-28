@@ -7,14 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateVocabularySetResponseDto {
+public class UpdateVocabularySetNameResponseDto {
     private UUID id;
 
     private String name;
@@ -25,6 +24,4 @@ public class UpdateVocabularySetResponseDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateAt;
-
-    private List<VocabularyWordSummaryResponseDto> words;
 }

@@ -147,10 +147,11 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     @Override
     public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request, StreamObserver<ActionResponse> streamObserver){
-        vocabularyWordService.uploadVocabularyWordImage(request);
+        String url = vocabularyWordService.uploadVocabularyWordImage(request);
+
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)
-                .setMessage("Upload successfully.")
+                .setMessage(url)
                 .build();
 
         streamObserver.onNext(response);

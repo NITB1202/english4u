@@ -4,9 +4,11 @@ import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.grpc.FileServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
+import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.VocabularyWordMapper;
 import com.nitb.apigateway.util.FileUtils;
 import com.nitb.common.exceptions.BusinessException;
+import com.nitb.common.grpc.ActionResponse;
 import com.nitb.fileservice.grpc.FileResponse;
 import com.nitb.vocabularyservice.grpc.VocabularyWordsPaginationResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     public Mono<VocabularyWordsPaginationResponseDto> getVocabularyWords(UUID setId, int page, int size) {
         return Mono.fromCallable(()->{
             VocabularyWordsPaginationResponse pagination = grpcClient.getVocabularyWords(setId, page, size);
-            return VocabularyWordMapper.vocabularyWordsPaginationResponseDto(pagination);
+            return VocabularyWordMapper.toVocabularyWordsPaginationResponseDto(pagination);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -37,7 +39,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     public Mono<VocabularyWordsPaginationResponseDto> searchVocabularyWordByWord(UUID setId, String keyword, int page, int size) {
         return Mono.fromCallable(()->{
             VocabularyWordsPaginationResponse pagination = grpcClient.searchVocabularyWordByWord(keyword, setId, page, size);
-            return VocabularyWordMapper.vocabularyWordsPaginationResponseDto(pagination);
+            return VocabularyWordMapper.toVocabularyWordsPaginationResponseDto(pagination);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -47,6 +49,8 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
             throw new BusinessException("Invalid image file.");
         }
 
+        grpcClient.ensureWordInSet(wordId, setId);
+
         return DataBufferUtils.join(file.content())
                 .flatMap(buffer -> {
                     byte[] bytes = new byte[buffer.readableByteCount()];
@@ -55,14 +59,10 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
 
                     String folderPath = WORD_FOLDER + "/" + setId;
                     FileResponse image = fileClient.uploadFile(folderPath, wordId.toString(), bytes);
-                    grpcClient.uploadVocabularyWordImage(wordId, image.getUrl());
 
-                    ActionResponseDto response = ActionResponseDto.builder()
-                            .success(true)
-                            .message(image.getUrl())
-                            .build();
+                    ActionResponse response = grpcClient.uploadVocabularyWordImage(wordId, image.getUrl());
 
-                    return Mono.fromCallable(() -> response)
+                    return Mono.fromCallable(() -> ActionMapper.toResponseDto(response))
                             .subscribeOn(Schedulers.boundedElastic());
                 });
     }

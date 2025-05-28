@@ -3,7 +3,6 @@ package com.nitb.apigateway.service.Vocabulary;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
-import com.nitb.apigateway.grpc.FileServiceGrpcClient;
 import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.VocabularySetMapper;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class VocabularySetServiceImpl implements VocabularySetService {
     private final VocabularyServiceGrpcClient grpcClient;
     private final UserServiceGrpcClient userClient;
-    private final FileServiceGrpcClient fileClient;
 
     @Override
     public Mono<CreateVocabularySetResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {
@@ -34,9 +32,9 @@ public class VocabularySetServiceImpl implements VocabularySetService {
             CreateVocabularySetResponse set = grpcClient.createVocabularySet(userId, request.getName());
 
             UUID setId = UUID.fromString(set.getId());
-            grpcClient.createVocabularyWords(setId, userId, request.getWords());
+            VocabularyWordsResponse words = grpcClient.createVocabularyWords(setId, userId, request.getWords());
 
-            return VocabularySetMapper.toCreateVocabularySetResponseDto(set);
+            return VocabularySetMapper.toCreateVocabularySetResponseDto(set, words);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -88,11 +86,11 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public Mono<UpdateVocabularySetResponseDto> updateVocabularySetName(UUID id, UUID userId, String name) {
+    public Mono<UpdateVocabularySetNameResponseDto> updateVocabularySetName(UUID id, UUID userId, String name) {
         return Mono.fromCallable(()->{
             userClient.checkCanPerformAction(userId);
             UpdateVocabularySetResponse response = grpcClient.updateVocabularySetName(id, userId, name);
-            return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
+            return VocabularySetMapper.toUpdateVocabularySetNameResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -112,11 +110,11 @@ public class VocabularySetServiceImpl implements VocabularySetService {
             //Create a new version
             CreateVocabularySetResponse updatedSet = grpcClient.createVocabularySet(userId, setDetail.getName());
             UUID updatedSetId = UUID.fromString(updatedSet.getId());
-            grpcClient.createVocabularyWords(updatedSetId, userId, request.getWords());
+            VocabularyWordsResponse words = grpcClient.createVocabularyWords(updatedSetId, userId, request.getWords());
 
             //Preserve the original creation info when creating a new version.
-            UpdateVocabularySetResponse response = grpcClient.updateVocabularySet(id, updatedSetId);
-            return VocabularySetMapper.toUpdateVocabularySetResponseDto(response);
+            UpdateVocabularySetResponse set = grpcClient.updateVocabularySet(id, updatedSetId);
+            return VocabularySetMapper.toUpdateVocabularySetResponseDto(set, words);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 

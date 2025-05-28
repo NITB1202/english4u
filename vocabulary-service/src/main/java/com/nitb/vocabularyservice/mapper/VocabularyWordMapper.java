@@ -27,8 +27,6 @@ public class VocabularyWordMapper {
     }
 
     public static VocabularyWordResponse toVocabularyWordResponse(VocabularyWord word) {
-        String imageUrl = word.getImageUrl() != null ? word.getImageUrl() : "";
-
         return VocabularyWordResponse.newBuilder()
                 .setId(word.getId().toString())
                 .setPosition(word.getPosition())
@@ -36,7 +34,7 @@ public class VocabularyWordMapper {
                 .setPronunciation(word.getPronunciation())
                 .setTranslation(word.getTranslation())
                 .setExample(word.getExample())
-                .setImageUrl(imageUrl)
+                .setImageUrl(word.getImageUrl())
                 .build();
     }
 

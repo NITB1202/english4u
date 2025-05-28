@@ -47,6 +47,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                     .pronunciation(wordRequest.getPronunciation())
                     .translation(wordRequest.getTranslation())
                     .example(wordRequest.getExample())
+                    .imageUrl("")
                     .build();
 
             result.add(word);
@@ -79,7 +80,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     }
 
     @Override
-    public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
+    public String uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
         UUID wordId = UUID.fromString(request.getId());
 
         //Update word
@@ -89,6 +90,8 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
 
         word.setImageUrl(request.getImageUrl());
         vocabularyWordRepository.save(word);
+
+        return request.getImageUrl();
     }
 
     @Override

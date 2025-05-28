@@ -10,6 +10,6 @@ public interface VocabularyWordService {
     List<VocabularyWord> createVocabularyWords(CreateVocabularyWordsRequest request);
     Page<VocabularyWord> getVocabularyWords(GetVocabularyWordsRequest request);
     Page<VocabularyWord> searchVocabularyWordByWord(SearchVocabularyWordByWordRequest request);
-    void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request);
+    String uploadVocabularyWordImage(UploadVocabularyWordImageRequest request);
     void ensureWordInSet(EnsureWordInSetRequest request);
 }

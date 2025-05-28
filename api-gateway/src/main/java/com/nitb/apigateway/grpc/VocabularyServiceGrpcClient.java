@@ -167,7 +167,7 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.searchVocabularyWordByWord(request);
     }
 
-    public ActionResponse uploadVocabularyWordImage(UUID id, String imageUrl){
+    public ActionResponse uploadVocabularyWordImage(UUID id, String imageUrl) {
         UploadVocabularyWordImageRequest request = UploadVocabularyWordImageRequest.newBuilder()
                 .setId(id.toString())
                 .setImageUrl(imageUrl)
