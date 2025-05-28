@@ -11,12 +11,17 @@ import java.util.UUID;
 public class VocabularySetMapper {
     private VocabularySetMapper() {}
 
-    public static CreateVocabularySetResponseDto toCreateVocabularySetResponseDto(CreateVocabularySetResponse set) {
+    public static CreateVocabularySetResponseDto toCreateVocabularySetResponseDto(CreateVocabularySetResponse set, VocabularyWordsResponse words) {
+        List<VocabularyWordSummaryResponseDto> summaries = words.getWordsList().stream()
+                .map(VocabularyWordMapper::toVocabularyWordSummaryResponseDto)
+                .toList();
+
         return CreateVocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .name(set.getName())
                 .createdBy(UUID.fromString(set.getCreatedBy()))
                 .createdAt(LocalDateTime.parse(set.getCreateAt()))
+                .words(summaries)
                 .build();
     }
 
@@ -58,13 +63,28 @@ public class VocabularySetMapper {
                 .build();
     }
 
-    public static UpdateVocabularySetResponseDto toUpdateVocabularySetResponseDto(UpdateVocabularySetResponse set) {
+    public static UpdateVocabularySetNameResponseDto toUpdateVocabularySetNameResponseDto(UpdateVocabularySetResponse set) {
+        return UpdateVocabularySetNameResponseDto.builder()
+                .id(UUID.fromString(set.getId()))
+                .name(set.getName())
+                .version(set.getVersion())
+                .updatedBy(UUID.fromString(set.getUpdatedBy()))
+                .updateAt(LocalDateTime.parse(set.getUpdateAt()))
+                .build();
+    }
+
+    public static UpdateVocabularySetResponseDto toUpdateVocabularySetResponseDto(UpdateVocabularySetResponse set, VocabularyWordsResponse words) {
+        List<VocabularyWordSummaryResponseDto> summaries = words.getWordsList().stream()
+                .map(VocabularyWordMapper::toVocabularyWordSummaryResponseDto)
+                .toList();
+
         return UpdateVocabularySetResponseDto.builder()
                 .id(UUID.fromString(set.getId()))
                 .name(set.getName())
                 .version(set.getVersion())
                 .updatedBy(UUID.fromString(set.getUpdatedBy()))
                 .updateAt(LocalDateTime.parse(set.getUpdateAt()))
+                .words(summaries)
                 .build();
     }
 

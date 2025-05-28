@@ -1,5 +1,6 @@
 package com.nitb.apigateway.controller;
 
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.service.Vocabulary.VocabularyWordService;
 import com.nitb.apigateway.exception.ErrorResponse;
@@ -9,7 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -42,5 +45,14 @@ public class VocabularyWordController {
                                                                                                  @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                                  @RequestParam(defaultValue = "10") int size){
         return vocabularyWordService.searchVocabularyWordByWord(setId, keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload vocabulary word's image.")
+    @ApiResponse(responseCode = "200", description = "Upload successfully.")
+    public Mono<ResponseEntity<ActionResponseDto>> uploadVocabularyWordImage(@RequestParam UUID setId,
+                                                                             @RequestParam UUID wordId,
+                                                                             @RequestPart("file") FilePart file) {
+        return vocabularyWordService.uploadVocabularyWordImage(setId, wordId, file).map(ResponseEntity::ok);
     }
 }

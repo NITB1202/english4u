@@ -89,7 +89,7 @@ public class VocabularySetController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UpdateVocabularySetResponseDto>> updateVocabularySetName(@PathVariable UUID id,
+    public Mono<ResponseEntity<UpdateVocabularySetNameResponseDto>> updateVocabularySetName(@PathVariable UUID id,
                                                                                         @RequestParam UUID userId,
                                                                                         @RequestParam String name) {
         return vocabularySetService.updateVocabularySetName(id, userId, name).map(ResponseEntity::ok);

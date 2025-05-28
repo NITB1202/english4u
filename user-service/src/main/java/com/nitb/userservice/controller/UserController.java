@@ -57,11 +57,11 @@ public class UserController extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
     public void updateAvatar(UpdateAvatarRequest request, StreamObserver<ActionResponse> responseObserver) {
-        userService.updateAvatar(request);
+        String avatarUrl = userService.updateAvatar(request);
 
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)
-                .setMessage("Update successfully.")
+                .setMessage(avatarUrl)
                 .build();
 
         responseObserver.onNext(response);

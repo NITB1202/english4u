@@ -24,7 +24,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     private final int DEFAULT_SIZE = 10;
 
     @Override
-    public void createVocabularyWords(CreateVocabularyWordsRequest request) {
+    public List<VocabularyWord> createVocabularyWords(CreateVocabularyWordsRequest request) {
         List<CreateVocabularyWordRequest> wordRequests = request.getWordsList();
         UUID setId = UUID.fromString(request.getSetId());
         UUID userId = UUID.fromString(request.getUserId());
@@ -47,6 +47,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
                     .pronunciation(wordRequest.getPronunciation())
                     .translation(wordRequest.getTranslation())
                     .example(wordRequest.getExample())
+                    .imageUrl("")
                     .build();
 
             result.add(word);
@@ -55,7 +56,7 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
         //Update set
         vocabularySetService.updateWordCount(setId, position, userId);
 
-        vocabularyWordRepository.saveAll(result);
+        return vocabularyWordRepository.saveAll(result);
     }
 
     @Override
@@ -79,23 +80,27 @@ public class VocabularyWordServiceImpl implements VocabularyWordService {
     }
 
     @Override
-    public void uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
+    public String uploadVocabularyWordImage(UploadVocabularyWordImageRequest request){
         UUID wordId = UUID.fromString(request.getId());
-        UUID userId = UUID.fromString(request.getUserId());
 
         //Update word
         VocabularyWord word = vocabularyWordRepository.findById(wordId).orElseThrow(
                 () -> new NotFoundException("Vocabulary word not found.")
         );
 
-        if(request.getImageUrl().isBlank()){
-            throw new BusinessException("Vocabulary word image url is empty.");
-        }
-
         word.setImageUrl(request.getImageUrl());
         vocabularyWordRepository.save(word);
 
-        //Update set
-        vocabularySetService.updateLastModified(word.getSetId(), userId);
+        return request.getImageUrl();
+    }
+
+    @Override
+    public void ensureWordInSet(EnsureWordInSetRequest request) {
+        UUID wordId = UUID.fromString(request.getWordId());
+        UUID setId = UUID.fromString(request.getSetId());
+
+        if(!vocabularyWordRepository.existsByIdAndSetId(wordId, setId)){
+            throw new NotFoundException("Incorrect word id or set id.");
+        }
     }
 }

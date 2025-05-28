@@ -5,8 +5,8 @@ import com.nitb.apigateway.dto.UserTest.request.CreateResultRequestDto;
 import com.nitb.apigateway.dto.UserTest.request.SaveResultRequestDto;
 import com.nitb.apigateway.dto.UserTest.response.*;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
-import com.nitb.apigateway.grpc.UserGrpcClient;
-import com.nitb.apigateway.grpc.UserTestGrpcClient;
+import com.nitb.apigateway.grpc.UserServiceGrpcClient;
+import com.nitb.apigateway.grpc.UserTestServiceGrpcClient;
 import com.nitb.apigateway.mapper.ResultMapper;
 import com.nitb.common.enums.AnswerState;
 import com.nitb.common.enums.GroupBy;
@@ -27,9 +27,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ResultServiceImpl implements ResultService {
-    private final UserTestGrpcClient userTestGrpc;
+    private final UserTestServiceGrpcClient userTestGrpc;
     private final TestServiceGrpcClient testGrpc;
-    private final UserGrpcClient userGrpc;
+    private final UserServiceGrpcClient userGrpc;
 
     @Override
     public Mono<SavedResultResponseDto> saveResult(UUID userId, SaveResultRequestDto request) {

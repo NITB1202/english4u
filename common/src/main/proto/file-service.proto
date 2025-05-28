@@ -10,8 +10,9 @@ option java_package = "com.nitb.fileservice.grpc";
 option java_outer_classname = "FileProto";
 
 message UploadFileRequest {
-  string path = 1;
-  bytes file = 2;
+  string folder_path = 1;
+  string public_id = 2;
+  bytes file = 3;
 }
 
 message FileResponse {
@@ -19,12 +20,13 @@ message FileResponse {
 }
 
 message MoveFileRequest {
-  string from = 1;
-  string to = 2;
+  string public_id = 1;
+  string to_folder = 2;
+  string new_public_id = 3;
 }
 
 message DeleteFileRequest {
-  string url = 1;
+  string public_id = 1;
 }
 
 service FileService {

@@ -1,5 +1,6 @@
 package com.nitb.apigateway.controller;
 
+import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.dto.User.request.UpdateUserRequestDto;
 import com.nitb.apigateway.dto.User.response.UpdateUserResponseDto;
 import com.nitb.apigateway.dto.User.response.UserLockedResponseDto;
@@ -12,7 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -43,6 +46,14 @@ public class UserController {
     public Mono<ResponseEntity<UpdateUserResponseDto>> updateUser(@PathVariable UUID id,
                                                                       @Valid @RequestBody UpdateUserRequestDto request) {
         return userService.updateUser(id, request).map(ResponseEntity::ok);
+    }
+
+    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload user's avatar.")
+    @ApiResponse(responseCode = "200", description = "Upload successfully.")
+    public Mono<ResponseEntity<ActionResponseDto>> uploadUserAvatar(@RequestParam UUID userId,
+                                                                    @RequestPart("file") FilePart file) {
+        return userService.uploadUserAvatar(userId, file).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/lock")

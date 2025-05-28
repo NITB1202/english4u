@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(CreateUserRequest request) {
         User user = User.builder()
                 .name(request.getName())
+                .avatarUrl("")
                 .joinAt(LocalDateTime.now())
                 .isLocked(false)
                 .build();
@@ -85,15 +86,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateAvatar(UpdateAvatarRequest request) {
+    public String updateAvatar(UpdateAvatarRequest request) {
         UUID userId = UUID.fromString(request.getId());
+        String avatarUrl = request.getAvatarUrl();
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User with id " + userId + " not found")
         );
 
-        user.setAvatarUrl(request.getAvatarUrl());
+        user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
+
+        return avatarUrl;
     }
 
     @Override

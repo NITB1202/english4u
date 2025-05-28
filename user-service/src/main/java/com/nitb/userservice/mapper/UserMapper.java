@@ -9,12 +9,10 @@ public class UserMapper {
     private UserMapper() {}
 
     public static UserResponse toUserResponse(User user) {
-        String avatarUrl = user.getAvatarUrl() != null ? user.getAvatarUrl() : "";
-
         return UserResponse.newBuilder()
                 .setId(user.getId().toString())
                 .setName(user.getName())
-                .setAvatarUrl(avatarUrl)
+                .setAvatarUrl(user.getAvatarUrl())
                 .setIsLocked(user.isLocked())
                 .build();
     }

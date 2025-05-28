@@ -9,9 +9,24 @@ import java.util.List;
 public class VocabularyWordMapper {
     private VocabularyWordMapper() {}
 
-    public static VocabularyWordResponse toVocabularyWordResponse(VocabularyWord word) {
-        String imageUrl = word.getImageUrl() != null ? word.getImageUrl() : "";
+    public static VocabularyWordSummaryResponse toVocabularyWordSummaryResponse(VocabularyWord word) {
+        return VocabularyWordSummaryResponse.newBuilder()
+                .setId(word.getId().toString())
+                .setWord(word.getWord())
+                .build();
+    }
 
+    public static VocabularyWordsResponse toVocabularyWordsResponse(List<VocabularyWord> words) {
+        List<VocabularyWordSummaryResponse> summaries = words.stream()
+                .map(VocabularyWordMapper::toVocabularyWordSummaryResponse)
+                .toList();
+
+        return VocabularyWordsResponse.newBuilder()
+                .addAllWords(summaries)
+                .build();
+    }
+
+    public static VocabularyWordResponse toVocabularyWordResponse(VocabularyWord word) {
         return VocabularyWordResponse.newBuilder()
                 .setId(word.getId().toString())
                 .setPosition(word.getPosition())
@@ -19,7 +34,7 @@ public class VocabularyWordMapper {
                 .setPronunciation(word.getPronunciation())
                 .setTranslation(word.getTranslation())
                 .setExample(word.getExample())
-                .setImageUrl(imageUrl)
+                .setImageUrl(word.getImageUrl())
                 .build();
     }
 

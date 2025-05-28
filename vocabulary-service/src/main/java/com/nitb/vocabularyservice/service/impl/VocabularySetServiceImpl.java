@@ -218,16 +218,4 @@ public class VocabularySetServiceImpl implements VocabularySetService {
 
         vocabularySetRepository.save(set);
     }
-
-    @Override
-    public void updateLastModified(UUID setId, UUID userId){
-        VocabularySet set = vocabularySetRepository.findById(setId).orElseThrow(
-                () -> new NotFoundException("Vocabulary set not found.")
-        );
-
-        set.setUpdatedBy(userId);
-        set.setUpdatedAt(LocalDateTime.now());
-
-        vocabularySetRepository.save(set);
-    }
 }
