@@ -140,6 +140,52 @@ services:
     networks:
       - backend
 
+  user-db:
+    image: postgres:15
+    container_name: e4u-user-db
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: ${USER_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  user-service:
+    build:
+      context: ./user-service
+    container_name: e4u-user-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - user-db
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      USER_SERVICE_DB_HOST: ${USER_SERVICE_DB_HOST}
+      USER_SERVICE_DB_PORT: ${USER_SERVICE_DB_PORT}
+      USER_SERVICE_DB_NAME: ${USER_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
+
+  file-service:
+    build:
+      context: ./file-service
+    container_name: e4u-file-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+    networks:
+      - backend
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -161,6 +207,7 @@ volumes:
   user-vocabulary-db-data:
   test-db-data:
   user-test-db-data:
+  user-db:
 
 networks:
   backend:
