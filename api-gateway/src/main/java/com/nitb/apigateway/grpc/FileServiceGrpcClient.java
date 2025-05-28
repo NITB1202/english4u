@@ -7,38 +7,39 @@ import com.nitb.fileservice.grpc.*;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
-public class FileGrpcClient {
+public class FileServiceGrpcClient {
     @GrpcClient("file-service")
     private FileServiceGrpc.FileServiceBlockingStub blockingStub;
 
-    public FileResponse uploadFile(String folderPath, UUID fileId, byte[] file) {
-        String handledFileId = fileId != null ? fileId.toString() : "";
+    public FileResponse uploadFile(String folderPath, String publicId, byte[] file) {
+        String handledPublicId = publicId != null ? publicId : "";
         ByteString byteString = ByteString.copyFrom(file);
 
         UploadFileRequest request = UploadFileRequest.newBuilder()
                 .setFolderPath(folderPath)
-                .setFileId(handledFileId)
+                .setPublicId(handledPublicId)
                 .setFile(byteString)
                 .build();
 
         return blockingStub.uploadFile(request);
     }
 
-    public Empty moveFile(String from, String to) {
+    public Empty moveFile(String oldPublicId, String newPublicId, String toFolder) {
+        String handledPublicId = newPublicId != null ? newPublicId : "";
+
         MoveFileRequest request = MoveFileRequest.newBuilder()
-                .setFrom(from)
-                .setTo(to)
+                .setPublicId(oldPublicId)
+                .setNewPublicId(handledPublicId)
+                .setToFolder(toFolder)
                 .build();
 
         return blockingStub.moveFile(request);
     }
 
-    public ActionResponse deleteFile(String url) {
+    public ActionResponse deleteFile(String publicId) {
         DeleteFileRequest request = DeleteFileRequest.newBuilder()
-                .setUrl(url)
+                .setPublicId(publicId)
                 .build();
 
         return blockingStub.deleteFile(request);

@@ -5,10 +5,12 @@ import com.nitb.apigateway.dto.User.request.UpdateUserRequestDto;
 import com.nitb.apigateway.dto.User.response.UpdateUserResponseDto;
 import com.nitb.apigateway.dto.User.response.UserLockedResponseDto;
 import com.nitb.apigateway.dto.User.response.UserResponseDto;
-import com.nitb.apigateway.grpc.FileGrpcClient;
+import com.nitb.apigateway.grpc.FileServiceGrpcClient;
 import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.UserMapper;
+import com.nitb.apigateway.util.FileUtils;
+import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.fileservice.grpc.FileResponse;
 import com.nitb.userservice.grpc.UpdateUserResponse;
@@ -27,7 +29,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserGrpcClient userGrpc;
-    private final FileGrpcClient fileGrpc;
+    private final FileServiceGrpcClient fileGrpc;
     private final String AVATAR_FOLDER = "avatars";
 
     @Override
@@ -56,13 +58,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<ActionResponseDto> uploadUserAvatar(UUID id, FilePart file) {
+        if(!FileUtils.isImage(file)) {
+            throw new BusinessException("User's avatar must be an image.");
+        }
+
         return DataBufferUtils.join(file.content())
                 .flatMap(buffer -> {
                     byte[] bytes = new byte[buffer.readableByteCount()];
                     buffer.read(bytes);
                     DataBufferUtils.release(buffer);
 
-                    FileResponse avatar = fileGrpc.uploadFile(AVATAR_FOLDER, id, bytes);
+                    FileResponse avatar = fileGrpc.uploadFile(AVATAR_FOLDER, id.toString(), bytes);
                     ActionResponse response = userGrpc.updateAvatar(id, avatar.getUrl());
 
                     return Mono.fromCallable(() -> ActionMapper.toResponseDto(response))

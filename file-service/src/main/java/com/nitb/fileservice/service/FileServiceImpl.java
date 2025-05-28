@@ -29,7 +29,7 @@ public class FileServiceImpl implements FileService {
 
         Map paramsWithPublicId = ObjectUtils.asMap(
                 "resource_type", "auto",
-                "public_id", request.getFileId(),
+                "public_id", request.getPublicId(),
                 "asset_folder", folderPath,
                 "overwrite", "true"
         );
@@ -41,7 +41,7 @@ public class FileServiceImpl implements FileService {
         );
 
         try {
-            Map result = request.getFileId().isEmpty() ?
+            Map result = request.getPublicId().isEmpty() ?
                     cloudinary.uploader().upload(bytes, paramsWithoutPublicId) :
                     cloudinary.uploader().upload(bytes, paramsWithPublicId);
 
@@ -54,14 +54,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public void moveFile(MoveFileRequest request) {
-        Map params = ObjectUtils.asMap(
-                "overwrite", true,
-                "resource_type", "auto"
-        );
-
         try {
-            cloudinary.uploader().rename(request.getFrom(), request.getTo(), params);
-        } catch (IOException e) {
+            cloudinary.api().update(request.getPublicId(),ObjectUtils.asMap("asset_folder", request.getToFolder()));
+
+            if(!request.getNewPublicId().isEmpty()) {
+                cloudinary.uploader().rename(request.getPublicId(), request.getNewPublicId(), ObjectUtils.emptyMap());
+            }
+        } catch (Exception e) {
             throw new BusinessException("Error while moving file.");
         }
     }
@@ -69,29 +68,10 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(DeleteFileRequest request) {
         try {
-            String publicId = extractPublicIdFromUrl(request.getUrl());
-            cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "auto"));
+            cloudinary.uploader().destroy(request.getPublicId(), ObjectUtils.emptyMap());
         }
         catch (IOException e) {
             throw new BusinessException("Error while deleting file.");
-        }
-    }
-
-    private String extractPublicIdFromUrl(String url) {
-        //Example: https://res.cloudinary.com/demo/image/upload/v1234567890/sample.jpg
-        try {
-            int lastSlashIndex = url.lastIndexOf("/");
-            String fileName = url.substring(lastSlashIndex + 1);
-            int lastDotIndex = fileName.lastIndexOf(".");
-
-            //If url has file extension, remove it
-            if (lastDotIndex != -1) {
-                return fileName.substring(0, lastDotIndex);
-            }
-
-            return fileName;
-        } catch (Exception e) {
-            throw new BusinessException("Invalid Cloudinary URL: " + url);
         }
     }
 }

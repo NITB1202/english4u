@@ -1,5 +1,7 @@
 package com.nitb.apigateway.controller;
 
+import com.nitb.apigateway.dto.General.ActionResponseDto;
+import com.nitb.apigateway.dto.Vocabulary.request.RemoveVocabularyWordImageRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.VocabularyWordsPaginationResponseDto;
 import com.nitb.apigateway.service.Vocabulary.VocabularyWordService;
 import com.nitb.apigateway.exception.ErrorResponse;
@@ -7,9 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -42,5 +47,19 @@ public class VocabularyWordController {
                                                                                                  @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                                  @RequestParam(defaultValue = "10") int size){
         return vocabularyWordService.searchVocabularyWordByWord(setId, keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload vocabulary word's image.")
+    @ApiResponse(responseCode = "200", description = "Upload successfully.")
+    public Mono<ResponseEntity<ActionResponseDto>> uploadVocabularyWordImage(@RequestPart("file") FilePart file) {
+        return vocabularyWordService.uploadVocabularyWordImage(file).map(ResponseEntity::ok);
+    }
+
+    @DeleteMapping("/image")
+    @Operation(summary = "Delete a wrong uploaded image.")
+    @ApiResponse(responseCode = "200", description = "Delete successfully.")
+    public Mono<ResponseEntity<ActionResponseDto>> removeVocabularyWordImage(@Valid @RequestBody RemoveVocabularyWordImageRequestDto request) {
+        return vocabularyWordService.removeVocabularyWordImage(request).map(ResponseEntity::ok);
     }
 }

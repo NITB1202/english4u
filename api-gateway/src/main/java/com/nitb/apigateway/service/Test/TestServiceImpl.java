@@ -7,20 +7,19 @@ import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.grpc.UserGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
+import com.nitb.apigateway.util.FileUtils;
 import com.nitb.common.enums.GroupBy;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.testservice.grpc.*;
 import com.nitb.userservice.grpc.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -170,9 +169,7 @@ public class TestServiceImpl implements TestService {
         userGrpc.checkCanPerformAction(userId);
 
         // Check file extension or MIME type
-        String filename = file.filename().toLowerCase();
-        if (!filename.endsWith(".xlsx") &&
-                !Objects.equals(file.headers().getContentType(), MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))) {
+        if (!FileUtils.isExcelFile(file)) {
             throw new BusinessException("Invalid file format. Only .xlsx files are supported.");
         }
 
