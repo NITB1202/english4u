@@ -11,6 +11,6 @@ public interface UserService {
     User getUserById(GetUserByIdRequest request);
     List<User> getUsersByListOfIds(GetUsersByListOfIdsRequest request);
     User updateUser(UpdateUserRequest request);
-    void updateAvatar(UpdateAvatarRequest request);
+    String updateAvatar(UpdateAvatarRequest request);
     User setUserLocked(SetUserLockedRequest request);
 }

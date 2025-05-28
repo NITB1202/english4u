@@ -62,9 +62,7 @@ public class UserServiceImpl implements UserService {
                     buffer.read(bytes);
                     DataBufferUtils.release(buffer);
 
-                    String avatarPath = AVATAR_FOLDER + '/' + id;
-                    FileResponse avatar = fileGrpc.uploadFile(avatarPath, bytes);
-
+                    FileResponse avatar = fileGrpc.uploadFile(AVATAR_FOLDER, id, bytes);
                     ActionResponse response = userGrpc.updateAvatar(id, avatar.getUrl());
 
                     return Mono.fromCallable(() -> ActionMapper.toResponseDto(response))
