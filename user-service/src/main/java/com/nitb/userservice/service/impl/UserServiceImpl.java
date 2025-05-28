@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(CreateUserRequest request) {
         User user = User.builder()
                 .name(request.getName())
+                .avatarUrl("")
                 .joinAt(LocalDateTime.now())
                 .isLocked(false)
                 .build();
