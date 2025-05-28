@@ -3,7 +3,8 @@ package com.nitb.apigateway.service.Vocabulary;
 import com.nitb.apigateway.dto.Vocabulary.request.CreateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.request.UpdateVocabularySetRequestDto;
 import com.nitb.apigateway.dto.Vocabulary.response.*;
-import com.nitb.apigateway.grpc.UserGrpcClient;
+import com.nitb.apigateway.grpc.FileServiceGrpcClient;
+import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.VocabularySetMapper;
 import com.nitb.common.enums.GroupBy;
@@ -21,7 +22,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VocabularySetServiceImpl implements VocabularySetService {
     private final VocabularyServiceGrpcClient grpcClient;
-    private final UserGrpcClient userClient;
+    private final UserServiceGrpcClient userClient;
+    private final FileServiceGrpcClient fileClient;
 
     @Override
     public Mono<CreateVocabularySetResponseDto> createVocabularySet(UUID userId, CreateVocabularySetRequestDto request) {

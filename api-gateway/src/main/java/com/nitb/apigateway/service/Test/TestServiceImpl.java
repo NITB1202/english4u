@@ -5,7 +5,7 @@ import com.nitb.apigateway.dto.Test.Test.response.*;
 import com.nitb.apigateway.dto.Test.Test.request.CreateTestRequestDto;
 import com.nitb.apigateway.dto.Test.Test.request.UpdateTestRequestDto;
 import com.nitb.apigateway.grpc.TestServiceGrpcClient;
-import com.nitb.apigateway.grpc.UserGrpcClient;
+import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.mapper.TestMapper;
 import com.nitb.apigateway.util.FileUtils;
 import com.nitb.common.enums.GroupBy;
@@ -26,7 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestServiceGrpcClient testGrpc;
-    private final UserGrpcClient userGrpc;
+    private final UserServiceGrpcClient userGrpc;
 
     @Override
     public Mono<CreateTestResponseDto> createTest(UUID userId, CreateTestRequestDto request) {

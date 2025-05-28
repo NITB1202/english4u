@@ -6,7 +6,7 @@ import com.nitb.apigateway.dto.User.response.UpdateUserResponseDto;
 import com.nitb.apigateway.dto.User.response.UserLockedResponseDto;
 import com.nitb.apigateway.dto.User.response.UserResponseDto;
 import com.nitb.apigateway.grpc.FileServiceGrpcClient;
-import com.nitb.apigateway.grpc.UserGrpcClient;
+import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.UserMapper;
 import com.nitb.apigateway.util.FileUtils;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserGrpcClient userGrpc;
+    private final UserServiceGrpcClient userGrpc;
     private final FileServiceGrpcClient fileGrpc;
     private final String AVATAR_FOLDER = "avatars";
 
