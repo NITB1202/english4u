@@ -158,8 +158,8 @@ public class TestController {
     @Operation(summary = "Upload test Excel file and create test")
     @ApiResponse(responseCode = "200", description = "Upload successfully.")
     public Mono<ResponseEntity<CreateTestResponseDto>> uploadTestTemplate(@RequestParam UUID userId,
-                                                                          @RequestPart("file") FilePart filePart) {
-        return testService.uploadTestTemplate(userId, filePart).map(ResponseEntity::ok);
+                                                                          @RequestPart("file") FilePart file) {
+        return testService.uploadTestTemplate(userId, file).map(ResponseEntity::ok);
     }
 
 
