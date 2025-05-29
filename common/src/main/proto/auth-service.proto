@@ -31,7 +31,16 @@ message LoginResponse {
 
 message LoginWithProviderRequest {
   SupportedProvider provider = 1;
-  string access_token = 2;
+  string provider_id = 2;
+}
+
+message IsAccountRegisteredRequest {
+  SupportedProvider provider = 1;
+  string provider_id = 2;
+}
+
+message IsAccountRegisteredResponse {
+  bool isRegistered = 1;
 }
 
 message ValidateRegisterInfoRequest {
@@ -43,11 +52,18 @@ message SendVerificationEmailRequest {
   string email = 1;
 }
 
-message RegisterRequest {
+message RegisterWithCredentialsRequest {
   string verification_code = 1;
   string user_id = 2;
   string email = 3;
   string password = 4;
+}
+
+message RegisterWithProviderRequest {
+  string provider_id = 1;
+  SupportedProvider provider = 2;
+  string user_id = 3;
+  string email = 4;
 }
 
 message ResetPasswordRequest {
@@ -93,12 +109,18 @@ message SearchAccountByEmailRequest {
 service AuthService {
   rpc LoginWithCredentials(LoginWithCredentialsRequest) returns (LoginResponse);
   rpc LoginWithProvider(LoginWithProviderRequest) returns (LoginResponse);
+
+  rpc IsAccountRegistered(IsAccountRegisteredRequest) returns (IsAccountRegisteredResponse);
   rpc ValidateRegisterInfo(ValidateRegisterInfoRequest) returns (common.ActionResponse);
   rpc SendVerificationEmail(SendVerificationEmailRequest) returns (common.ActionResponse);
-  rpc Register(RegisterRequest) returns (common.ActionResponse);
+
+  rpc RegisterWithCredentials(RegisterWithCredentialsRequest) returns (common.ActionResponse);
+  rpc RegisterWithProvider(RegisterWithProviderRequest) returns (common.ActionResponse);
   rpc ResetPassword(ResetPasswordRequest) returns (common.ActionResponse);
+
   rpc CreateAdminAccount(CreateAdminAccountRequest) returns (common.ActionResponse); //Send account info to email
   rpc UpdateRole(UpdateRoleRequest) returns (common.ActionResponse); //Send notification mail
+
   rpc GetLearners(GetAccountsRequest) returns (AccountsResponse);
   rpc GetAdmins(GetAccountsRequest) returns (AccountsResponse);
   rpc SearchLearnerByEmail(SearchAccountByEmailRequest) returns (AccountsResponse);

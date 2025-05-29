@@ -10,9 +10,14 @@ public interface AuthService {
     String generateAccessToken(Account account);
     String generateRefreshToken(Account account);
 
-    boolean validateRegisterInfo(ValidateRegisterInfoRequest request);
+    boolean IsAccountRegistered(IsAccountRegisteredRequest request);
+    boolean validateEmail(String email);
+    boolean validatePassword(String password);
+
+    void registerWithCredentials(RegisterWithCredentialsRequest request);
+    void registerWithProvider(RegisterWithProviderRequest request);
+
     void sendVerificationEmail(SendVerificationEmailRequest request);
-    void register(RegisterRequest request);
     void resetPassword(ResetPasswordRequest request);
 
     Account createAdminAccount(CreateAdminAccountRequest request);

@@ -40,4 +40,9 @@ public class GrpcGlobalExceptionHandler {
 
         return Status.INVALID_ARGUMENT.withDescription(errors).asRuntimeException();
     }
+
+    @GrpcExceptionHandler(NullPointerException.class)
+    public StatusRuntimeException handleNullPointerException(NullPointerException ex) {
+        return Status.INVALID_ARGUMENT.withDescription(ex.getMessage()).asRuntimeException();
+    }
 }
