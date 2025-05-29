@@ -14,7 +14,7 @@ enum SupportedProvider {
   FACEBOOK = 2;
 }
 
-enum UserRole {
+enum SupportedRole {
   LEARNER = 0;
   ADMIN = 1;
 }
@@ -34,14 +34,20 @@ message LoginWithProviderRequest {
   string access_token = 2;
 }
 
-message RegisterRequest {
-  string verification_code = 1;
-  string email = 2;
-  string password = 3;
+message ValidateRegisterInfoRequest {
+  string email = 1;
+  string password = 2;
 }
 
 message SendVerificationEmailRequest {
   string email = 1;
+}
+
+message RegisterRequest {
+  string verification_code = 1;
+  string user_id = 2;
+  string email = 3;
+  string password = 4;
 }
 
 message ResetPasswordRequest {
@@ -51,16 +57,17 @@ message ResetPasswordRequest {
 }
 
 message CreateAdminAccountRequest {
-  string email = 1;
-  string password = 2;
+  string user_id = 1;
+  string email = 2;
+  string password = 3;
 }
 
 message UpdateRoleRequest {
   string id = 1;
-  UserRole role = 2;
+  SupportedRole role = 2;
 }
 
-message GetAccountRequest {
+message GetAccountsRequest {
   int32 page = 1;
   int32 size = 2;
 }
@@ -86,13 +93,14 @@ message SearchAccountByEmailRequest {
 service AuthService {
   rpc LoginWithCredentials(LoginWithCredentialsRequest) returns (LoginResponse);
   rpc LoginWithProvider(LoginWithProviderRequest) returns (LoginResponse);
+  rpc ValidateRegisterInfo(ValidateRegisterInfoRequest) returns (common.ActionResponse);
   rpc SendVerificationEmail(SendVerificationEmailRequest) returns (common.ActionResponse);
   rpc Register(RegisterRequest) returns (common.ActionResponse);
   rpc ResetPassword(ResetPasswordRequest) returns (common.ActionResponse);
   rpc CreateAdminAccount(CreateAdminAccountRequest) returns (common.ActionResponse); //Send account info to email
   rpc UpdateRole(UpdateRoleRequest) returns (common.ActionResponse); //Send notification mail
-  rpc GetLearners(GetAccountRequest) returns (AccountsResponse);
-  rpc GetAdmins(GetAccountRequest) returns (AccountsResponse);
+  rpc GetLearners(GetAccountsRequest) returns (AccountsResponse);
+  rpc GetAdmins(GetAccountsRequest) returns (AccountsResponse);
   rpc SearchLearnerByEmail(SearchAccountByEmailRequest) returns (AccountsResponse);
   rpc SearchAdminByEmail(SearchAccountByEmailRequest) returns (AccountsResponse);
 }
