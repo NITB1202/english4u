@@ -3,28 +3,55 @@ package com.nitb.authservice.service.impl;
 import com.nitb.authservice.grpc.VerificationType;
 import com.nitb.authservice.service.CodeService;
 
+import com.nitb.common.mappers.VerificationTypeMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
+import java.time.Duration;
 
 @Service
+@RequiredArgsConstructor
 public class CodeServiceImpl implements CodeService {
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private final RedisTemplate<String, Object> redisTemplate;
     private static final int LENGTH = 6;
-    private static final SecureRandom random = new SecureRandom();
+    private static final int MINUTES = 5;
 
     @Override
     public String generateCode(String email, VerificationType type) {
-        StringBuilder sb = new StringBuilder(LENGTH);
-        for (int i = 0; i < LENGTH; i++) {
-            int index = random.nextInt(CHARACTERS.length());
-            sb.append(CHARACTERS.charAt(index));
-        }
-        return sb.toString();
+        String code = generateRandomCode();
+        String key = generateKey(email, type);
+
+        redisTemplate.opsForValue().set(key, email, Duration.ofMinutes(MINUTES));
+
+        return code;
     }
 
     @Override
     public boolean verifyCode(String email, String code, VerificationType type) {
-        return false;
+        String key = generateKey(email, type);
+        String storedCode = (String) redisTemplate.opsForValue().get(key);
+
+        if(storedCode == null || !storedCode.equals(code)) {
+            return false;
+        }
+
+        redisTemplate.delete(key);
+        return true;
+    }
+
+    private String generateKey(String email, VerificationType type) {
+        com.nitb.common.enums.VerificationType enumType = VerificationTypeMapper.toEnum(type);
+        return enumType + ":" + email.toLowerCase();
+    }
+
+    private String generateRandomCode() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < LENGTH; i++) {
+            int rand = (int) (Math.random() * chars.length());
+            sb.append(chars.charAt(rand));
+        }
+        return sb.toString();
     }
 }

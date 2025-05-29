@@ -188,6 +188,14 @@ services:
     networks:
       - backend
 
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
   api-gateway:
     build:
       context: ./api-gateway
@@ -210,6 +218,7 @@ volumes:
   test-db-data:
   user-test-db-data:
   user-db-data:
+  redis-data:
 
 networks:
   backend:
