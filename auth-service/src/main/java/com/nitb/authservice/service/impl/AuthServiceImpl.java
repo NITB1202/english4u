@@ -176,7 +176,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String updateRole(UpdateRoleRequest request) {
+    public void updateRole(UpdateRoleRequest request) {
         UUID id = UUID.fromString(request.getId());
         Account account = accountRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Account not found.")
@@ -184,8 +184,24 @@ public class AuthServiceImpl implements AuthService {
 
         account.setRole(UserRoleMapper.toUserRole(request.getRole()));
         accountRepository.save(account);
+    }
+
+    @Override
+    public String getEmailById(UUID id) {
+        Account account = accountRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Account not found.")
+        );
 
         return account.getEmail();
+    }
+
+    @Override
+    public String getRoleById(UUID id) {
+        Account account = accountRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Account not found.")
+        );
+
+        return account.getRole().toString();
     }
 
 

@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.data.domain.Page;
 
+import java.util.UUID;
+
 @GrpcService
 @RequiredArgsConstructor
 public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
@@ -143,8 +145,14 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void updateRole(UpdateRoleRequest request, StreamObserver<ActionResponse> responseObserver) {
-        String email = authService.updateRole(request);
-        mailService.sendUpdateRoleEmail(email, request.getRole());
+        UUID id = UUID.fromString(request.getId());
+        String email = authService.getEmailById(id);
+        String oldRole = authService.getRoleById(id);
+
+        authService.updateRole(request);
+
+        String newRole = authService.getRoleById(id);
+        mailService.sendUpdateRoleEmail(email, oldRole, newRole);
 
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)

@@ -4,6 +4,8 @@ import com.nitb.authservice.entity.Account;
 import com.nitb.authservice.grpc.*;
 import org.springframework.data.domain.Page;
 
+import java.util.UUID;
+
 public interface AuthService {
     Account loginWithCredentials(LoginWithCredentialsRequest request);
     Account loginWithProvider(LoginWithProviderRequest request);
@@ -18,7 +20,10 @@ public interface AuthService {
     void resetPassword(ResetPasswordRequest request);
 
     void createAdminAccount(CreateAdminAccountRequest request);
-    String updateRole(UpdateRoleRequest request);
+    void updateRole(UpdateRoleRequest request);
+
+    String getEmailById(UUID id);
+    String getRoleById(UUID id);
 
     Page<Account> getLearners(GetAccountsRequest request);
     Page<Account> getAdmins(GetAccountsRequest request);
