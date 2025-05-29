@@ -27,12 +27,12 @@ public class AuthServiceGrpcClient {
         return blockingStub.loginWithCredentials(request);
     }
 
-    public LoginResponse loginWithProvider(LoginWithProviderRequestDto dto) {
-        SupportedProvider provider = ProviderMapper.toSupportedProvider(dto.getProvider());
+    public LoginResponse loginWithProvider(String providerId, Provider provider) {
+        SupportedProvider supportedProvider = ProviderMapper.toSupportedProvider(provider);
 
         LoginWithProviderRequest request = LoginWithProviderRequest.newBuilder()
-                .setProviderId(dto.getProviderId())
-                .setProvider(provider)
+                .setProviderId(providerId)
+                .setProvider(supportedProvider)
                 .build();
 
         return blockingStub.loginWithProvider(request);

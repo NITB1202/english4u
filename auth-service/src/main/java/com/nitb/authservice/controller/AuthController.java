@@ -55,7 +55,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     public void validateRegisterInfo(ValidateRegisterInfoRequest request, StreamObserver<ActionResponse> responseObserver) {
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)
-                .setMessage("Valid register information.")
+                .setMessage("Validate successfully. A verification code has been sent to the registered email.")
                 .build();
 
         if(!authService.validateEmail(request.getEmail())) {
