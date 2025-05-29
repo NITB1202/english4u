@@ -14,4 +14,12 @@ public class ProviderMapper {
             default -> throw new BusinessException("Unsupported provider: " + supportedProvider);
         };
     }
+
+    public static SupportedProvider toSupportedProvider(Provider provider) {
+        return switch (provider) {
+            case GOOGLE -> SupportedProvider.GOOGLE;
+            case FACEBOOK -> SupportedProvider.FACEBOOK;
+            default -> throw new BusinessException("Unsupported provider: " + provider);
+        };
+    }
 }
