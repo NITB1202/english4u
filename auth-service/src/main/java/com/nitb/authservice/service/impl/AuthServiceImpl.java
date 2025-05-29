@@ -182,7 +182,13 @@ public class AuthServiceImpl implements AuthService {
                 () -> new NotFoundException("Account not found.")
         );
 
-        account.setRole(UserRoleMapper.toUserRole(request.getRole()));
+        UserRole newRole = UserRoleMapper.toUserRole(request.getRole());
+
+        if(account.getRole().equals(newRole)){
+            throw new BusinessException("Updated role is the same with the old role.");
+        }
+
+        account.setRole(newRole);
         accountRepository.save(account);
     }
 
