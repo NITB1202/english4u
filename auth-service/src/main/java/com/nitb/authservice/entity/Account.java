@@ -33,7 +33,7 @@ public class Account {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "hashed_password", nullable = false)
+    @Column(name = "hashed_password")
     private String hashedPassword;
 
     @Enumerated(EnumType.STRING)

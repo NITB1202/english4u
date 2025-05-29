@@ -4,31 +4,25 @@ import com.nitb.authservice.entity.Account;
 import com.nitb.authservice.grpc.*;
 import com.nitb.authservice.repository.AccountRepository;
 import com.nitb.authservice.service.AuthService;
+import com.nitb.authservice.service.CodeService;
 import com.nitb.common.enums.Provider;
+import com.nitb.common.enums.UserRole;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.common.mappers.ProviderMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
-import java.util.Date;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private final String keyStr = "SECRET_KEY";
-    private final Key secretKey = Keys.hmacShaKeyFor(keyStr.getBytes());
-    private final long accessTokenExpirationMs = 60 * 60 * 1000; //1h
-    private final long refreshTokenExpirationMs = 7 * 24 * 60 * 60 * 1000L; //1w
+    private final CodeService codeService;
 
     @Override
     public Account loginWithCredentials(LoginWithCredentialsRequest request) {
@@ -60,33 +54,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String generateAccessToken(Account account) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenExpirationMs);
-
-        return Jwts.builder()
-                .setSubject(account.getUserId().toString())
-                .claim("role", account.getRole())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    @Override
-    public String generateRefreshToken(Account account) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + refreshTokenExpirationMs);
-
-        return Jwts.builder()
-                .setSubject(account.getUserId().toString())
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    @Override
     public boolean IsAccountRegistered(IsAccountRegisteredRequest request) {
         String accountId = request.getProviderId();
         Provider provider = ProviderMapper.toProvider(request.getProvider());
@@ -107,24 +74,47 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void sendVerificationEmail(SendVerificationEmailRequest request) {
-
-    }
-
-    @Override
     public void registerWithCredentials(RegisterWithCredentialsRequest request) {
+        if(codeService.verifyCode(request.getEmail(), request.getVerificationCode(), VerificationType.REGISTER)){
+            UUID userId = UUID.fromString(request.getUserId());
+            String hashedPassword = passwordEncoder.encode(request.getPassword());
 
+            Account account = Account.builder()
+                    .userId(userId)
+                    .provider(Provider.LOCAL)
+                    .email(request.getEmail())
+                    .hashedPassword(hashedPassword)
+                    .role(UserRole.LEARNER)
+                    .build();
+
+            accountRepository.save(account);
+        }
+        else{
+            throw new BusinessException("Verify failed.");
+        }
     }
 
     @Override
     public void registerWithProvider(RegisterWithProviderRequest request) {
+        UUID userId = UUID.fromString(request.getUserId());
+        Provider provider = ProviderMapper.toProvider(request.getProvider());
 
+        Account account = Account.builder()
+                .userId(userId)
+                .provider(provider)
+                .providerId(request.getProviderId())
+                .email(request.getEmail())
+                .role(UserRole.LEARNER)
+                .build();
+
+        accountRepository.save(account);
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
 
     }
+
 
     @Override
     public Account createAdminAccount(CreateAdminAccountRequest request) {
@@ -135,6 +125,7 @@ public class AuthServiceImpl implements AuthService {
     public void updateRole(UpdateRoleRequest request) {
 
     }
+
 
     @Override
     public Page<Account> getLearners(GetAccountsRequest request) {

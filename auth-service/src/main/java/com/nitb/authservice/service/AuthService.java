@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 public interface AuthService {
     Account loginWithCredentials(LoginWithCredentialsRequest request);
     Account loginWithProvider(LoginWithProviderRequest request);
-    String generateAccessToken(Account account);
-    String generateRefreshToken(Account account);
 
     boolean IsAccountRegistered(IsAccountRegisteredRequest request);
     boolean validateEmail(String email);
@@ -16,8 +14,6 @@ public interface AuthService {
 
     void registerWithCredentials(RegisterWithCredentialsRequest request);
     void registerWithProvider(RegisterWithProviderRequest request);
-
-    void sendVerificationEmail(SendVerificationEmailRequest request);
     void resetPassword(ResetPasswordRequest request);
 
     Account createAdminAccount(CreateAdminAccountRequest request);

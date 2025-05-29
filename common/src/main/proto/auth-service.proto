@@ -9,14 +9,18 @@ option java_package = "com.nitb.authservice.grpc";
 option java_outer_classname = "AuthProto";
 
 enum SupportedProvider {
-  UNSPECIFIED = 0;
-  GOOGLE = 1;
-  FACEBOOK = 2;
+  GOOGLE = 0;
+  FACEBOOK = 1;
 }
 
 enum SupportedRole {
   LEARNER = 0;
   ADMIN = 1;
+}
+
+enum VerificationType {
+  REGISTER = 0;
+  RESET_PASSWORD = 1;
 }
 
 message LoginWithCredentialsRequest {
@@ -50,6 +54,7 @@ message ValidateRegisterInfoRequest {
 
 message SendVerificationEmailRequest {
   string email = 1;
+  VerificationType type = 2;
 }
 
 message RegisterWithCredentialsRequest {
