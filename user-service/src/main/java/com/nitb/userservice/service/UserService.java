@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UserService {
     void checkCanPerformAction(CheckCanPerformActionRequest request);
-    void createUser(CreateUserRequest request);
+    User createUser(CreateUserRequest request);
     User getUserById(GetUserByIdRequest request);
     List<User> getUsersByListOfIds(GetUsersByListOfIdsRequest request);
     User updateUser(UpdateUserRequest request);

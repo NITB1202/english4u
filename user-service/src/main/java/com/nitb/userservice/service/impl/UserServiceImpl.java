@@ -36,15 +36,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(CreateUserRequest request) {
+    public User createUser(CreateUserRequest request) {
         User user = User.builder()
                 .name(request.getName())
-                .avatarUrl("")
+                .avatarUrl(request.getAvatarUrl())
                 .joinAt(LocalDateTime.now())
                 .isLocked(false)
                 .build();
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

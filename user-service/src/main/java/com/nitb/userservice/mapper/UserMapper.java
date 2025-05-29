@@ -8,6 +8,12 @@ import java.util.List;
 public class UserMapper {
     private UserMapper() {}
 
+    public static CreateUserResponse toCreateUserResponse(User user) {
+        return CreateUserResponse.newBuilder()
+                .setUserId(user.getId().toString())
+                .build();
+    }
+
     public static UserResponse toUserResponse(User user) {
         return UserResponse.newBuilder()
                 .setId(user.getId().toString())
