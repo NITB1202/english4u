@@ -190,7 +190,7 @@ services:
 
   redis:
     image: redis:7.2
-    container_name: redis
+    container_name: e4u-redis
     ports:
       - "6379:6379"
     volumes:
