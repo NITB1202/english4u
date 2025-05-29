@@ -35,16 +35,18 @@ public class MailServiceImpl implements MailService {
     public void sendAdminAccountEmail(String email, String password) {
         String subject = "Your Admin Account Has Been Created";
 
-        String htmlContent = "<div style='font-family: Arial, sans-serif; padding: 20px;'>"
-                + "<h2>Admin Account Created</h2>"
+        String htmlContent = "<div style='font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;'>"
+                + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; padding: 30px; "
+                + "box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>"
+                + "<h2 style='color: #2F54EB;'>Admin Account Created</h2>"
                 + "<p>Your administrator account has been successfully created. Below are your login credentials:</p>"
-                + "<ul style='font-size: 16px; line-height: 1.6;'>"
-                + "<li><strong>Username:</strong> " + email + "</li>"
-                + "<li><strong>Password:</strong> " + password + "</li>"
-                + "</ul>"
-                + "<p>Please log in and change your password as soon as possible for security purposes.</p>"
+                + "<table style='width: 100%; margin-top: 20px; font-size: 16px;'>"
+                + "<tr><td style='padding: 8px 0;'><strong>Username:</strong></td><td style='padding: 8px 0;'>" + email + "</td></tr>"
+                + "<tr><td style='padding: 8px 0;'><strong>Password:</strong></td><td style='padding: 8px 0;'>" + password + "</td></tr>"
+                + "</table>"
+                + "<p style='margin-top: 20px;'>Please log in and change your password as soon as possible for security purposes.</p>"
                 + "<p style='margin-top: 40px;'>Regards,<br><strong>English4U</strong></p>"
-                + "</div>";
+                + "</div></div>";
 
         sendHtmlMail(email, subject, htmlContent);
     }
@@ -57,7 +59,9 @@ public class MailServiceImpl implements MailService {
                 + "<div style='max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; padding: 30px; "
                 + "box-shadow: 0 2px 8px rgba(0,0,0,0.1);'>"
                 + "<h2 style='color: #2F54EB;'>Your Role Has Been Updated</h2>"
-                + "<p>Dear <strong>user@example.com</strong>,</p>"
+                + "<p>Dear <strong>"
+                + email
+                + "</strong>,</p>"
                 + "<p>We would like to inform you that your role in <strong>English4U</strong> has been updated.</p>"
                 + "<table style='width: 100%; margin-top: 20px; font-size: 16px;'>"
                 + "<tr><td style='padding: 8px 0;'><strong>Previous Role:</strong></td>"

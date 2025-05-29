@@ -22,7 +22,7 @@ public class CodeServiceImpl implements CodeService {
         String code = generateRandomCode();
         String key = generateKey(email, type);
 
-        redisTemplate.opsForValue().set(key, email, Duration.ofMinutes(MINUTES));
+        redisTemplate.opsForValue().set(key, code, Duration.ofMinutes(MINUTES));
 
         return code;
     }

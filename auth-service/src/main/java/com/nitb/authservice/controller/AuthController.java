@@ -79,7 +79,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void sendVerificationEmail(SendVerificationEmailRequest request, StreamObserver<ActionResponse> responseObserver) {
         String code = codeService.generateCode(request.getEmail(), request.getType());
-        mailService.sendVerificationEmail(code, request.getEmail());
+        mailService.sendVerificationEmail(request.getEmail(), code);
 
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)
