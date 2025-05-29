@@ -1,5 +1,5 @@
 package com.nitb.common.enums;
 
 public enum UserRole {
-    STUDENT, ADMIN
+    LEARNER, ADMIN, SYSTEM_ADMIN
 }
