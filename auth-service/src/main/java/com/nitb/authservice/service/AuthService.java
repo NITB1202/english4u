@@ -11,13 +11,14 @@ public interface AuthService {
     boolean IsAccountRegistered(IsAccountRegisteredRequest request);
     boolean validateEmail(String email);
     boolean validatePassword(String password);
+    String getPasswordRule();
 
     void registerWithCredentials(RegisterWithCredentialsRequest request);
     void registerWithProvider(RegisterWithProviderRequest request);
     void resetPassword(ResetPasswordRequest request);
 
-    Account createAdminAccount(CreateAdminAccountRequest request);
-    void updateRole(UpdateRoleRequest request);
+    void createAdminAccount(CreateAdminAccountRequest request);
+    String updateRole(UpdateRoleRequest request);
 
     Page<Account> getLearners(GetAccountsRequest request);
     Page<Account> getAdmins(GetAccountsRequest request);

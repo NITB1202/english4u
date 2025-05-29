@@ -10,8 +10,10 @@ import com.nitb.common.enums.UserRole;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
 import com.nitb.common.mappers.ProviderMapper;
+import com.nitb.common.mappers.UserRoleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final CodeService codeService;
+    private final int DEFAULT_SIZE = 10;
 
     @Override
     public Account loginWithCredentials(LoginWithCredentialsRequest request) {
@@ -53,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         return account;
     }
 
+
     @Override
     public boolean IsAccountRegistered(IsAccountRegisteredRequest request) {
         String accountId = request.getProviderId();
@@ -74,8 +78,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public String getPasswordRule() {
+        return "Password must be at least 3 characters long and contain both letters and numbers.";
+    }
+
+
+    @Override
     public void registerWithCredentials(RegisterWithCredentialsRequest request) {
         if(codeService.verifyCode(request.getEmail(), request.getVerificationCode(), VerificationType.REGISTER)){
+            if(!validateEmail(request.getEmail())) {
+                throw new BusinessException("This email has been used.");
+            }
+
+            if(!validatePassword(request.getPassword())) {
+                throw new BusinessException(getPasswordRule());
+            }
+
             UUID userId = UUID.fromString(request.getUserId());
             String hashedPassword = passwordEncoder.encode(request.getPassword());
 
@@ -112,38 +130,94 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
+        if(codeService.verifyCode(request.getEmail(), request.getVerificationCode(), VerificationType.RESET_PASSWORD)){
+            Account account = accountRepository.findByEmail(request.getEmail());
 
+            if(account == null) {
+                throw new NotFoundException("Account not found.");
+            }
+
+            if(!validatePassword(request.getNewPassword())) {
+                throw new BusinessException(getPasswordRule());
+            }
+
+            String hashedPassword = passwordEncoder.encode(request.getNewPassword());
+            account.setHashedPassword(hashedPassword);
+            accountRepository.save(account);
+        }
+        else{
+            throw new BusinessException("Reset password failed.");
+        }
     }
 
 
     @Override
-    public Account createAdminAccount(CreateAdminAccountRequest request) {
-        return null;
+    public void createAdminAccount(CreateAdminAccountRequest request) {
+        UUID userId = UUID.fromString(request.getUserId());
+        String hashedPassword = passwordEncoder.encode(request.getPassword());
+
+        if(!validateEmail(request.getEmail())) {
+            throw new BusinessException("This email has been used.");
+        }
+
+        if(!validatePassword(request.getPassword())) {
+            throw new BusinessException(getPasswordRule());
+        }
+
+        Account account = Account.builder()
+                .userId(userId)
+                .provider(Provider.LOCAL)
+                .email(request.getEmail())
+                .hashedPassword(hashedPassword)
+                .role(UserRole.ADMIN)
+                .build();
+
+        accountRepository.save(account);
     }
 
     @Override
-    public void updateRole(UpdateRoleRequest request) {
+    public String updateRole(UpdateRoleRequest request) {
+        UUID id = UUID.fromString(request.getId());
+        Account account = accountRepository.findById(id).orElseThrow(
+                () -> new NotFoundException("Account not found.")
+        );
 
+        account.setRole(UserRoleMapper.toUserRole(request.getRole()));
+        accountRepository.save(account);
+
+        return account.getEmail();
     }
 
 
     @Override
     public Page<Account> getLearners(GetAccountsRequest request) {
-        return null;
+        int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
+        int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
+
+        return accountRepository.findByRole(UserRole.LEARNER, PageRequest.of(page, size));
     }
 
     @Override
     public Page<Account> getAdmins(GetAccountsRequest request) {
-        return null;
+        int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
+        int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
+
+        return accountRepository.findByRole(UserRole.ADMIN, PageRequest.of(page, size));
     }
 
     @Override
     public Page<Account> searchLearnerByEmail(SearchAccountByEmailRequest request) {
-        return null;
+        int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
+        int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
+
+        return accountRepository.findByEmailContainingIgnoreCaseAndRole(request.getKeyword(), UserRole.LEARNER, PageRequest.of(page, size));
     }
 
     @Override
     public Page<Account> searchAdminByEmail(SearchAccountByEmailRequest request) {
-        return null;
+        int page = request.getPage() > 0 ? request.getPage() - 1 : 0;
+        int size = request.getSize() > 0 ? request.getSize() : DEFAULT_SIZE;
+
+        return accountRepository.findByEmailContainingIgnoreCaseAndRole(request.getKeyword(), UserRole.ADMIN, PageRequest.of(page, size));
     }
 }

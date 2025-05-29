@@ -2,6 +2,7 @@ package com.nitb.authservice.controller;
 
 import com.nitb.authservice.entity.Account;
 import com.nitb.authservice.grpc.*;
+import com.nitb.authservice.mapper.AccountMapper;
 import com.nitb.authservice.mapper.AuthMapper;
 import com.nitb.authservice.service.AuthService;
 import com.nitb.authservice.service.CodeService;
@@ -11,6 +12,7 @@ import com.nitb.common.utils.JwtUtils;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.data.domain.Page;
 
 @GrpcService
 @RequiredArgsConstructor
@@ -64,7 +66,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
         if(!authService.validatePassword(request.getPassword())) {
             response = ActionResponse.newBuilder()
                     .setSuccess(false)
-                    .setMessage("Password must be at least 3 characters long and contain both letters and numbers.")
+                    .setMessage(authService.getPasswordRule())
                     .build();
         }
 
@@ -114,36 +116,74 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void resetPassword(ResetPasswordRequest request, StreamObserver<ActionResponse> responseObserver) {
+        authService.resetPassword(request);
 
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Reset password successful.")
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void createAdminAccount(CreateAdminAccountRequest request, StreamObserver<ActionResponse> responseObserver) {
+        authService.createAdminAccount(request);
+        mailService.sendAdminAccountEmail(request.getEmail(), request.getPassword());
 
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Account info has been sent to the registered email.")
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void updateRole(UpdateRoleRequest request, StreamObserver<ActionResponse> responseObserver) {
+        String email = authService.updateRole(request);
+        mailService.sendUpdateRoleEmail(email, request.getRole());
 
+        ActionResponse response = ActionResponse.newBuilder()
+                .setSuccess(true)
+                .setMessage("Update role successful. Notification email has been sent to the user.")
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getLearners(GetAccountsRequest request, StreamObserver<AccountsResponse> responseObserver) {
-
+        Page<Account> accounts = authService.getLearners(request);
+        AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void getAdmins(GetAccountsRequest request, StreamObserver<AccountsResponse> responseObserver) {
-
+        Page<Account> accounts = authService.getAdmins(request);
+        AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void searchLearnerByEmail(SearchAccountByEmailRequest request, StreamObserver<AccountsResponse> responseObserver) {
-
+        Page<Account> accounts = authService.searchLearnerByEmail(request);
+        AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
     @Override
     public void searchAdminByEmail(SearchAccountByEmailRequest request, StreamObserver<AccountsResponse> responseObserver) {
-
+        Page<Account> accounts = authService.searchAdminByEmail(request);
+        AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }
