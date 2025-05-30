@@ -109,13 +109,26 @@ message CountPublishedVocabularySetsRequest{
   common.GroupBy group_by = 4;
 }
 
-message VocabularySetStatistic{
+message VocabularySetStatisticResponse{
   string time = 1;
   int64 count = 2;
 }
 
 message CountPublishedVocabularySetsResponse{
-  repeated VocabularySetStatistic statistics = 1;
+  repeated VocabularySetStatisticResponse statistics = 1;
+}
+
+message GetAdminSetStatisticsRequest {
+  repeated string user_id = 1;
+}
+
+message AdminSetStatisticResponse {
+  string user_id = 1;
+  int64 total_published_sets = 2;
+}
+
+message AdminSetStatisticsResponse {
+  repeated AdminSetStatisticResponse statistics = 1;
 }
 
 //Words
@@ -194,6 +207,7 @@ service VocabularyService {
   rpc DeleteVocabularySet(DeleteVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc RestoreVocabularySet(RestoreVocabularySetRequest) returns (DeleteVocabularySetResponse);
   rpc CountPublishedVocabularySets(CountPublishedVocabularySetsRequest) returns (CountPublishedVocabularySetsResponse);
+  rpc GetAdminSetStatistics(GetAdminSetStatisticsRequest) returns (AdminSetStatisticsResponse);
 
   //Words
   rpc CreateVocabularyWords(CreateVocabularyWordsRequest) returns (VocabularyWordsResponse);

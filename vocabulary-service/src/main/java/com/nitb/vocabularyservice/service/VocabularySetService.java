@@ -1,6 +1,5 @@
 package com.nitb.vocabularyservice.service;
 
-import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,8 @@ public interface VocabularySetService {
     VocabularySet updateVocabularySet(UpdateVocabularySetRequest request);
     VocabularySet deleteVocabularySet(DeleteVocabularySetRequest request);
     VocabularySet restoreVocabularySet(RestoreVocabularySetRequest request);
-    List<VocabularySetStatisticDto> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request);
+    List<VocabularySetStatisticResponse> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request);
+    List<AdminSetStatisticResponse> getAdminSetStatistics(GetAdminSetStatisticsRequest request);
 
     void updateWordCount(UUID setId, int count, UUID userId);
 }

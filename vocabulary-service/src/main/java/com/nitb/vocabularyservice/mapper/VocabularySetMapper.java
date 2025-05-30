@@ -1,11 +1,11 @@
 package com.nitb.vocabularyservice.mapper;
 
-import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public class VocabularySetMapper {
     private VocabularySetMapper() {}
@@ -73,19 +73,28 @@ public class VocabularySetMapper {
                 .build();
     }
 
-    public static VocabularySetStatistic toVocabularySetStatistic(VocabularySetStatisticDto dto) {
-        return VocabularySetStatistic.newBuilder()
-                .setTime(dto.getTime())
-                .setCount(dto.getCount())
+    public static VocabularySetStatisticResponse toVocabularySetStatisticResponse(String time, long count) {
+        return VocabularySetStatisticResponse.newBuilder()
+                .setTime(time)
+                .setCount(count)
                 .build();
     }
 
-    public static CountPublishedVocabularySetsResponse toCountPublishedVocabularySetsResponse(List<VocabularySetStatisticDto> dto) {
-        List<VocabularySetStatistic> statistics = dto.stream()
-                .map(VocabularySetMapper::toVocabularySetStatistic)
-                .toList();
-
+    public static CountPublishedVocabularySetsResponse toCountPublishedVocabularySetsResponse(List<VocabularySetStatisticResponse> statistics) {
         return CountPublishedVocabularySetsResponse.newBuilder()
+                .addAllStatistics(statistics)
+                .build();
+    }
+
+    public static AdminSetStatisticResponse toAdminSetStatisticResponse(UUID userId, long totalPublishedSets) {
+        return AdminSetStatisticResponse.newBuilder()
+                .setUserId(userId.toString())
+                .setTotalPublishedSets(totalPublishedSets)
+                .build();
+    }
+
+    public static AdminSetStatisticsResponse toAdminSetStatisticsResponse(List<AdminSetStatisticResponse> statistics) {
+        return AdminSetStatisticsResponse.newBuilder()
                 .addAllStatistics(statistics)
                 .build();
     }
