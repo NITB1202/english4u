@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -30,12 +32,13 @@ public class VocabularySetController {
     private final VocabularySetService vocabularySetService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Create a new vocabulary set.")
     @ApiResponse(responseCode = "200", description = "Create successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<CreateVocabularySetResponseDto>> createVocabularySet(@RequestParam UUID userId,
-                                                                                       @Valid @RequestBody CreateVocabularySetRequestDto request) {
+    public Mono<ResponseEntity<CreateVocabularySetResponseDto>> createVocabularySet(@AuthenticationPrincipal UUID userId,
+                                                                                    @Valid @RequestBody CreateVocabularySetRequestDto request) {
         return vocabularySetService.createVocabularySet(userId, request).map(ResponseEntity::ok);
     }
 
@@ -57,6 +60,7 @@ public class VocabularySetController {
     }
 
     @GetMapping("/deleted")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get paginated list of deleted vocabulary sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> getDeletedVocabularySets(@Positive(message = "Page must be positive") @RequestParam int page,
@@ -74,6 +78,7 @@ public class VocabularySetController {
     }
 
     @GetMapping("/search/deleted")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Search for a deleted vocabulary set by name.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
     public Mono<ResponseEntity<VocabularySetsPaginationResponseDto>> searchDeletedVocabularySetsByName(@RequestParam String keyword,
@@ -83,6 +88,7 @@ public class VocabularySetController {
     }
 
     @PatchMapping("/{id}/name")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Update a vocabulary set's name.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
@@ -90,12 +96,13 @@ public class VocabularySetController {
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<UpdateVocabularySetNameResponseDto>> updateVocabularySetName(@PathVariable UUID id,
-                                                                                        @RequestParam UUID userId,
-                                                                                        @RequestParam String name) {
+                                                                                            @AuthenticationPrincipal UUID userId,
+                                                                                            @RequestParam String name) {
         return vocabularySetService.updateVocabularySetName(id, userId, name).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Update a vocabulary set by versioning it.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
@@ -103,35 +110,38 @@ public class VocabularySetController {
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<UpdateVocabularySetResponseDto>> updateVocabularySet(@PathVariable UUID id,
-                                                                                    @RequestParam UUID userId,
+                                                                                    @AuthenticationPrincipal UUID userId,
                                                                                     @Valid @RequestBody UpdateVocabularySetRequestDto request) {
         return vocabularySetService.updateVocabularySet(id, userId, request).map(ResponseEntity::ok);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Soft delete a vocabulary set.")
     @ApiResponse(responseCode = "200", description = "Delete successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<DeleteVocabularySetResponseDto>> deleteVocabularySet(@RequestParam UUID id,
-                                                                                    @RequestParam UUID userId) {
+                                                                                    @AuthenticationPrincipal UUID userId) {
         return vocabularySetService.deleteVocabularySet(id, userId).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/restore")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Restore a deleted vocabulary set.")
     @ApiResponse(responseCode = "200", description = "Delete successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<DeleteVocabularySetResponseDto>> restoreVocabularySet(@RequestParam UUID id,
-                                                                                     @RequestParam UUID userId) {
+                                                                                     @AuthenticationPrincipal UUID userId) {
         return vocabularySetService.restoreVocabularySet(id, userId).map(ResponseEntity::ok);
     }
 
     @GetMapping("/statistic")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get statistical summary of vocabulary sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<VocabularySetStatisticsResponseDto>> getVocabularySetStatistics(@RequestParam UUID userId,
+    public Mono<ResponseEntity<VocabularySetStatisticsResponseDto>> getVocabularySetStatistics(@AuthenticationPrincipal UUID userId,
                                                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                                                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                                                                                @RequestParam GroupBy groupBy) {
