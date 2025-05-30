@@ -176,8 +176,6 @@ services:
   file-service:
     build:
       context: ./file-service
-    env_file:
-      - ./file-service/.env
     container_name: e4u-file-service
     ports:
       - "8086:8086"
@@ -195,10 +193,12 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - backend
 
   auth-db:
     image: postgres:15
-    container_name: e4u-user-db
+    container_name: e4u-auth-db
     ports:
       - "5437:5432"
     environment:
