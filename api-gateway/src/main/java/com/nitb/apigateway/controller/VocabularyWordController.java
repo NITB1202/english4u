@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -48,6 +49,7 @@ public class VocabularyWordController {
     }
 
     @PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Upload vocabulary word's image.")
     @ApiResponse(responseCode = "200", description = "Upload successfully.")
     public Mono<ResponseEntity<ActionResponseDto>> uploadVocabularyWordImage(@RequestParam UUID setId,

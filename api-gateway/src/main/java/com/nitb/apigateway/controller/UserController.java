@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -27,36 +29,37 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get user's basic information.")
+    @GetMapping
+    @Operation(summary = "Get the logged-in user's basic information.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UserResponseDto>> getUserById(@PathVariable UUID id) {
-        return userService.getUserById(id).map(ResponseEntity::ok);
+    public Mono<ResponseEntity<UserResponseDto>> getUserById(@AuthenticationPrincipal UUID userId) {
+        return userService.getUserById(userId).map(ResponseEntity::ok);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping
     @Operation(summary = "Update user's profile.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UpdateUserResponseDto>> updateUser(@PathVariable UUID id,
-                                                                      @Valid @RequestBody UpdateUserRequestDto request) {
-        return userService.updateUser(id, request).map(ResponseEntity::ok);
+    public Mono<ResponseEntity<UpdateUserResponseDto>> updateUser(@AuthenticationPrincipal UUID userId,
+                                                                  @Valid @RequestBody UpdateUserRequestDto request) {
+        return userService.updateUser(userId, request).map(ResponseEntity::ok);
     }
 
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Upload user's avatar.")
     @ApiResponse(responseCode = "200", description = "Upload successfully.")
-    public Mono<ResponseEntity<ActionResponseDto>> uploadUserAvatar(@RequestParam UUID userId,
+    public Mono<ResponseEntity<ActionResponseDto>> uploadUserAvatar(@AuthenticationPrincipal UUID userId,
                                                                     @RequestPart("file") FilePart file) {
         return userService.uploadUserAvatar(userId, file).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/lock")
+    @PreAuthorize("hasRole('SYSTEM_ADMIN')")
     @Operation(summary = "Lock/unlock a user")
     @ApiResponse(responseCode = "200", description = "Lock/unlock successfully.")
     @ApiResponse(responseCode = "404", description = "Not found.",

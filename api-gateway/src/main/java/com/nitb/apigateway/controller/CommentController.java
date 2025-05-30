@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -30,7 +31,7 @@ public class CommentController {
     @ApiResponse(responseCode = "200", description = "Post successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<CommentResponseDto>> postComment(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CommentResponseDto>> postComment(@AuthenticationPrincipal UUID userId,
                                                                 @Valid @RequestBody PostCommentRequestDto request) {
         return commentService.postComment(userId, request).map(ResponseEntity::ok);
     }
@@ -40,7 +41,7 @@ public class CommentController {
     @ApiResponse(responseCode = "200", description = "Reply successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<CommentResponseDto>> replyComment(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CommentResponseDto>> replyComment(@AuthenticationPrincipal UUID userId,
                                                                  @Valid @RequestBody ReplyCommentRequestDto request) {
         return commentService.replyComment(userId, request).map(ResponseEntity::ok);
     }
@@ -48,9 +49,9 @@ public class CommentController {
     @GetMapping
     @Operation(summary = "Get a paginated list of comments.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<CommentsResponseDto>> getComments(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CommentsResponseDto>> getComments(@RequestParam UUID testId,
                                                                  @Positive(message = "Page must be positive") @RequestParam int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
-        return commentService.getComments(userId, page, size).map(ResponseEntity::ok);
+        return commentService.getComments(testId, page, size).map(ResponseEntity::ok);
     }
 }

@@ -17,6 +17,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -31,16 +33,18 @@ public class ResultController {
     private final ResultService resultService;
 
     @PostMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Save a result.")
     @ApiResponse(responseCode = "200", description = "Save successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<SavedResultResponseDto>> saveResult(@RequestParam UUID userId,
+    public Mono<ResponseEntity<SavedResultResponseDto>> saveResult(@AuthenticationPrincipal UUID userId,
                                                                    @Valid @RequestBody SaveResultRequestDto request) {
         return resultService.saveResult(userId, request).map(ResponseEntity::ok);
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get details of a result by id.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -49,18 +53,20 @@ public class ResultController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get a paginated list of user's results.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResultsResponseDto> getResults(@RequestParam UUID userId,
+    public Mono<ResultsResponseDto> getResults(@AuthenticationPrincipal UUID userId,
                                                @Positive(message = "Page must be positive") @RequestParam int page,
                                                @RequestParam(defaultValue = "10") int size) {
         return resultService.getResults(userId, page, size);
     }
 
     @GetMapping("/statistic")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get result statistics.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<List<ResultStatisticResponseDto>> getResultStatistics(@RequestParam UUID userId,
+    public Mono<List<ResultStatisticResponseDto>> getResultStatistics(@AuthenticationPrincipal UUID userId,
                                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                                                       @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                                                       @RequestParam GroupBy groupBy) {

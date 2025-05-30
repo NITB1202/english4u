@@ -176,8 +176,6 @@ services:
   file-service:
     build:
       context: ./file-service
-    env_file:
-      - ./file-service/.env
     container_name: e4u-file-service
     ports:
       - "8086:8086"
@@ -195,6 +193,42 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
+    networks:
+      - backend
+
+  auth-db:
+    image: postgres:15
+    container_name: e4u-auth-db
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_DB: ${AUTH_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: e4u-auth-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - auth-db
+      - redis
+      - eureka-server
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      AUTH_SERVICE_DB_HOST: ${AUTH_SERVICE_DB_HOST}
+      AUTH_SERVICE_DB_PORT: ${AUTH_SERVICE_DB_PORT}
+      AUTH_SERVICE_DB_NAME: ${AUTH_SERVICE_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - backend
 
   api-gateway:
     build:
@@ -219,6 +253,7 @@ volumes:
   user-test-db-data:
   user-db-data:
   redis-data:
+  auth-db-data:
 
 networks:
   backend:
