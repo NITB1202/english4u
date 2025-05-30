@@ -63,5 +63,6 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
             @Param("to") LocalDateTime to
     );
     long countByUserId(UUID userId);
+    @Query("SELECT COALESCE(SUM(r.score), 0) FROM Result r WHERE r.userId = :userId")
     long sumScoreByUserId(UUID userId);
 }

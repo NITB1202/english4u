@@ -1,6 +1,7 @@
 package com.nitb.apigateway.controller;
 
 import com.nitb.apigateway.dto.Statistic.AdminsPaginationResponseDto;
+import com.nitb.apigateway.dto.Statistic.LearnersPaginationResponseDto;
 import com.nitb.apigateway.service.Statistic.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,5 +35,22 @@ public class StatisticController {
                                                                                          @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                          @RequestParam(defaultValue = "10") int size) {
         return statisticService.searchAdminStatisticByEmail(keyword, page, size).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/learner")
+    @Operation(summary = "Get learner statistics.")
+    @ApiResponse(responseCode = "200", description = "Get successfully.")
+    public Mono<ResponseEntity<LearnersPaginationResponseDto>> getLearnersStatistics(@Positive(message = "Page must be positive") @RequestParam int page,
+                                                                                     @RequestParam(defaultValue = "10") int size) {
+        return statisticService.getLearnersStatistics(page, size).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/learner/search")
+    @Operation(summary = "Search for a learner statistic by email.")
+    @ApiResponse(responseCode = "200", description = "Search successfully.")
+    public Mono<ResponseEntity<LearnersPaginationResponseDto>> searchLearnersStatisticByEmail(@RequestParam String keyword,
+                                                                                              @Positive(message = "Page must be positive") @RequestParam int page,
+                                                                                              @RequestParam(defaultValue = "10") int size){
+        return statisticService.searchLearnerStatisticByEmail(keyword, page, size).map(ResponseEntity::ok);
     }
 }

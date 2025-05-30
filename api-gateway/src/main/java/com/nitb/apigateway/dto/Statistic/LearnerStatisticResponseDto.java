@@ -25,9 +25,5 @@ public class LearnerStatisticResponseDto {
 
     private double avgScore;
 
-    private long totalSavedSets;
-
-    private double completeRate;
-
     private boolean isLocked;
 }
