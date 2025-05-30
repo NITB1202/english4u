@@ -5,7 +5,7 @@ VALUES
 
 INSERT INTO vocabulary_words (id, set_id, position, word, pronunciation, ex, trans, image_url)
 VALUES
-    ('aaa11111-aaaa-1111-aaaa-111111111111', '11111111-1111-1111-1111-111111111111', 1, 'apple', 'ˈæpəl', 'An apple a day keeps the doctor away', 'Quả táo', 'http://example.com/apple.jpg'),
-    ('bbb11111-bbbb-1111-bbbb-111111111111', '11111111-1111-1111-1111-111111111111', 2, 'banana', 'bəˈnænə', 'Bananas are rich in potassium', 'Chuối', 'http://example.com/banana.jpg'),
-    ('ccc11111-cccc-1111-cccc-111111111111', '22222222-2222-2222-2222-222222222222', 1, 'antique', 'ænˈtiːk', 'This antique vase is very valuable', 'Đồ cổ', 'http://example.com/antique.jpg'),
-    ('ddd11111-dddd-1111-dddd-111111111111', '22222222-2222-2222-2222-222222222222', 2, 'beautiful', 'ˈbjuːtɪfəl', 'The beautiful landscape amazed me', 'Đẹp', 'http://example.com/beautiful.jpg');
+    ('aaa11111-aaaa-1111-aaaa-111111111111', '11111111-1111-1111-1111-111111111111', 1, 'apple', 'ˈæpəl', 'An apple a day keeps the doctor away', 'Quả táo', 'https://res.cloudinary.com/dmglzcsiq/image/upload/v1748595098/aaa11111-aaaa-1111-aaaa-111111111111.jpg'),
+    ('bbb11111-bbbb-1111-bbbb-111111111111', '11111111-1111-1111-1111-111111111111', 2, 'banana', 'bəˈnænə', 'Bananas are rich in potassium', 'Chuối', 'https://res.cloudinary.com/dmglzcsiq/image/upload/v1748595173/bbb11111-bbbb-1111-bbbb-111111111111.jpg'),
+    ('ccc11111-cccc-1111-cccc-111111111111', '22222222-2222-2222-2222-222222222222', 1, 'antique', 'ænˈtiːk', 'This antique vase is very valuable', 'Đồ cổ', 'https://res.cloudinary.com/dmglzcsiq/image/upload/v1748595256/ccc11111-cccc-1111-cccc-111111111111.jpg'),
+    ('ddd11111-dddd-1111-dddd-111111111111', '22222222-2222-2222-2222-222222222222', 2, 'beautiful', 'ˈbjuːtɪfəl', 'The beautiful landscape amazed me', 'Đẹp', 'https://res.cloudinary.com/dmglzcsiq/image/upload/v1748595316/ddd11111-dddd-1111-dddd-111111111111.jpg');
