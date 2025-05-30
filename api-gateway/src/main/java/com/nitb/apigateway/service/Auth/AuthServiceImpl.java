@@ -1,6 +1,5 @@
 package com.nitb.apigateway.service.Auth;
 
-import com.nitb.apigateway.dto.Auth.Account.request.CreateAdminAccountRequestDto;
 import com.nitb.apigateway.dto.Auth.Auth.request.*;
 import com.nitb.apigateway.dto.Auth.Auth.response.GenerateAccessTokenResponseDto;
 import com.nitb.apigateway.dto.Auth.Auth.response.LoginResponseDto;
@@ -149,24 +148,6 @@ public class AuthServiceImpl implements AuthService {
     public Mono<ActionResponseDto> resetPassword(ResetPasswordRequestDto request) {
         return Mono.fromCallable(()->{
             ActionResponse response = authGrpc.resetPassword(request);
-            return ActionMapper.toResponseDto(response);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
-    public Mono<ActionResponseDto> createAdminAccount(CreateAdminAccountRequestDto request) {
-        return Mono.fromCallable(()->{
-            CreateUserResponse user = userGrpc.createUser(request.getName(), null);
-            UUID userId = UUID.fromString(user.getUserId());
-            ActionResponse response = authGrpc.createAdminAccount(userId, request);
-            return ActionMapper.toResponseDto(response);
-        }).subscribeOn(Schedulers.boundedElastic());
-    }
-
-    @Override
-    public Mono<ActionResponseDto> updateRole(UUID id, UserRole role) {
-        return Mono.fromCallable(()-> {
-            ActionResponse response = authGrpc.updateRole(id, role);
             return ActionMapper.toResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }

@@ -18,6 +18,7 @@ public class AuthServiceGrpcClient {
     @GrpcClient("auth-service")
     private AuthServiceGrpc.AuthServiceBlockingStub blockingStub;
 
+    //Auth
     public LoginResponse loginWithCredentials(LoginWithCredentialsRequestDto dto) {
         LoginWithCredentialsRequest request = LoginWithCredentialsRequest.newBuilder()
                 .setEmail(dto.getEmail())
@@ -98,6 +99,8 @@ public class AuthServiceGrpcClient {
         return blockingStub.resetPassword(request);
     }
 
+
+    //Account
     public ActionResponse createAdminAccount(UUID userId, CreateAdminAccountRequestDto dto) {
         CreateAdminAccountRequest request = CreateAdminAccountRequest.newBuilder()
                 .setUserId(userId.toString())
