@@ -16,6 +16,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -28,28 +30,31 @@ public class SavedSetController {
     private final SavedSetService savedSetService;
 
     @PostMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Save a vocabulary set.")
     @ApiResponse(responseCode = "200", description = "Save successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<SavedSetResponseDto>> createSavedSet(@RequestParam UUID userId,
+    public Mono<ResponseEntity<SavedSetResponseDto>> createSavedSet(@AuthenticationPrincipal UUID userId,
                                                                     @Valid @RequestBody CreateSavedSetRequestDto request) {
         return savedSetService.createSavedSet(userId, request).map(ResponseEntity::ok);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get paginated sets saved by the user.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<SavedSetsPaginationResponseDto>> getSavedSets(@RequestParam UUID userId,
+    public Mono<ResponseEntity<SavedSetsPaginationResponseDto>> getSavedSets(@AuthenticationPrincipal UUID userId,
                                                                              @Positive(message = "Page must be positive") @RequestParam int page,
                                                                              @RequestParam(defaultValue = "10") int size) {
         return savedSetService.getSavedSets(userId, page, size).map(ResponseEntity::ok);
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Search for a saved set.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
-    public Mono<ResponseEntity<SavedSetsPaginationResponseDto>> searchSavedSets(@RequestParam UUID userId,
+    public Mono<ResponseEntity<SavedSetsPaginationResponseDto>> searchSavedSets(@AuthenticationPrincipal UUID userId,
                                                                                 @RequestParam String keyword,
                                                                                 @Positive(message = "Page must be positive") @RequestParam int page,
                                                                                 @RequestParam(defaultValue = "10") int size){
@@ -57,6 +62,7 @@ public class SavedSetController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Update a saved set.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
@@ -69,6 +75,7 @@ public class SavedSetController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Delete a saved set.")
     @ApiResponse(responseCode = "200", description = "Delete successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
@@ -78,9 +85,10 @@ public class SavedSetController {
     }
 
     @GetMapping("/state")
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get the statistics of the user's saved sets state.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<SavedSetStateStatisticResponseDto>> getSavedSetStateStatistic(@RequestParam UUID userId){
+    public Mono<ResponseEntity<SavedSetStateStatisticResponseDto>> getSavedSetStateStatistic(@AuthenticationPrincipal UUID userId){
         return savedSetService.getSavedSetStateStatistic(userId).map(ResponseEntity::ok);
     }
 }

@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -25,19 +27,21 @@ public class CachedSetController {
     private final CachedSetService cachedSetService;
 
     @PostMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Cache a vocabulary set.")
     @ApiResponse(responseCode = "200", description = "Cache successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<DataWithMessageResponseDto>> cachedSet(@RequestParam UUID userId,
+    public Mono<ResponseEntity<DataWithMessageResponseDto>> cachedSet(@AuthenticationPrincipal UUID userId,
                                                                       @Valid @RequestBody CreateCachedSetRequestDto request) {
         return cachedSetService.cacheSet(userId, request).map(ResponseEntity::ok);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('LEARNER')")
     @Operation(summary = "Get all user's cached sets.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<List<CachedSetSummaryResponseDto>>> getAllCachedSets(@RequestParam UUID userId) {
+    public Mono<ResponseEntity<List<CachedSetSummaryResponseDto>>> getAllCachedSets(@AuthenticationPrincipal UUID userId) {
         return cachedSetService.getAllCachedSets(userId).map(ResponseEntity::ok);
     }
 }
