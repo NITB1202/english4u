@@ -4,9 +4,11 @@ import com.nitb.authservice.entity.Account;
 import com.nitb.authservice.grpc.*;
 import com.nitb.authservice.mapper.AccountMapper;
 import com.nitb.authservice.mapper.AuthMapper;
+import com.nitb.authservice.service.AccountService;
 import com.nitb.authservice.service.AuthService;
 import com.nitb.authservice.service.CodeService;
 import com.nitb.authservice.service.MailService;
+import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.grpc.ActionResponse;
 import com.nitb.common.utils.JwtUtils;
 import io.grpc.stub.StreamObserver;
@@ -20,9 +22,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     private final AuthService authService;
+    private final AccountService accountService;
     private final CodeService codeService;
     private final MailService mailService;
 
+    //Auth
     @Override
     public void loginWithCredentials(LoginWithCredentialsRequest request, StreamObserver<LoginResponse> responseObserver) {
         Account account = authService.loginWithCredentials(request);
@@ -129,9 +133,19 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
         responseObserver.onCompleted();
     }
 
+
+    //Account
     @Override
     public void createAdminAccount(CreateAdminAccountRequest request, StreamObserver<ActionResponse> responseObserver) {
-        authService.createAdminAccount(request);
+        if(!authService.validateEmail(request.getEmail())) {
+            throw new BusinessException("This email has been used.");
+        }
+
+        if(!authService.validatePassword(request.getPassword())) {
+            throw new BusinessException(authService.getPasswordRule());
+        }
+
+        accountService.createAdminAccount(request);
         mailService.sendAdminAccountEmail(request.getEmail(), request.getPassword());
 
         ActionResponse response = ActionResponse.newBuilder()
@@ -145,7 +159,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void getAccountById(GetAccountByIdRequest request, StreamObserver<AccountSummaryResponse> responseObserver) {
-        Account account = authService.getAccountById(request);
+        Account account = accountService.getAccountById(request);
         AccountSummaryResponse response = AccountMapper.toAccountSummaryResponse(account);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -154,12 +168,12 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     @Override
     public void updateRole(UpdateRoleRequest request, StreamObserver<ActionResponse> responseObserver) {
         UUID id = UUID.fromString(request.getId());
-        String email = authService.getEmailById(id);
-        String oldRole = authService.getRoleById(id);
+        String email = accountService.getEmailById(id);
+        String oldRole = accountService.getRoleById(id);
 
-        authService.updateRole(request);
+        accountService.updateRole(request);
 
-        String newRole = authService.getRoleById(id);
+        String newRole = accountService.getRoleById(id);
         mailService.sendUpdateRoleEmail(email, oldRole, newRole);
 
         ActionResponse response = ActionResponse.newBuilder()
@@ -173,7 +187,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void getLearners(GetAccountsRequest request, StreamObserver<AccountsResponse> responseObserver) {
-        Page<Account> accounts = authService.getLearners(request);
+        Page<Account> accounts = accountService.getLearners(request);
         AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -181,7 +195,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void getAdmins(GetAccountsRequest request, StreamObserver<AccountsResponse> responseObserver) {
-        Page<Account> accounts = authService.getAdmins(request);
+        Page<Account> accounts = accountService.getAdmins(request);
         AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -189,7 +203,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void searchLearnerByEmail(SearchAccountByEmailRequest request, StreamObserver<AccountsResponse> responseObserver) {
-        Page<Account> accounts = authService.searchLearnerByEmail(request);
+        Page<Account> accounts = accountService.searchLearnerByEmail(request);
         AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
@@ -197,7 +211,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
 
     @Override
     public void searchAdminByEmail(SearchAccountByEmailRequest request, StreamObserver<AccountsResponse> responseObserver) {
-        Page<Account> accounts = authService.searchAdminByEmail(request);
+        Page<Account> accounts = accountService.searchAdminByEmail(request);
         AccountsResponse response = AccountMapper.toAccountsResponse(accounts);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
