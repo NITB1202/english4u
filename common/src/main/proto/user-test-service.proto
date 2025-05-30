@@ -102,7 +102,7 @@ message LearnerTestStatisticResponse {
   double avg_score = 3;
 }
 
-message LearnerTestsStatisticsResponse {
+message LearnerTestStatisticsResponse {
   repeated LearnerTestStatisticResponse statistics = 1;
 }
 
@@ -111,5 +111,5 @@ service UserTestService {
   rpc GetResultById(GetResultByIdRequest) returns (ResultDetailsResponse);
   rpc GetResults(GetResultsRequest) returns (ResultsResponse);
   rpc GetResultStatistics(GetResultStatisticsRequest) returns (GetResultStatisticsResponse);
-  rpc GetLearnerTestStatistics(GetLearnerTestStatisticsRequest) returns (LearnerTestsStatisticsResponse);
+  rpc GetLearnerTestStatistics(GetLearnerTestStatisticsRequest) returns (LearnerTestStatisticsResponse);
 }

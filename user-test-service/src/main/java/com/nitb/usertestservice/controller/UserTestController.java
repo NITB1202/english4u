@@ -58,9 +58,9 @@ public class UserTestController extends UserTestServiceGrpc.UserTestServiceImplB
     }
 
     @Override
-    public void getLearnerTestStatistics(GetLearnerTestStatisticsRequest request, StreamObserver<LearnerTestsStatisticsResponse> responseObserver) {
+    public void getLearnerTestStatistics(GetLearnerTestStatisticsRequest request, StreamObserver<LearnerTestStatisticsResponse> responseObserver) {
         List<LearnerTestStatisticResponse> statistics = resultService.getLearnerTestStatistics(request);
-        LearnerTestsStatisticsResponse response = ResultMapper.toLearnerTestsStatisticsResponse(statistics);
+        LearnerTestStatisticsResponse response = ResultMapper.toLearnerTestStatisticsResponse(statistics);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

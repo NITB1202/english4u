@@ -72,8 +72,8 @@ public class ResultMapper {
                 .build();
     }
 
-    public static LearnerTestsStatisticsResponse toLearnerTestsStatisticsResponse(List<LearnerTestStatisticResponse> statistics) {
-        return LearnerTestsStatisticsResponse.newBuilder()
+    public static LearnerTestStatisticsResponse toLearnerTestStatisticsResponse(List<LearnerTestStatisticResponse> statistics) {
+        return LearnerTestStatisticsResponse.newBuilder()
                 .addAllStatistics(statistics)
                 .build();
     }
