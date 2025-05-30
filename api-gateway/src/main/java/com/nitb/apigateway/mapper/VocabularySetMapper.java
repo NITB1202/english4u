@@ -97,7 +97,7 @@ public class VocabularySetMapper {
                 .build();
     }
 
-    public static VocabularySetStatisticResponseDto toVocabularySetStatisticResponseDto(VocabularySetStatistic statistic) {
+    public static VocabularySetStatisticResponseDto toVocabularySetStatisticResponseDto(VocabularySetStatisticResponse statistic) {
         return VocabularySetStatisticResponseDto.builder()
                 .time(statistic.getTime())
                 .publishedCount(statistic.getCount())

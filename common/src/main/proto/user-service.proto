@@ -15,6 +15,11 @@ message CheckCanPerformActionRequest {
 
 message CreateUserRequest {
   string name = 1;
+  string avatar_url = 2;
+}
+
+message CreateUserResponse {
+  string user_id = 1;
 }
 
 message GetUserByIdRequest {
@@ -73,7 +78,7 @@ message UserLockedResponse {
 
 service UserService {
   rpc CheckCanPerformAction(CheckCanPerformActionRequest) returns (google.protobuf.Empty);
-  rpc CreateUser(CreateUserRequest) returns (google.protobuf.Empty);
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
   rpc GetUserById(GetUserByIdRequest) returns (UserResponse);
   rpc GetUsersByListOfIds(GetUsersByListOfIdsRequest) returns (UsersResponse);
   rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);

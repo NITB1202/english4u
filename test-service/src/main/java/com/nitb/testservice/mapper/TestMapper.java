@@ -1,11 +1,11 @@
 package com.nitb.testservice.mapper;
 
-import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public class TestMapper {
     private TestMapper() {}
@@ -79,19 +79,29 @@ public class TestMapper {
                 .build();
     }
 
-    public static TestStatistic toTestStatistic(TestStatisticDto dto) {
-        return TestStatistic.newBuilder()
-                .setTime(dto.getTime())
-                .setTestCount(dto.getTestCount())
-                .setCompletedUsers(dto.getCompletedUsers())
+    public static TestStatisticResponse toTestStatisticResponse(String time, int testCount, long completedUsers) {
+        return TestStatisticResponse.newBuilder()
+                .setTime(time)
+                .setTestCount(testCount)
+                .setCompletedUsers(completedUsers)
                 .build();
     }
 
-    public static GetPublishedTestStatisticsResponse toGetPublishedTestStatisticsResponse(List<TestStatisticDto> dto) {
-        List<TestStatistic> statistics = dto.stream()
-                .map(TestMapper::toTestStatistic)
-                .toList();
+    public static GetPublishedTestStatisticsResponse toGetPublishedTestStatisticsResponse(List<TestStatisticResponse> statistics) {
         return GetPublishedTestStatisticsResponse.newBuilder()
+                .addAllStatistics(statistics)
+                .build();
+    }
+
+    public static AdminTestStatisticResponse toAdminTestStatisticResponse(UUID userId, long totalTestsPublished) {
+        return AdminTestStatisticResponse.newBuilder()
+                .setUserId(userId.toString())
+                .setTotalPublishedTests(totalTestsPublished)
+                .build();
+    }
+
+    public static AdminTestStatisticsResponse toAdminTestStatisticsResponse(List<AdminTestStatisticResponse> statistics) {
+        return AdminTestStatisticsResponse.newBuilder()
                 .addAllStatistics(statistics)
                 .build();
     }

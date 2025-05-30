@@ -2,10 +2,10 @@ package com.nitb.testservice.service.impl;
 
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
-import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.dto.TestStatisticProjection;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
+import com.nitb.testservice.mapper.TestMapper;
 import com.nitb.testservice.repository.TestRepository;
 import com.nitb.testservice.service.TestService;
 import jakarta.transaction.Transactional;
@@ -201,7 +201,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<TestStatisticDto> getPublishedTestStatistics(GetPublishedTestStatisticsRequest request){
+    public List<TestStatisticResponse> getPublishedTestStatistics(GetPublishedTestStatisticsRequest request){
         UUID userId = UUID.fromString(request.getUserId());
         LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
         LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
@@ -216,8 +216,25 @@ public class TestServiceImpl implements TestService {
         }
 
         return result.stream()
-                .map(t -> new TestStatisticDto(t.getTime(), t.getTestCount(), t.getCompletedUsers()))
+                .map(t -> TestMapper.toTestStatisticResponse(t.getTime(), t.getTestCount(), t.getCompletedUsers()))
                 .toList();
+    }
+
+    @Override
+    public List<AdminTestStatisticResponse> getAdminTestStatistics(GetAdminTestStatisticsRequest request) {
+        List<UUID> userIds = request.getUserIdList().stream()
+                .map(UUID::fromString)
+                .toList();
+
+        List<AdminTestStatisticResponse> result = new ArrayList<>();
+
+        for(UUID userId : userIds) {
+            long totalPublishedTests = testRepository.countByCreatedByAndIsDeletedFalse(userId);
+            AdminTestStatisticResponse statistic = TestMapper.toAdminTestStatisticResponse(userId, totalPublishedTests);
+            result.add(statistic);
+        }
+
+        return result;
     }
 
     @Override

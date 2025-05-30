@@ -150,7 +150,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-
     @Override
     public void createAdminAccount(CreateAdminAccountRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
@@ -176,13 +175,27 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public Account getAccountById(GetAccountByIdRequest request) {
+        UUID id = UUID.fromString(request.getId());
+        return accountRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("Account not found.")
+        );
+    }
+
+    @Override
     public void updateRole(UpdateRoleRequest request) {
         UUID id = UUID.fromString(request.getId());
         Account account = accountRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Account not found.")
         );
 
-        account.setRole(UserRoleMapper.toUserRole(request.getRole()));
+        UserRole newRole = UserRoleMapper.toUserRole(request.getRole());
+
+        if(account.getRole().equals(newRole)){
+            throw new BusinessException("Updated role is the same with the old role.");
+        }
+
+        account.setRole(newRole);
         accountRepository.save(account);
     }
 

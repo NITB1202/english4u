@@ -71,4 +71,5 @@ public interface VocabularySetRepository extends JpaRepository<VocabularySet, UU
         WHERE name = :name
     """, nativeQuery = true)
     int getLatestVersion(@Param("name") String name);
+    long countByCreatedByAndIsDeletedFalse(UUID createdBy);
 }

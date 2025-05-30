@@ -6,6 +6,7 @@ import com.nitb.userservice.entity.User;
 import com.nitb.userservice.grpc.*;
 import com.nitb.userservice.repository.UserRepository;
 import com.nitb.userservice.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,15 +37,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(CreateUserRequest request) {
+    @Transactional
+    public User createUser(CreateUserRequest request) {
         User user = User.builder()
                 .name(request.getName())
-                .avatarUrl("")
+                .avatarUrl(request.getAvatarUrl())
                 .joinAt(LocalDateTime.now())
                 .isLocked(false)
                 .build();
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

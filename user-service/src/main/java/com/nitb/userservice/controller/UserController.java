@@ -25,9 +25,10 @@ public class UserController extends UserServiceGrpc.UserServiceImplBase {
     }
 
     @Override
-    public void createUser(CreateUserRequest request, StreamObserver<Empty> responseObserver) {
-        userService.createUser(request);
-        responseObserver.onNext(Empty.getDefaultInstance());
+    public void createUser(CreateUserRequest request, StreamObserver<CreateUserResponse> responseObserver) {
+        User user = userService.createUser(request);
+        CreateUserResponse response = UserMapper.toCreateUserResponse(user);
+        responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 

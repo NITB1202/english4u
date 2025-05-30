@@ -27,7 +27,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     public void loginWithCredentials(LoginWithCredentialsRequest request, StreamObserver<LoginResponse> responseObserver) {
         Account account = authService.loginWithCredentials(request);
         String accessToken = JwtUtils.generateAccessToken(account.getUserId(), account.getRole());
-        String refreshToken = JwtUtils.generateRefreshToken(account.getUserId());
+        String refreshToken = JwtUtils.generateRefreshToken(account.getId());
         LoginResponse loginResponse = AuthMapper.toLoginResponse(accessToken, refreshToken);
         responseObserver.onNext(loginResponse);
         responseObserver.onCompleted();
@@ -37,7 +37,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     public void loginWithProvider(LoginWithProviderRequest request, StreamObserver<LoginResponse> responseObserver) {
         Account account = authService.loginWithProvider(request);
         String accessToken = JwtUtils.generateAccessToken(account.getUserId(), account.getRole());
-        String refreshToken = JwtUtils.generateRefreshToken(account.getUserId());
+        String refreshToken = JwtUtils.generateRefreshToken(account.getId());
         LoginResponse loginResponse = AuthMapper.toLoginResponse(accessToken, refreshToken);
         responseObserver.onNext(loginResponse);
         responseObserver.onCompleted();
@@ -55,7 +55,7 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
     public void validateRegisterInfo(ValidateRegisterInfoRequest request, StreamObserver<ActionResponse> responseObserver) {
         ActionResponse response = ActionResponse.newBuilder()
                 .setSuccess(true)
-                .setMessage("Valid register information.")
+                .setMessage("Validate successfully. A verification code has been sent to the registered email.")
                 .build();
 
         if(!authService.validateEmail(request.getEmail())) {
@@ -139,6 +139,14 @@ public class AuthController extends AuthServiceGrpc.AuthServiceImplBase {
                 .setMessage("Account info has been sent to the registered email.")
                 .build();
 
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAccountById(GetAccountByIdRequest request, StreamObserver<AccountSummaryResponse> responseObserver) {
+        Account account = authService.getAccountById(request);
+        AccountSummaryResponse response = AccountMapper.toAccountSummaryResponse(account);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

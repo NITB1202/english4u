@@ -131,6 +131,16 @@ public class VocabularyServiceGrpcClient {
         return blockingStub.countPublishedVocabularySets(request);
     }
 
+    public AdminSetStatisticsResponse getAdminSetStatistics(List<UUID> userIds) {
+        List<String> idStr = userIds.stream().map(UUID::toString).toList();
+
+        GetAdminSetStatisticsRequest request = GetAdminSetStatisticsRequest.newBuilder()
+                .addAllUserId(idStr)
+                .build();
+
+        return blockingStub.getAdminSetStatistics(request);
+    }
+
     //Word
     public VocabularyWordsResponse createVocabularyWords(UUID setId, UUID userId, List<CreateVocabularyWordRequestDto> words) {
         List<CreateVocabularyWordRequest> wordRequests = words.stream()

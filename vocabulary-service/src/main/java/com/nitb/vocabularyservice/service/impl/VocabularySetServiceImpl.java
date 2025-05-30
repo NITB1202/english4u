@@ -2,10 +2,10 @@ package com.nitb.vocabularyservice.service.impl;
 
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
-import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.dto.VocabularySetStatisticProjection;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.grpc.*;
+import com.nitb.vocabularyservice.mapper.VocabularySetMapper;
 import com.nitb.vocabularyservice.repository.VocabularySetRepository;
 import com.nitb.vocabularyservice.service.VocabularySetService;
 import lombok.RequiredArgsConstructor;
@@ -187,7 +187,7 @@ public class VocabularySetServiceImpl implements VocabularySetService {
     }
 
     @Override
-    public List<VocabularySetStatisticDto> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
+    public List<VocabularySetStatisticResponse> countPublishedVocabularySets(CountPublishedVocabularySetsRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
         LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
         LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
@@ -202,8 +202,25 @@ public class VocabularySetServiceImpl implements VocabularySetService {
         }
 
         return result.stream()
-                .map(p -> new VocabularySetStatisticDto(p.getTime(), p.getCount()))
+                .map(p -> VocabularySetMapper.toVocabularySetStatisticResponse(p.getTime(), p.getCount()))
                 .toList();
+    }
+
+    @Override
+    public List<AdminSetStatisticResponse> getAdminSetStatistics(GetAdminSetStatisticsRequest request) {
+        List<UUID> userIds = request.getUserIdList().stream()
+                .map(UUID::fromString)
+                .toList();
+
+        List<AdminSetStatisticResponse> result = new ArrayList<>();
+
+        for(UUID userId : userIds) {
+            long totalPublishedSets = vocabularySetRepository.countByCreatedByAndIsDeletedFalse(userId);
+            AdminSetStatisticResponse statistic = VocabularySetMapper.toAdminSetStatisticResponse(userId, totalPublishedSets);
+            result.add(statistic);
+        }
+
+        return result;
     }
 
     @Override

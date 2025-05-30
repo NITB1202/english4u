@@ -70,4 +70,5 @@ public interface TestRepository extends JpaRepository<Test, UUID> {
     @Query("SELECT MAX(t.version) FROM Test t WHERE t.name = :name")
     Integer findMaxVersion(@Param("name") String name);
     Test findByNameAndIsDeletedFalse(String name);
+    Long countByCreatedByAndIsDeletedFalse(UUID createdBy);
 }

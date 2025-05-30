@@ -137,14 +137,14 @@ message GetPublishedTestStatisticsRequest {
   common.GroupBy group_by = 4;
 }
 
-message TestStatistic {
+message TestStatisticResponse {
   string time = 1;
   int32 test_count = 2;
   int64 completed_users = 3;
 }
 
 message GetPublishedTestStatisticsResponse {
-  repeated TestStatistic statistics = 1;
+  repeated TestStatisticResponse statistics = 1;
 }
 
 message TestTemplateResponse {
@@ -155,6 +155,19 @@ message TestTemplateResponse {
 message UploadTestTemplateRequest {
   string user_id = 1;
   bytes file_content = 2;
+}
+
+message GetAdminTestStatisticsRequest {
+  repeated string user_id = 1;
+}
+
+message AdminTestStatisticResponse {
+  string user_id = 1;
+  int64 total_published_tests = 2;
+}
+
+message AdminTestStatisticsResponse {
+  repeated AdminTestStatisticResponse statistics = 1;
 }
 
 //Parts
@@ -289,6 +302,7 @@ service TestService {
   rpc DeleteTest(DeleteTestRequest) returns (DeleteTestResponse);
   rpc RestoreTest(RestoreTestRequest) returns (DeleteTestResponse);
   rpc GetPublishedTestStatistics(GetPublishedTestStatisticsRequest) returns (GetPublishedTestStatisticsResponse);
+  rpc GetAdminTestStatistics(GetAdminTestStatisticsRequest) returns (AdminTestStatisticsResponse);
 
   //Test file
   rpc GenerateTestTemplate(google.protobuf.Empty) returns (TestTemplateResponse);

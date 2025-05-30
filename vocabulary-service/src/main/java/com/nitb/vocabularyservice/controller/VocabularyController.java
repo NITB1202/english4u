@@ -2,7 +2,6 @@ package com.nitb.vocabularyservice.controller;
 
 import com.google.protobuf.Empty;
 import com.nitb.common.grpc.ActionResponse;
-import com.nitb.vocabularyservice.dto.VocabularySetStatisticDto;
 import com.nitb.vocabularyservice.entity.VocabularySet;
 import com.nitb.vocabularyservice.entity.VocabularyWord;
 import com.nitb.vocabularyservice.grpc.*;
@@ -114,8 +113,16 @@ public class VocabularyController extends VocabularyServiceGrpc.VocabularyServic
 
     @Override
     public void countPublishedVocabularySets(CountPublishedVocabularySetsRequest request, StreamObserver<CountPublishedVocabularySetsResponse> streamObserver){
-        List<VocabularySetStatisticDto> statistics = vocabularySetService.countPublishedVocabularySets(request);
+        List<VocabularySetStatisticResponse> statistics = vocabularySetService.countPublishedVocabularySets(request);
         CountPublishedVocabularySetsResponse response = VocabularySetMapper.toCountPublishedVocabularySetsResponse(statistics);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
+    }
+
+    @Override
+    public void getAdminSetStatistics(GetAdminSetStatisticsRequest request, StreamObserver<AdminSetStatisticsResponse> streamObserver) {
+        List<AdminSetStatisticResponse> statistics = vocabularySetService.getAdminSetStatistics(request);
+        AdminSetStatisticsResponse response = VocabularySetMapper.toAdminSetStatisticsResponse(statistics);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
     }

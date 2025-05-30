@@ -23,9 +23,12 @@ public class UserServiceGrpcClient {
         return blockingStub.checkCanPerformAction(request);
     }
 
-    public Empty createUser(String name) {
+    public CreateUserResponse createUser(String name, String avatarUrl) {
+        String handledAvatarUrl = avatarUrl != null ? avatarUrl : "";
+
         CreateUserRequest request = CreateUserRequest.newBuilder()
                 .setName(name)
+                .setAvatarUrl(handledAvatarUrl)
                 .build();
 
         return blockingStub.createUser(request);
