@@ -19,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -33,11 +35,12 @@ public class TestController {
     private final TestService testService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Create a new test.")
     @ApiResponse(responseCode = "200", description = "Create successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<CreateTestResponseDto>> createTest(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CreateTestResponseDto>> createTest(@AuthenticationPrincipal UUID userId,
                                                                   @Valid @RequestBody CreateTestRequestDto request) {
         return testService.createTest(userId, request).map(ResponseEntity::ok);
     }
@@ -60,6 +63,7 @@ public class TestController {
     }
 
     @GetMapping("/deleted")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get paginated list of deleted tests.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<TestsPaginationResponseDto>> getDeletedTests(@Positive(message = "Page must be positive") @RequestParam int page,
@@ -77,6 +81,7 @@ public class TestController {
     }
 
     @GetMapping("/search/deleted")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Search for a deleted test by name.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
     public Mono<ResponseEntity<TestsPaginationResponseDto>> searchDeletedTestByName(@RequestParam String keyword,
@@ -86,55 +91,60 @@ public class TestController {
     }
 
     @PatchMapping("/{id}/general")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Update the name and topic of a test.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UpdateTestResponseDto>> updateTestNameAndTopic(@PathVariable UUID id,
-                                                                              @RequestParam UUID userId,
+    public Mono<ResponseEntity<UpdateTestResponseDto>> updateTestNameAndTopic(@AuthenticationPrincipal UUID userId,
+                                                                              @PathVariable UUID id,
                                                                               @Valid @RequestBody UpdateTestInfoRequestDto request) {
         return testService.updateTestNameAndTopic(userId, id, request).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Update a test.")
     @ApiResponse(responseCode = "200", description = "Update successfully.")
     @ApiResponse(responseCode = "400", description = "Invalid request body.",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<UpdateTestResponseDto>> updateTest(@RequestParam UUID userId,
+    public Mono<ResponseEntity<UpdateTestResponseDto>> updateTest(@AuthenticationPrincipal UUID userId,
                                                                   @PathVariable UUID id,
                                                                   @Valid @RequestBody UpdateTestRequestDto request) {
         return testService.updateTest(userId, id, request).map(ResponseEntity::ok);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Delete a test.")
     @ApiResponse(responseCode = "200", description = "Delete successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<DeleteTestResponseDto>> deleteTest(@RequestParam UUID userId,
+    public Mono<ResponseEntity<DeleteTestResponseDto>> deleteTest(@AuthenticationPrincipal UUID userId,
                                                                   @PathVariable UUID id) {
         return testService.deleteTest(userId, id).map(ResponseEntity::ok);
     }
 
     @PatchMapping("/restore/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Restore a deleted test.")
     @ApiResponse(responseCode = "200", description = "Restore successfully.")
     @ApiResponse(responseCode = "404", description = "Not found",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public Mono<ResponseEntity<DeleteTestResponseDto>> restorePlan(@RequestParam UUID userId,
+    public Mono<ResponseEntity<DeleteTestResponseDto>> restoreTest(@AuthenticationPrincipal UUID userId,
                                                                    @PathVariable UUID id) {
         return testService.restoreTest(userId, id).map(ResponseEntity::ok);
     }
 
     @GetMapping("/statistic")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get published test statistics.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
-    public Mono<ResponseEntity<GetPublishedTestStatisticsResponseDto>> getPublishedTestStatistics(@RequestParam UUID userId,
+    public Mono<ResponseEntity<GetPublishedTestStatisticsResponseDto>> getPublishedTestStatistics(@AuthenticationPrincipal UUID userId,
                                                                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                                                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
                                                                                                   @RequestParam GroupBy groupBy) {
@@ -142,6 +152,7 @@ public class TestController {
     }
 
     @GetMapping("/template")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Download test template as an Excel file")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<byte[]>> downloadTestTemplate() {
@@ -155,12 +166,11 @@ public class TestController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Upload test Excel file and create test")
     @ApiResponse(responseCode = "200", description = "Upload successfully.")
-    public Mono<ResponseEntity<CreateTestResponseDto>> uploadTestTemplate(@RequestParam UUID userId,
+    public Mono<ResponseEntity<CreateTestResponseDto>> uploadTestTemplate(@AuthenticationPrincipal UUID userId,
                                                                           @RequestPart("file") FilePart file) {
         return testService.uploadTestTemplate(userId, file).map(ResponseEntity::ok);
     }
-
-
 }
