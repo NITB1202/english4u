@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.User.response;
+package com.nitb.apigateway.dto.Statistic;
 
 import lombok.*;
 
@@ -9,8 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AdminsPaginationResponseDto {
-    private List<AdminStatisticResponseDto> admins;
+public class LearnersPaginationResponseDto {
+    private List<LearnerStatisticResponseDto> learners;
 
     private long totalItems;
 

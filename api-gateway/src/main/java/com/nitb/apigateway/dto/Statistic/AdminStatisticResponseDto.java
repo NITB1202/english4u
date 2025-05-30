@@ -1,4 +1,4 @@
-package com.nitb.apigateway.dto.User.response;
+package com.nitb.apigateway.dto.Statistic;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LearnerStatisticResponseDto {
+public class AdminStatisticResponseDto {
     private UUID userId;
 
     private String name;
@@ -21,13 +21,9 @@ public class LearnerStatisticResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime joinAt;
 
-    private long totalTestsTaken;
+    private long totalTestsPublished;
 
-    private double avgScore;
-
-    private long totalSavedSets;
-
-    private double completeRate;
+    private long totalSetsPublished;
 
     private boolean isLocked;
 }

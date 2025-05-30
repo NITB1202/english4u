@@ -1,6 +1,6 @@
 package com.nitb.apigateway.controller;
 
-import com.nitb.apigateway.dto.User.response.AdminsPaginationResponseDto;
+import com.nitb.apigateway.dto.Statistic.AdminsPaginationResponseDto;
 import com.nitb.apigateway.service.Statistic.StatisticService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

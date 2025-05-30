@@ -1,7 +1,7 @@
 package com.nitb.apigateway.mapper;
 
-import com.nitb.apigateway.dto.User.response.AdminStatisticResponseDto;
-import com.nitb.apigateway.dto.User.response.AdminsPaginationResponseDto;
+import com.nitb.apigateway.dto.Statistic.AdminStatisticResponseDto;
+import com.nitb.apigateway.dto.Statistic.AdminsPaginationResponseDto;
 import com.nitb.authservice.grpc.AccountResponse;
 import com.nitb.authservice.grpc.AccountsResponse;
 import com.nitb.testservice.grpc.AdminTestStatisticResponse;

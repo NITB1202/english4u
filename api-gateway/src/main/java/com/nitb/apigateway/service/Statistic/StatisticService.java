@@ -1,7 +1,7 @@
 package com.nitb.apigateway.service.Statistic;
 
-import com.nitb.apigateway.dto.User.response.AdminsPaginationResponseDto;
-import com.nitb.apigateway.dto.User.response.LearnersPaginationResponseDto;
+import com.nitb.apigateway.dto.Statistic.AdminsPaginationResponseDto;
+import com.nitb.apigateway.dto.Statistic.LearnersPaginationResponseDto;
 import reactor.core.publisher.Mono;
 
 public interface StatisticService {
