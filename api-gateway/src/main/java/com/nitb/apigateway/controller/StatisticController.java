@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ public class StatisticController {
     private final StatisticService statisticService;
 
     @GetMapping("/admin")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get admin statistics.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<AdminsPaginationResponseDto>> getAdminsStatistics(@Positive(message = "Page must be positive") @RequestParam int page,
@@ -29,6 +31,7 @@ public class StatisticController {
     }
 
     @GetMapping("/admin/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Search for a admin statistic by email.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
     public Mono<ResponseEntity<AdminsPaginationResponseDto>> searchAdminStatisticByEmail(@RequestParam String keyword,
@@ -38,6 +41,7 @@ public class StatisticController {
     }
 
     @GetMapping("/learner")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Get learner statistics.")
     @ApiResponse(responseCode = "200", description = "Get successfully.")
     public Mono<ResponseEntity<LearnersPaginationResponseDto>> getLearnersStatistics(@Positive(message = "Page must be positive") @RequestParam int page,
@@ -46,6 +50,7 @@ public class StatisticController {
     }
 
     @GetMapping("/learner/search")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SYSTEM_ADMIN')")
     @Operation(summary = "Search for a learner statistic by email.")
     @ApiResponse(responseCode = "200", description = "Search successfully.")
     public Mono<ResponseEntity<LearnersPaginationResponseDto>> searchLearnersStatisticByEmail(@RequestParam String keyword,
