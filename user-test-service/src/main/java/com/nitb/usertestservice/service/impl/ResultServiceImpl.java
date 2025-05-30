@@ -2,13 +2,10 @@ package com.nitb.usertestservice.service.impl;
 
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.exceptions.NotFoundException;
-import com.nitb.usertestservice.dto.ResultStatisticDto;
 import com.nitb.usertestservice.dto.ResultStatisticProjection;
 import com.nitb.usertestservice.entity.Result;
-import com.nitb.usertestservice.grpc.CreateResultRequest;
-import com.nitb.usertestservice.grpc.GetResultByIdRequest;
-import com.nitb.usertestservice.grpc.GetResultStatisticsRequest;
-import com.nitb.usertestservice.grpc.GetResultsRequest;
+import com.nitb.usertestservice.grpc.*;
+import com.nitb.usertestservice.mapper.ResultMapper;
 import com.nitb.usertestservice.repository.ResultRepository;
 import com.nitb.usertestservice.service.ResultService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public List<ResultStatisticDto> getResultStatistics(GetResultStatisticsRequest request) {
+    public List<ResultStatisticResponse> getResultStatistics(GetResultStatisticsRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
         LocalDateTime from = LocalDate.parse(request.getFrom()).atStartOfDay();
         LocalDateTime to = LocalDate.parse(request.getTo()).atTime(23, 59, 59);
@@ -78,8 +77,31 @@ public class ResultServiceImpl implements ResultService {
         }
 
         return statistics.stream()
-                .map(r -> new ResultStatisticDto(r.getTime(), r.getResultCount(),
+                .map(r -> ResultMapper.toResultStatisticResponse(r.getTime(), r.getResultCount(),
                         r.getAvgSecondsSpent(), r.getAvgAccuracy()))
                 .toList();
+    }
+
+    @Override
+    public List<LearnerTestStatisticResponse> getLearnerTestStatistics(GetLearnerTestStatisticsRequest request) {
+        List<LearnerTestStatisticResponse> result = new ArrayList<>();
+
+        for(String idStr : request.getUserIdList()) {
+            UUID userId = UUID.fromString(idStr);
+            long totalResults = resultRepository.countByUserId(userId);
+            long totalScore = resultRepository.sumScoreByUserId(userId);
+
+            double average = 0.0;
+            if (totalResults > 0) {
+                BigDecimal avg = BigDecimal.valueOf((double) totalScore / totalResults)
+                        .setScale(2, RoundingMode.HALF_UP);
+                average = avg.doubleValue();
+            }
+
+            LearnerTestStatisticResponse statistic = ResultMapper.toLearnerTestStatisticResponse(userId, totalResults, average);
+            result.add(statistic);
+        }
+
+        return result;
     }
 }

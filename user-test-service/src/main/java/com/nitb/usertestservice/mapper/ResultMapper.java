@@ -1,12 +1,12 @@
 package com.nitb.usertestservice.mapper;
 
-import com.nitb.usertestservice.dto.ResultStatisticDto;
 import com.nitb.usertestservice.entity.Result;
 import com.nitb.usertestservice.entity.ResultDetail;
 import com.nitb.usertestservice.grpc.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ResultMapper {
     private ResultMapper() {}
@@ -49,22 +49,32 @@ public class ResultMapper {
                 .build();
     }
 
-    public static ResultStatisticResponse toResultStatisticResponse(ResultStatisticDto statistic) {
+    public static ResultStatisticResponse toResultStatisticResponse(String time, long resultCount, long avgSecondsSpent, double avgAccuracy) {
         return ResultStatisticResponse.newBuilder()
-                .setTime(statistic.getTime())
-                .setResultCount(statistic.getResultCount())
-                .setAvgSecondsSpent(statistic.getAvgSecondsSpent())
-                .setAvgAccuracy(statistic.getAvgAccuracy())
+                .setTime(time)
+                .setResultCount(resultCount)
+                .setAvgSecondsSpent(avgSecondsSpent)
+                .setAvgAccuracy(avgAccuracy)
                 .build();
     }
 
-    public static GetResultStatisticsResponse toGetResultStatisticsResponse(List<ResultStatisticDto> statistics) {
-        List<ResultStatisticResponse> responses = statistics.stream()
-                .map(ResultMapper::toResultStatisticResponse)
-                .toList();
-
+    public static GetResultStatisticsResponse toGetResultStatisticsResponse(List<ResultStatisticResponse> statistics) {
         return GetResultStatisticsResponse.newBuilder()
-                .addAllStatistics(responses)
+                .addAllStatistics(statistics)
+                .build();
+    }
+
+    public static LearnerTestStatisticResponse toLearnerTestStatisticResponse(UUID userId, long totalTestsTaken, double avgScore) {
+        return LearnerTestStatisticResponse.newBuilder()
+                .setUserId(userId.toString())
+                .setTotalTestsTaken(totalTestsTaken)
+                .setAvgScore(avgScore)
+                .build();
+    }
+
+    public static LearnerTestStatisticsResponse toLearnerTestStatisticsResponse(List<LearnerTestStatisticResponse> statistics) {
+        return LearnerTestStatisticsResponse.newBuilder()
+                .addAllStatistics(statistics)
                 .build();
     }
 }

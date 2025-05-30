@@ -42,13 +42,9 @@ public class UserServiceGrpcClient {
         return blockingStub.getUserById(request);
     }
 
-    public UsersResponse getUsersByListOfIds(List<UUID> ids) {
-        List<String> idsStr = ids.stream()
-                .map(UUID::toString)
-                .toList();
-
+    public UsersResponse getUsersByListOfIds(List<String> ids) {
         GetUsersByListOfIdsRequest request = GetUsersByListOfIdsRequest.newBuilder()
-                .addAllIds(idsStr)
+                .addAllIds(ids)
                 .build();
 
         return blockingStub.getUsersByListOfIds(request);
