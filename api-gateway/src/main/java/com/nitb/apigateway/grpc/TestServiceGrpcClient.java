@@ -151,6 +151,16 @@ public class TestServiceGrpcClient {
         return blockingStub.getPublishedTestStatistics(request);
     }
 
+    public AdminTestStatisticsResponse getAdminTestStatistics(List<UUID> userIds) {
+        List<String> idStr = userIds.stream().map(UUID::toString).toList();
+
+        GetAdminTestStatisticsRequest request = GetAdminTestStatisticsRequest.newBuilder()
+                .addAllUserId(idStr)
+                .build();
+
+        return blockingStub.getAdminTestStatistics(request);
+    }
+
     public TestTemplateResponse generateTestTemplate() {
         return blockingStub.generateTestTemplate(Empty.getDefaultInstance());
     }

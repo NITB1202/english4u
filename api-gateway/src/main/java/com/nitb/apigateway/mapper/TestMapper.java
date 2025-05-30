@@ -86,7 +86,7 @@ public class TestMapper {
                 .build();
     }
 
-    public static TestStatisticResponseDto toTestStatisticResponseDto(TestStatistic stat) {
+    public static TestStatisticResponseDto toTestStatisticResponseDto(TestStatisticResponse stat) {
         return TestStatisticResponseDto.builder()
                 .testCount(stat.getTestCount())
                 .completedUsers(stat.getCompletedUsers())

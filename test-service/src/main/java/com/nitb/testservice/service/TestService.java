@@ -1,6 +1,5 @@
 package com.nitb.testservice.service;
 
-import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Test;
 import com.nitb.testservice.grpc.*;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,8 @@ public interface TestService {
     Test updateTest(UpdateTestRequest request);
     Test deleteTest(DeleteTestRequest request);
     Test restoreTest(RestoreTestRequest request);
-    List<TestStatisticDto> getPublishedTestStatistics(GetPublishedTestStatisticsRequest request);
+    List<TestStatisticResponse> getPublishedTestStatistics(GetPublishedTestStatisticsRequest request);
+    List<AdminTestStatisticResponse> getAdminTestStatistics(GetAdminTestStatisticsRequest request);
 
     void updatePartCount(UUID testId, int count);
     void validateTestId(String testIdStr);

@@ -1,7 +1,6 @@
 package com.nitb.testservice.controller;
 
 import com.google.protobuf.Empty;
-import com.nitb.testservice.dto.TestStatisticDto;
 import com.nitb.testservice.entity.Comment;
 import com.nitb.testservice.entity.Part;
 import com.nitb.testservice.entity.Question;
@@ -133,7 +132,7 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
 
     @Override
     public void getPublishedTestStatistics(GetPublishedTestStatisticsRequest request, StreamObserver<GetPublishedTestStatisticsResponse> streamObserver) {
-        List<TestStatisticDto> statistics = testService.getPublishedTestStatistics(request);
+        List<TestStatisticResponse> statistics = testService.getPublishedTestStatistics(request);
         GetPublishedTestStatisticsResponse response = TestMapper.toGetPublishedTestStatisticsResponse(statistics);
         streamObserver.onNext(response);
         streamObserver.onCompleted();
@@ -164,6 +163,14 @@ public class TestController extends TestServiceGrpc.TestServiceImplBase {
         }
 
         return TestMapper.toTestsPaginationResponse(tests, summaryResponses);
+    }
+
+    @Override
+    public void getAdminTestStatistics(GetAdminTestStatisticsRequest request, StreamObserver<AdminTestStatisticsResponse> streamObserver) {
+        List<AdminTestStatisticResponse> statistics = testService.getAdminTestStatistics(request);
+        AdminTestStatisticsResponse response = TestMapper.toAdminTestStatisticsResponse(statistics);
+        streamObserver.onNext(response);
+        streamObserver.onCompleted();
     }
 
     //Parts
