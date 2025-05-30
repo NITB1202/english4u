@@ -34,7 +34,7 @@ public class JwtSecurityContextRepository implements ServerSecurityContextReposi
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(userId, null,
-                                List.of(new SimpleGrantedAuthority(role.toString())));
+                                List.of(new SimpleGrantedAuthority("ROLE_" + role.toString())));
 
                 return Mono.just(new SecurityContextImpl(auth));
             } catch (Exception e) {
