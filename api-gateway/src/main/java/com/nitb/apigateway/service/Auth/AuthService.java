@@ -2,6 +2,7 @@ package com.nitb.apigateway.service.Auth;
 
 import com.nitb.apigateway.dto.Auth.Account.request.CreateAdminAccountRequestDto;
 import com.nitb.apigateway.dto.Auth.Auth.request.*;
+import com.nitb.apigateway.dto.Auth.Auth.response.GenerateAccessTokenResponseDto;
 import com.nitb.apigateway.dto.Auth.Auth.response.LoginResponseDto;
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.common.enums.UserRole;
@@ -18,4 +19,5 @@ public interface AuthService {
     Mono<ActionResponseDto> resetPassword(ResetPasswordRequestDto request);
     Mono<ActionResponseDto> createAdminAccount(CreateAdminAccountRequestDto request);
     Mono<ActionResponseDto> updateRole(UUID id, UserRole role);
+    Mono<GenerateAccessTokenResponseDto> generateAccessToken(String refreshToken);
 }

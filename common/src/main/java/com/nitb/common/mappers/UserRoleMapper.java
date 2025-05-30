@@ -22,4 +22,13 @@ public class UserRoleMapper {
             default -> throw new BusinessException("Unsupported role: " + role);
         };
     }
+
+    public static UserRole fromString(String role) {
+        return switch (role) {
+            case "SYSTEM_ADMIN" -> UserRole.SYSTEM_ADMIN;
+            case "ADMIN" -> UserRole.ADMIN;
+            case "LEARNER" -> UserRole.LEARNER;
+            default -> throw new BusinessException("Unsupported role: " + role);
+        };
+    }
 }

@@ -150,7 +150,6 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-
     @Override
     public void createAdminAccount(CreateAdminAccountRequest request) {
         UUID userId = UUID.fromString(request.getUserId());
@@ -173,6 +172,14 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         accountRepository.save(account);
+    }
+
+    @Override
+    public Account getAccountById(GetAccountByIdRequest request) {
+        UUID id = UUID.fromString(request.getId());
+        return accountRepository.findById(id).orElseThrow(
+                ()-> new NotFoundException("Account not found.")
+        );
     }
 
     @Override

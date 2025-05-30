@@ -2,6 +2,7 @@ package com.nitb.apigateway.controller;
 
 import com.nitb.apigateway.dto.Auth.Account.request.CreateAdminAccountRequestDto;
 import com.nitb.apigateway.dto.Auth.Auth.request.*;
+import com.nitb.apigateway.dto.Auth.Auth.response.GenerateAccessTokenResponseDto;
 import com.nitb.apigateway.dto.Auth.Auth.response.LoginResponseDto;
 import com.nitb.apigateway.dto.General.ActionResponseDto;
 import com.nitb.apigateway.exception.ErrorResponse;
@@ -95,5 +96,14 @@ public class AuthController {
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public Mono<ResponseEntity<ActionResponseDto>> updateRole(@PathVariable UUID id, @RequestParam UserRole role) {
         return authService.updateRole(id, role).map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/access")
+    @Operation(summary = "Generate a new access token from refresh token.")
+    @ApiResponse(responseCode = "200", description = "Generate successfully.")
+    @ApiResponse(responseCode = "400", description = "Invalid refresh token.",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    public Mono<ResponseEntity<GenerateAccessTokenResponseDto>> generateAccessToken(@RequestParam String refreshToken) {
+        return authService.generateAccessToken(refreshToken).map(ResponseEntity::ok);
     }
 }

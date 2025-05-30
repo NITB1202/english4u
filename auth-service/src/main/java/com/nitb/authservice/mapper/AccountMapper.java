@@ -2,6 +2,7 @@ package com.nitb.authservice.mapper;
 
 import com.nitb.authservice.entity.Account;
 import com.nitb.authservice.grpc.AccountResponse;
+import com.nitb.authservice.grpc.AccountSummaryResponse;
 import com.nitb.authservice.grpc.AccountsResponse;
 import org.springframework.data.domain.Page;
 
@@ -29,6 +30,14 @@ public class AccountMapper {
                 .addAllAccounts(responses)
                 .setTotalItems(accounts.getTotalElements())
                 .setTotalPages(accounts.getTotalPages())
+                .build();
+    }
+
+    public static AccountSummaryResponse toAccountSummaryResponse(Account account) {
+        return AccountSummaryResponse.newBuilder()
+                .setId(account.getId().toString())
+                .setUserId(account.getUserId().toString())
+                .setRole(account.getRole().toString())
                 .build();
     }
 }

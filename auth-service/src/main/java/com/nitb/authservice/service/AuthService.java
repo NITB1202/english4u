@@ -20,6 +20,7 @@ public interface AuthService {
     void resetPassword(ResetPasswordRequest request);
 
     void createAdminAccount(CreateAdminAccountRequest request);
+    Account getAccountById(GetAccountByIdRequest request);
     void updateRole(UpdateRoleRequest request);
 
     String getEmailById(UUID id);

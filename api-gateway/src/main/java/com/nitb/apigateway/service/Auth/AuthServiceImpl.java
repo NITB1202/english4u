@@ -2,6 +2,7 @@ package com.nitb.apigateway.service.Auth;
 
 import com.nitb.apigateway.dto.Auth.Account.request.CreateAdminAccountRequestDto;
 import com.nitb.apigateway.dto.Auth.Auth.request.*;
+import com.nitb.apigateway.dto.Auth.Auth.response.GenerateAccessTokenResponseDto;
 import com.nitb.apigateway.dto.Auth.Auth.response.LoginResponseDto;
 import com.nitb.apigateway.dto.Auth.Auth.response.OAuthUserInfo;
 import com.nitb.apigateway.dto.General.ActionResponseDto;
@@ -9,12 +10,15 @@ import com.nitb.apigateway.grpc.AuthServiceGrpcClient;
 import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.mapper.ActionMapper;
 import com.nitb.apigateway.mapper.AuthMapper;
+import com.nitb.authservice.grpc.AccountSummaryResponse;
 import com.nitb.authservice.grpc.LoginResponse;
 import com.nitb.authservice.grpc.VerificationType;
 import com.nitb.common.enums.Provider;
 import com.nitb.common.enums.UserRole;
 import com.nitb.common.exceptions.BusinessException;
 import com.nitb.common.grpc.ActionResponse;
+import com.nitb.common.mappers.UserRoleMapper;
+import com.nitb.common.utils.JwtUtils;
 import com.nitb.userservice.grpc.CreateUserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -164,6 +168,24 @@ public class AuthServiceImpl implements AuthService {
         return Mono.fromCallable(()-> {
             ActionResponse response = authGrpc.updateRole(id, role);
             return ActionMapper.toResponseDto(response);
+        }).subscribeOn(Schedulers.boundedElastic());
+    }
+
+    @Override
+    public Mono<GenerateAccessTokenResponseDto> generateAccessToken(String refreshToken) {
+        return Mono.fromCallable(()->{
+            if(!JwtUtils.isTokenValid(refreshToken)) {
+                throw new BusinessException("Token is expired.");
+            }
+
+            UUID accountId = JwtUtils.extractId(refreshToken);
+            AccountSummaryResponse account = authGrpc.getAccountById(accountId);
+
+            UUID userId = UUID.fromString(account.getUserId());
+            UserRole role = UserRoleMapper.fromString(account.getRole());
+
+            String accessToken = JwtUtils.generateAccessToken(userId, role);
+            return AuthMapper.toGenerateAccessTokenResponseDto(accessToken);
         }).subscribeOn(Schedulers.boundedElastic());
     }
 }

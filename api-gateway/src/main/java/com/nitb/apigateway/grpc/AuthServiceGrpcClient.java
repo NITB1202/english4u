@@ -108,6 +108,14 @@ public class AuthServiceGrpcClient {
         return blockingStub.createAdminAccount(request);
     }
 
+    public AccountSummaryResponse getAccountById(UUID accountId) {
+        GetAccountByIdRequest request = GetAccountByIdRequest.newBuilder()
+                .setId(accountId.toString())
+                .build();
+
+        return blockingStub.getAccountById(request);
+    }
+
     public ActionResponse updateRole(UUID id, UserRole role) {
         SupportedRole supportedRole = UserRoleMapper.toSupportedRole(role);
 
