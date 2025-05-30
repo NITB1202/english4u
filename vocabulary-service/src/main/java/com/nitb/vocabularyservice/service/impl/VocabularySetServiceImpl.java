@@ -208,13 +208,10 @@ public class VocabularySetServiceImpl implements VocabularySetService {
 
     @Override
     public List<AdminSetStatisticResponse> getAdminSetStatistics(GetAdminSetStatisticsRequest request) {
-        List<UUID> userIds = request.getUserIdList().stream()
-                .map(UUID::fromString)
-                .toList();
-
         List<AdminSetStatisticResponse> result = new ArrayList<>();
 
-        for(UUID userId : userIds) {
+        for(String idStr : request.getUserIdList()) {
+            UUID userId = UUID.fromString(idStr);
             long totalPublishedSets = vocabularySetRepository.countByCreatedByAndIsDeletedFalse(userId);
             AdminSetStatisticResponse statistic = VocabularySetMapper.toAdminSetStatisticResponse(userId, totalPublishedSets);
             result.add(statistic);

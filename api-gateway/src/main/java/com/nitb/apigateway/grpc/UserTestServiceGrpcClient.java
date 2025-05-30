@@ -61,4 +61,12 @@ public class UserTestServiceGrpcClient {
 
         return blockingStub.getResultStatistics(request);
     }
+
+    public LearnerTestsStatisticsResponse getLearnerTestsStatistics(List<String> userIds) {
+        GetLearnerTestStatisticsRequest request = GetLearnerTestStatisticsRequest.newBuilder()
+                .addAllUserId(userIds)
+                .build();
+
+        return blockingStub.getLearnerTestStatistics(request);
+    }
 }

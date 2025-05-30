@@ -222,13 +222,10 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<AdminTestStatisticResponse> getAdminTestStatistics(GetAdminTestStatisticsRequest request) {
-        List<UUID> userIds = request.getUserIdList().stream()
-                .map(UUID::fromString)
-                .toList();
-
         List<AdminTestStatisticResponse> result = new ArrayList<>();
 
-        for(UUID userId : userIds) {
+        for(String idStr : request.getUserIdList()) {
+            UUID userId = UUID.fromString(idStr);
             long totalPublishedTests = testRepository.countByCreatedByAndIsDeletedFalse(userId);
             AdminTestStatisticResponse statistic = TestMapper.toAdminTestStatisticResponse(userId, totalPublishedTests);
             result.add(statistic);

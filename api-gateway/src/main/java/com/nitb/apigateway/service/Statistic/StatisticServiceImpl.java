@@ -7,6 +7,7 @@ import com.nitb.apigateway.grpc.TestServiceGrpcClient;
 import com.nitb.apigateway.grpc.UserServiceGrpcClient;
 import com.nitb.apigateway.grpc.VocabularyServiceGrpcClient;
 import com.nitb.apigateway.mapper.StatisticMapper;
+import com.nitb.authservice.grpc.AccountResponse;
 import com.nitb.authservice.grpc.AccountsResponse;
 import com.nitb.testservice.grpc.AdminTestStatisticsResponse;
 import com.nitb.userservice.grpc.UsersResponse;
@@ -17,7 +18,6 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,8 +37,8 @@ public class StatisticServiceImpl implements StatisticService{
         return Mono.fromCallable(()->{
             AccountsResponse accounts = authGrpc.getAdmins(page, size);
 
-            List<UUID> userIds = accounts.getAccountsList().stream()
-                    .map(ac -> UUID.fromString(ac.getUserId()))
+            List<String> userIds = accounts.getAccountsList().stream()
+                    .map(AccountResponse::getUserId)
                     .toList();
 
             UsersResponse users = userGrpc.getUsersByListOfIds(userIds);
@@ -59,8 +59,8 @@ public class StatisticServiceImpl implements StatisticService{
         return Mono.fromCallable(()->{
             AccountsResponse accounts = authGrpc.searchAdminByEmail(keyword, page, size);
 
-            List<UUID> userIds = accounts.getAccountsList().stream()
-                    .map(ac -> UUID.fromString(ac.getUserId()))
+            List<String> userIds = accounts.getAccountsList().stream()
+                    .map(AccountResponse::getUserId)
                     .toList();
 
             UsersResponse users = userGrpc.getUsersByListOfIds(userIds);

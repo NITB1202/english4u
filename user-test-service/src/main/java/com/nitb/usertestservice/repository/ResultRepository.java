@@ -62,4 +62,6 @@ public interface ResultRepository extends JpaRepository<Result, UUID> {
             @Param("from") LocalDateTime from,
             @Param("to") LocalDateTime to
     );
+    long countByUserId(UUID userId);
+    long sumScoreByUserId(UUID userId);
 }

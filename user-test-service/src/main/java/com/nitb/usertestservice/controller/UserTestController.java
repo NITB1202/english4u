@@ -1,6 +1,5 @@
 package com.nitb.usertestservice.controller;
 
-import com.nitb.usertestservice.dto.ResultStatisticDto;
 import com.nitb.usertestservice.entity.Result;
 import com.nitb.usertestservice.entity.ResultDetail;
 import com.nitb.usertestservice.grpc.*;
@@ -52,8 +51,16 @@ public class UserTestController extends UserTestServiceGrpc.UserTestServiceImplB
 
     @Override
     public void getResultStatistics(GetResultStatisticsRequest request, StreamObserver<GetResultStatisticsResponse> responseObserver) {
-        List<ResultStatisticDto> statistics = resultService.getResultStatistics(request);
+        List<ResultStatisticResponse> statistics = resultService.getResultStatistics(request);
         GetResultStatisticsResponse response = ResultMapper.toGetResultStatisticsResponse(statistics);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getLearnerTestStatistics(GetLearnerTestStatisticsRequest request, StreamObserver<LearnerTestsStatisticsResponse> responseObserver) {
+        List<LearnerTestStatisticResponse> statistics = resultService.getLearnerTestStatistics(request);
+        LearnerTestsStatisticsResponse response = ResultMapper.toLearnerTestsStatisticsResponse(statistics);
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

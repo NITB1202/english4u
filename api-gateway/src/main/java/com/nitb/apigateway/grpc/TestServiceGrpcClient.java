@@ -151,11 +151,9 @@ public class TestServiceGrpcClient {
         return blockingStub.getPublishedTestStatistics(request);
     }
 
-    public AdminTestStatisticsResponse getAdminTestStatistics(List<UUID> userIds) {
-        List<String> idStr = userIds.stream().map(UUID::toString).toList();
-
+    public AdminTestStatisticsResponse getAdminTestStatistics(List<String> userIds) {
         GetAdminTestStatisticsRequest request = GetAdminTestStatisticsRequest.newBuilder()
-                .addAllUserId(idStr)
+                .addAllUserId(userIds)
                 .build();
 
         return blockingStub.getAdminTestStatistics(request);

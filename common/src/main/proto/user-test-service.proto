@@ -92,9 +92,24 @@ message GetResultStatisticsResponse {
   repeated ResultStatisticResponse statistics = 1;
 }
 
+message GetLearnerTestStatisticsRequest {
+  repeated string user_id = 1;
+}
+
+message LearnerTestStatisticResponse {
+  string user_id = 1;
+  int64 total_tests_taken = 2;
+  double avg_score = 3;
+}
+
+message LearnerTestsStatisticsResponse {
+  repeated LearnerTestStatisticResponse statistics = 1;
+}
+
 service UserTestService {
   rpc CreateResult(CreateResultRequest) returns (CreateResultResponse);
   rpc GetResultById(GetResultByIdRequest) returns (ResultDetailsResponse);
   rpc GetResults(GetResultsRequest) returns (ResultsResponse);
   rpc GetResultStatistics(GetResultStatisticsRequest) returns (GetResultStatisticsResponse);
+  rpc GetLearnerTestStatistics(GetLearnerTestStatisticsRequest) returns (LearnerTestsStatisticsResponse);
 }
