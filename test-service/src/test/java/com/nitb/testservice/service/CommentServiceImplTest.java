@@ -152,10 +152,8 @@ class CommentServiceImplTest {
                 .setSize(10)
                 .build();
 
-        // Giả lập trả về trang rỗng
         Page<Comment> emptyPage = Page.empty(PageRequest.of(0, 10));
 
-        // Stub: chú ý dùng matcher any(Pageable.class) để không strict check argument
         when(commentRepository.findByTestIdAndParentIdIsNullOrderByCreateAtDesc(eq(testId), any(Pageable.class)))
                 .thenReturn(emptyPage);
 
