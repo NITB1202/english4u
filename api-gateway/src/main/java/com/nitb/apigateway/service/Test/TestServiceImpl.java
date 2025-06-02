@@ -136,7 +136,7 @@ public class TestServiceImpl implements TestService {
     public Mono<DeleteTestResponseDto> deleteTest(UUID userId, UUID id) {
         return Mono.fromCallable(()->{
             userGrpc.checkCanPerformAction(userId);
-            DeleteTestResponse response = testGrpc.deleteTest(userId, id);
+            DeleteTestResponse response = testGrpc.deleteTest(id, userId);
             return TestMapper.toDeleteTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
@@ -145,7 +145,7 @@ public class TestServiceImpl implements TestService {
     public Mono<DeleteTestResponseDto> restoreTest(UUID userId, UUID id) {
         return Mono.fromCallable(()->{
             userGrpc.checkCanPerformAction(userId);
-            DeleteTestResponse response = testGrpc.restoreTest(userId, id);
+            DeleteTestResponse response = testGrpc.restoreTest(id, userId);
             return TestMapper.toDeleteTestResponseDto(response);
         }).subscribeOn(Schedulers.boundedElastic());
     }
